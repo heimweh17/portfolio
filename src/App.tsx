@@ -389,9 +389,7 @@ export default function Portfolio() {
               <ul className="list-disc ml-5 mt-3 space-y-1 text-sm">
                 {x.bullets.map((b, j) => <li key={j}>{b}</li>)}
               </ul>
-              <div className="flex flex-wrap gap-2 mt-3">
-                {x.tech}
-              </div>
+              
             </div>
               {x.logo && (
               <img
