@@ -1,0 +1,8 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  body {
+    font-size: 25px !important;
+  }
+}
