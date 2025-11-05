@@ -74,6 +74,65 @@ const EXPERIENCE = [
   },
 ];
 
+const VOLUNTEER = [
+  {
+    role: "Mapper",
+    org: "OpenStreetMap",
+    period: "Sep 2020 – Present",
+    bullets: [
+  <>
+    I began mapping during the 2020 lockdown, starting with places I knew in Southeast China and Florida. 
+    Since then I’ve made 587+ edits on OpenStreetMap 
+    to support open, community-driven geographic data that can help cities, everyday users, and even disaster response efforts. I enjoy contributing because this work directly benefits everyone.
+  </>
+],
+    //tech: ["Coordination"],
+    logo: "/logos/osm_logo.svg", 
+    link:"https://www.openstreetmap.org/"
+  },
+  {
+    role: "Instructor",
+    org: "Buchholz Math Team",
+    period: "Jun 2022 – Jul 2022 ; Jun 2023 – Jul 2023",
+    bullets: [
+      <>
+      
+      
+      Taught elementary and middle school students math during a summer camp at Buchholz, helping them strengthen problem-solving ability, logical reasoning, and critical thinking skills through personalized guidance and practice.
+    </>
+    ],
+    //tech: ["Teaching, Curriculum"],
+    link: "https://buchholzmathteam.org/",
+    logo: "/logos/bhs_logo.png",
+  },
+];
+const LEADERSHIPS = [
+  {
+    role: "SASE Intern",
+    org: " UF Society of Asian Scientists & Engineers",
+    period: "Aug 2025 – Present",
+    bullets: [
+  "Planned a professional event for 150+ attendees, dedicating 30+ hours to programming and engagement.",
+  "Collaborate with 100+ members on ongoing initiatives, building skills in planning and communication.",
+  "Expand professional networks through mentorship programs and socials, strengthening future leadership and career opportunities."
+],
+    //tech: ["Coordination"],
+    logo: "/logos/sase_logo.jpg", 
+    link:"https://ufsase.com/"
+  },
+  {
+    role: "Event Committee Member",
+    org: "UF Chinese American Student Association",
+    period: "Jun 2022 – Jul 2022 ; Jun 2023 – Jul 2023",
+    bullets: [
+      "Spearheaded a culture Festival for 100+ participants, investing 30+ hours to coordinate & program.",
+      "Authored, curated, and executed cultural activities to elevate engagement and celebrate Chinese heritage.",
+    ],
+    //tech: ["Teaching, Curriculum"],
+    link: "https://orgs.studentinvolvement.ufl.edu/Organization/Chinese-American-Student-Association",
+    logo: "/logos/casa_logo.jpg",
+  },
+];
 const PROJECTS = [
   {
     name: "Grade Track",
@@ -109,6 +168,21 @@ const PROJECTS = [
     tech: ["C++"],
     links: { demo: "", code: "https://github.com/heimweh17/best-fit-fitst-fit" },
   },
+  {
+  name: "AVL Tree Data Structure",
+  blurb: "Self-balancing AVL tree with insert, delete, search, and rotations.",
+  impact: "Supported 1,000+ operations and validated correctness with custom test suite.",
+  tech: ["C++"],
+  links: { code: "https://github.com/heimweh17/AVL-TREE" },
+},
+
+{
+  name: "Sudoku Game",
+  blurb: "Interactive Sudoku board with 3 difficulty levels and real-time validation.",
+  impact: "Implemented UI state handling, win/lose detection, reset control, and smooth UX.",
+  tech: ["Python"],
+  links: { code: "https://github.com/heimweh17/suduku-project" },
+},
 ];
 
 const SKILLS = [
@@ -178,7 +252,7 @@ export default function Portfolio() {
   const [showAllExperience, setShowAllExperience] = useState(false);
 
   const visibleProjects = showExpandedProjects
-    ? PROJECTS.slice(0, 4)
+    ? PROJECTS.slice(0, 6)
     : PROJECTS.slice(0, 3);
   const visibleExperience = showAllExperience
     ? EXPERIENCE
@@ -289,7 +363,7 @@ export default function Portfolio() {
         <Calendar className="w-4 h-4 mt-0.5" /> Available: Summer 2026 internships
       </li>
       <li className="flex items-start gap-3">
-        <Globe className="w-4 h-4 mt-0.5" /> Portfolio: {SITE.links.website || "(add a domain)"}
+        <Globe className="w-4 h-4 mt-0.5" /> Portfolio: {SITE.links.website || "https://portfolio-six-teal-77.vercel.app"}
       </li>
       <li className="flex items-start gap-3">
         <Phone className="w-4 h-4 mt-0.5" /> {SITE.links.phone}
@@ -444,7 +518,84 @@ export default function Portfolio() {
   </motion.div>
 </Section>
 
+ {/* Volunteer */}
+<Section id="volunteer" title="Volunteer">
+  <motion.div layout className="space-y-4">
+    {VOLUNTEER.map((x, i) => (
+      <motion.div key={i} layout transition={{ duration: 0.35 }}>
+        <Card>
+          <div className="flex items-start gap-3">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
 
+  {x.link ? (
+    <a href={x.link} target="_blank" className="underline underline-offset-2 hover:text-gray-900">
+      {x.org}
+    </a>
+  ) : (
+    x.org
+  )}
+</div>
+              <h3 className="text-lg font-semibold mt-1">{x.role}</h3>
+              <div className="text-sm text-gray-600 mt-1">{x.period}</div>
+              <ul className="list-disc ml-5 mt-3 space-y-1 text-sm">
+                {x.bullets.map((b, j) => <li key={j}>{b}</li>)}
+              </ul>
+              
+            </div>
+              {x.logo && (
+              <img
+              src={x.logo}
+            alt={x.org}
+            className="object-contain opacity-120"
+            style={{ width: "125px", height: "125px" }}
+            />
+          )}
+          </div>
+        </Card>
+      </motion.div>
+    ))}
+  </motion.div>
+</Section>
+ {/* LEADERSHIPS & ACTIVITIES */}
+<Section id="leaderships" title="Leaderships">
+  <motion.div layout className="space-y-4">
+    {LEADERSHIPS.map((x, i) => (
+      <motion.div key={i} layout transition={{ duration: 0.35 }}>
+        <Card>
+          <div className="flex items-start gap-3">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+
+  {x.link ? (
+    <a href={x.link} target="_blank" className="underline underline-offset-2 hover:text-gray-900">
+      {x.org}
+    </a>
+  ) : (
+    x.org
+  )}
+</div>
+              <h3 className="text-lg font-semibold mt-1">{x.role}</h3>
+              <div className="text-sm text-gray-600 mt-1">{x.period}</div>
+              <ul className="list-disc ml-5 mt-3 space-y-1 text-sm">
+                {x.bullets.map((b, j) => <li key={j}>{b}</li>)}
+              </ul>
+              
+            </div>
+              {x.logo && (
+              <img
+              src={x.logo}
+            alt={x.org}
+            className="object-contain opacity-120"
+            style={{ width: "125px", height: "125px" }}
+            />
+          )}
+          </div>
+        </Card>
+      </motion.div>
+    ))}
+  </motion.div>
+</Section>
         {/* SKILLS */}
         <Section id="skills" title="Skills">
           <div className="grid md:grid-cols-2 gap-6">
