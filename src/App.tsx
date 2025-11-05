@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Github,
   Linkedin,
@@ -14,29 +14,29 @@ import {
   Phone,
   ChevronDown,
   ChevronUp,
+  Sparkles,
+  Terminal,
+  Cpu,
+  Award,
+  Instagram,
+  Languages,
+  Camera,
 } from "lucide-react";
 
-// ====== DESIGN TOKENS ======
-const cn = (...xs: (string | false | null | undefined)[]) => xs.filter(Boolean).join(" ");
-const shell = "max-w-6xl mx-auto px-4 sm:px-6 md:px-8";
-const cardBase =
-  "rounded-2xl border border-slate-200/70 bg-white/90 backdrop-blur-sm shadow-sm transition hover:shadow-md hover:-translate-y-0.5";
-const chip =
-  "inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-medium text-slate-700";
-
-// ====== DATA (kept from your version) ======
+// ====== DATA ======
 const SITE = {
   tagline: "CS @ University of Florida • Geography Minor",
   location: "Gainesville, FL",
   headline: "Alex Liu",
-  name: "Alex Liu's personal Website",
+  name: "Alex Liu",
   links: {
     github: "https://github.com/heimweh17",
     linkedin: "https://www.linkedin.com/in/alex-liu7/",
+    instagram: "https://www.instagram.com/alexliu1700/",
     email: "haozhouliu17@gmail.com",
     resume: "/resume.pdf",
     phone: "+1 (352) 328-4805",
-    website: "",
+    website: "https://aliu.me/",
   },
 };
 
@@ -46,9 +46,28 @@ const ABOUT = {
   highlights: [
     "C++ / Python / Java / JavaScript — plus React, Flask, SQL, Docker",
     "Hands-on projects: analytics dashboards, assistive tech, games",
-    "Seeking for SWE / data / geospatial / AI-adjacent internships (Summer 2026)",
+    "Seeking SWE / data / geospatial / AI-adjacent internships (Summer 2026)",
   ],
 };
+
+const EDUCATION = [
+  {
+    school: "University of Florida",
+    degree: "B.S. in Computer Science (Minor in Geography)",
+    gpa: "GPA 3.80/4.00",
+    period: "2024 – 2028 (expected)",
+    honors: "Dean's List",
+    activities: "Activities: UF SASE, UF CASA",
+    logo: "/logos/uf_logo.png",
+  },
+  {
+    school: "Buchholz High School",
+    gpa: "GPA 4.79",
+    period: "2020 – 2024",
+    activities: "Activities: Science Team, Math Team, Quiz Bowl",
+    logo: "/logos/buchholz_logo.png",
+  },
+];
 
 const EXPERIENCE = [
   {
@@ -71,7 +90,7 @@ const EXPERIENCE = [
     bullets: [
       "Led and instructed a class of 30+ elementary students in mathematics and chess, developing lesson plans that built knowledge progressively and improved comprehension.",
       "Created engaging instructional materials, adapting teaching methods to diverse learning styles and fostering critical thinking.",
-      "Managed classroom dynamics and maintained a supportive learning environment, strengthening students’ problem-solving skills.",
+      "Managed classroom dynamics and maintained a supportive learning environment, strengthening students' problem-solving skills.",
       "Collaborated with a teaching team to evaluate student progress and refine instructional strategies for improved learning outcomes.",
     ],
     link: "http://www.logiclabgainesville.com/",
@@ -84,7 +103,7 @@ const VOLUNTEER = [
     org: "OpenStreetMap",
     period: "Sep 2020 – Present",
     bullets: [
-      <>I began mapping during the 2020 lockdown, starting with places I knew in Southeast China and Florida. Since then I’ve made 587+ edits on OpenStreetMap to support open, community-driven geographic data that can help cities, everyday users, and even disaster response efforts. I enjoy contributing because this work directly benefits everyone.</>,
+      "I began mapping during the 2020 lockdown, starting with places I knew in Southeast China and Florida. Since then I've made 587+ edits on OpenStreetMap to support open, community-driven geographic data that can help cities, everyday users, and even disaster response efforts. I enjoy contributing because this work directly benefits everyone.",
     ],
     logo: "/logos/osm_logo.svg",
     link: "https://www.openstreetmap.org/",
@@ -94,7 +113,7 @@ const VOLUNTEER = [
     org: "Buchholz Math Team",
     period: "Jun 2022 – Jul 2022 ; Jun 2023 – Jul 2023",
     bullets: [
-      <>Taught elementary and middle school students math during a summer camp at Buchholz, helping them strengthen problem-solving ability, logical reasoning, and critical thinking skills through personalized guidance and practice.</>,
+      "Taught elementary and middle school students math during a summer camp at Buchholz, helping them strengthen problem-solving ability, logical reasoning, and critical thinking skills through personalized guidance and practice.",
     ],
     link: "https://buchholzmathteam.org/",
     logo: "/logos/bhs_logo.png",
@@ -104,7 +123,7 @@ const VOLUNTEER = [
 const LEADERSHIPS = [
   {
     role: "SASE Intern",
-    org: " UF Society of Asian Scientists & Engineers",
+    org: "UF Society of Asian Scientists & Engineers",
     period: "Aug 2025 – Present",
     bullets: [
       "Planned a professional event for 150+ attendees, dedicating 30+ hours to programming and engagement.",
@@ -134,6 +153,7 @@ const PROJECTS = [
     impact: "Dockerized dev makes setup 85% faster; processes CSVs to surface trends in seconds.",
     tech: ["Flask", "React", "SQLAlchemy", "PostgreSQL", "Docker"],
     links: { demo: "", code: "https://github.com/heimweh17/Grade-Track" },
+    color: "from-blue-400/20 to-cyan-400/20",
   },
   {
     name: "Ability Bridge",
@@ -141,6 +161,7 @@ const PROJECTS = [
     impact: "Real-time CV at ~30 FPS with <100ms latency; improves accessibility for hands-free use.",
     tech: ["Python", "OpenCV", "MediaPipe", "PyAutoGUI"],
     links: { demo: "", code: "https://github.com/heimweh17/Ability-Bridge" },
+    color: "from-cyan-400/20 to-blue-500/20",
   },
   {
     name: "Minesweeper (SFML)",
@@ -148,6 +169,7 @@ const PROJECTS = [
     impact: "350+ tiles; persistent top-5 scores via file I/O; modular OOP design.",
     tech: ["C++", "SFML"],
     links: { demo: "", code: "https://github.com/heimweh17/Minesweeper-game" },
+    color: "from-blue-500/20 to-indigo-500/20",
   },
   {
     name: "Bin Packing: Best-Fit vs First-Fit",
@@ -155,13 +177,15 @@ const PROJECTS = [
     impact: "Object-oriented placement framework streamlines experimentation and metrics.",
     tech: ["C++"],
     links: { demo: "", code: "https://github.com/heimweh17/best-fit-fitst-fit" },
+    color: "from-indigo-500/20 to-blue-600/20",
   },
   {
     name: "AVL Tree Data Structure",
     blurb: "Self-balancing AVL tree with insert, delete, search, and rotations.",
     impact: "Supported 1,000+ operations and validated correctness with custom test suite.",
-    tech: ["C+\+"],
+    tech: ["C++"],
     links: { code: "https://github.com/heimweh17/AVL-TREE" },
+    color: "from-blue-600/20 to-cyan-500/20",
   },
   {
     name: "Sudoku Game",
@@ -169,459 +193,668 @@ const PROJECTS = [
     impact: "Implemented UI state handling, win/lose detection, reset control, and smooth UX.",
     tech: ["Python"],
     links: { code: "https://github.com/heimweh17/suduku-project" },
+    color: "from-cyan-500/20 to-blue-400/20",
   },
 ];
 
 const SKILLS = [
-  { group: "Languages", items: ["C++", "Python", "Java", "TypeScript", "SQL", "RISC-V"] },
-  { group: "Frameworks", items: ["React", "Flask", "FastAPI", "Node", "Vite", "Tailwind"] },
-  { group: "Data & Infra", items: ["PostgreSQL", "SQLite", "Docker", "Git", "CI", "Grafana"] },
-  { group: "Domains", items: ["Algorithms", "Data Structures", "Geospatial (GIS)", "Computer Vision"] },
+  { group: "Languages", items: ["C++", "Python", "Java", "TypeScript", "SQL", "RISC-V"], icon: Terminal },
+  { group: "Frameworks", items: ["React", "Flask", "FastAPI", "Node", "Vite", "Tailwind"], icon: Code2 },
+  { group: "Data & Infra", items: ["PostgreSQL", "SQLite", "Docker", "Git", "CI", "Grafana"], icon: Cpu },
+  { group: "Domains", items: ["Algorithms", "Data Structures", "Geospatial (GIS)", "Computer Vision"], icon: Sparkles },
 ];
 
 const CONTACT = {
-  note:
-    "Open to internships for Summer 2026. Happy to chat about data systems, geospatial, and accessible UI.",
+  note: "Open to internships for Summer 2026. Happy to chat about data systems, geospatial, and accessible UI.",
 };
 
+// ====== FLOATING PARTICLES ======
+function FloatingParticles() {
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      {[...Array(20)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
+          initial={{
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+          }}
+          animate={{
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+          }}
+          transition={{
+            duration: Math.random() * 20 + 10,
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ====== SCROLL PROGRESS ======
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-blue-600 to-cyan-500 origin-left z-50"
+      style={{ scaleX: scrollYProgress }}
+    />
+  );
+}
+
 // ====== UI PRIMITIVES ======
-const Section = ({ id, title, children }: { id: string; title: string; children: React.ReactNode }) => (
-  <section id={id} className="scroll-mt-24 py-10">
-    <div className={cn(shell)}>
-      <div className="mb-6 flex items-center gap-3">
-        <div className="h-6 w-1.5 rounded-full bg-gradient-to-b from-blue-600 to-orange-500" />
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
+const Section = ({ id, title, children, icon: Icon }) => (
+  <section id={id} className="scroll-mt-24 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-12">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="flex items-center gap-3 mb-8">
+        {Icon && <Icon className="w-8 h-8 text-blue-600" />}
+        <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+          {title}
+        </h2>
       </div>
       {children}
-    </div>
+    </motion.div>
   </section>
 );
 
-const Card: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
-  <div className={cn(cardBase, "p-5", className)}>{children}</div>
-);
-
-const Badge = ({ children }: { children: React.ReactNode }) => (
-  <span className="inline-flex items-center rounded-lg bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200">
+const Card = ({ children, className = "" }) => (
+  <motion.div
+    whileHover={{ y: -4, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
+    transition={{ duration: 0.2 }}
+    className={`rounded-2xl bg-white border border-gray-200 p-6 shadow-lg hover:shadow-xl transition-all backdrop-blur-sm ${className}`}
+  >
     {children}
-  </span>
+  </motion.div>
 );
-
-function TableOfContents() {
-  const items = [
-    { id: "home", label: "Home" },
-    { id: "projects", label: "Projects" },
-    { id: "experience", label: "Experience" },
-    { id: "volunteer", label: "Volunteer" },
-    { id: "leaderships", label: "Leaderships" },
-    { id: "skills", label: "Skills" },
-    { id: "about", label: "About" },
-    { id: "contact", label: "Contact" },
-  ];
-
-  const [active, setActive] = React.useState<string>("home");
-
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        const id = visible?.target?.id;
-        if (id) {
-          setActive((prev) => (prev !== id ? id : prev));
-          if (window.location.hash !== `#${id}`) {
-            history.replaceState(null, "", `#${id}`);
-          }
-        }
-      },
-      { root: null, rootMargin: "0px 0px -60% 0px", threshold: [0.2, 0.4, 0.6] }
-    );
-
-    const sections = items.map((i) => document.getElementById(i.id)).filter(Boolean) as Element[];
-    sections.forEach((sec) => observer.observe(sec));
-    return () => observer.disconnect();
-  }, []);
-
-  const handleJump = (e: React.MouseEvent, id: string) => {
-    e.preventDefault();
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      history.replaceState(null, "", `#${id}`);
-      setActive(id);
-    }
-  };
-
-  React.useEffect(() => {
-    const hash = window.location.hash?.slice(1);
-    if (hash) {
-      const el = document.getElementById(hash);
-      if (el) el.scrollIntoView({ behavior: "auto", block: "start" });
-      setActive(hash);
-    }
-  }, []);
-
-  return (
-    <aside className="hidden lg:block sticky top-20 self-start z-40">
-      <nav className={cn(cardBase, "p-4 w-56")}> 
-        <div className="text-[11px] uppercase tracking-wider text-slate-500 mb-2">On this page</div>
-        <ul className="space-y-1">
-          {items.map((item) => {
-            const isActive = active === item.id;
-            return (
-              <li key={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  onClick={(e) => handleJump(e, item.id)}
-                  aria-current={isActive ? "true" : undefined}
-                  className={cn(
-                    "group flex w-full items-center gap-2 rounded-md px-2 py-1 text-xs leading-tight transition",
-                    isActive
-                      ? "bg-slate-900 text-white"
-                      : "text-slate-700 hover:bg-slate-100"
-                  )}
-                >
-                  <span className="truncate">{item.label}</span>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </aside>
-  );
-}
 
 // ====== PAGE ======
 export default function Portfolio() {
   const [showExpandedProjects, setShowExpandedProjects] = useState(false);
-
-  const visibleProjects = showExpandedProjects ? PROJECTS.slice(0, 6) : PROJECTS.slice(0, 3);
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const visibleProjects = showExpandedProjects ? PROJECTS : PROJECTS.slice(0, 3);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-900">
-      {/* soft radial glow */}
-      <div className="pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(60%_60%_at_50%_20%,black,transparent)]">
-        <div className="absolute inset-x-0 top-[-20%] h-[40rem] bg-gradient-to-b from-blue-100/60 via-indigo-100/40 to-transparent" />
-      </div>
+    <div className="font-mono antialiased text-gray-900 bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 min-h-screen relative overflow-x-hidden">
+      <FloatingParticles />
+      <ScrollProgress />
 
       {/* NAVBAR */}
-      <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/70 backdrop-blur-md">
-        <div className={cn(shell, "h-14 flex items-center justify-between")}> 
-          <a href="#home" className="font-semibold tracking-tight">{SITE.name}</a>
-          <nav className="hidden md:flex items-center gap-6 text-sm">
-            {[
-              { href: "#about", label: "About" },
-              { href: "#projects", label: "Projects" },
-              { href: "#experience", label: "Experience" },
-              { href: "#skills", label: "Skills" },
-              { href: "#contact", label: "Contact" },
-            ].map((x) => (
-              <a key={x.href} href={x.href} className="text-slate-700 hover:text-slate-900">{x.label}</a>
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className="sticky top-0 z-40 backdrop-blur-xl bg-white/80 border-b border-gray-200 shadow-sm"
+      >
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 h-16 flex items-center justify-between">
+          <motion.a
+            href="#home"
+            className="font-bold text-xl bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent"
+            whileHover={{ scale: 1.05 }}
+          >
+            {SITE.name}
+          </motion.a>
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            {["About", "Projects", "Experience", "Skills", "Contact"].map((item) => (
+              <motion.a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="hover:text-blue-600 transition-colors"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {item}
+              </motion.a>
             ))}
           </nav>
-          <a
-            href={SITE.links.resume}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-3 py-1.5 text-sm shadow-sm transition",
-              "hover:shadow-md hover:-translate-y-0.5"
-            )}
-          >
-            <FileText className="h-4 w-4" /> Resume
-          </a>
-        </div>
-      </header>
-
-      {/* BANNER */}
-      <div className={cn(shell, "pt-6")}> 
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200/70 shadow-sm">
-          <img src="/banner.jpg" alt="banner" className="h-[180px] w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent" />
-        </div>
-      </div>
-
-      {/* MAIN GRID */}
-      <div className={cn(shell, "mt-8 lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10")}> 
-        <TableOfContents />
-
-        <main id="home" className="min-w-0">
-          {/* HERO */}
-          <section className="relative">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="grid items-start gap-8 md:grid-cols-2"
+          <div className="flex items-center gap-3">
+            <motion.a
+              href="/zh"
+              className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-blue-600 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              title="简体中文版"
             >
-              <div>
-                <h1 className="mb-2 text-3xl font-bold tracking-tight md:text-5xl">{SITE.headline}</h1>
-                <p className="mb-4 text-slate-600">{SITE.tagline}</p>
-                <p className="text-[17px] leading-relaxed text-slate-800">
-                  Computer Science student at the University of Florida with experience in C++, Python, Java, and JavaScript. Strong foundation in algorithms, data structures, and system design. I’m passionate about building impactful software and continuously learning to solve problems. I’m actively seeking opportunities in software engineering, AI, data analysis, and IT-related fields. I hope to use my knowledge and skills to create technology that meaningfully contributes to society.
-                </p>
-                <div className="mt-5 flex flex-wrap items-center gap-3">
-                  <span className={chip}>
-                    <MapPin className="-mt-0.5 mr-1 h-3.5 w-3.5" /> {SITE.location}
-                  </span>
-                  <a href={SITE.links.github} className={cn(chip, "hover:shadow")}> <Github className="h-4 w-4 mr-1"/> GitHub</a>
-                  <a href={SITE.links.linkedin} className={cn(chip, "hover:shadow")}> <Linkedin className="h-4 w-4 mr-1"/> LinkedIn</a>
-                  <a href={`mailto:${SITE.links.email}`} className={cn(chip, "hover:shadow")}><Mail className="h-4 w-4 mr-1"/> Email</a>
-                </div>
-              </div>
+              <Languages className="w-4 h-4" />
+              <span className="hidden sm:inline">中文</span>
+            </motion.a>
+            <motion.a
+              href={SITE.links.resume}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl px-4 py-2 hover:shadow-lg transition-shadow"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FileText className="w-4 h-4" /> Resume
+            </motion.a>
+          </div>
+        </div>
+      </motion.header>
 
-              <div className="relative">
-                {/* headshot */}
-                <Card className="p-0 overflow-hidden">
-                  <img src="/me.jpg" alt="Alex Liu" className="h-[260px] w-full object-cover" />
-                </Card>
+      {/* LANGUAGE BANNER */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-2 text-center text-sm"
+      >
+        <div className="max-w-5xl mx-auto px-4 flex items-center justify-center gap-3">
+          <Languages className="w-4 h-4" />
+          <span>This page is also available in Simplified Chinese.</span>
+          <motion.a
+            href="/zh"
+            className="underline font-semibold hover:text-blue-100"
+            whileHover={{ scale: 1.05 }}
+          >
+            View in 中文 →
+          </motion.a>
+        </div>
+      </motion.div>
 
-                {/* quick facts */}
-                <Card className="mt-4">
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-start gap-2"><Calendar className="mt-0.5 h-4 w-4"/> Available: Summer 2026 internships</li>
-                    <li className="flex items-start gap-2"><Globe className="mt-0.5 h-4 w-4"/> Portfolio: {SITE.links.website || "https://portfolio-six-teal-77.vercel.app"}</li>
-                    <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4"/> {SITE.links.phone}</li>
-                  </ul>
-
-                  {/* education */}
-                  <div className="mt-5">
-                    <h4 className="text-base font-semibold">Education</h4>
-                    <div className="mt-3 flex items-start justify-between gap-4">
-                      <div>
-                        <div className="text-sm font-semibold">University of Florida</div>
-                        <div className="text-sm">B.S. in Computer Science (Minor in Geography) • GPA 3.80/4.00</div>
-                        <div className="text-xs text-slate-600">2024 – 2028 (expected) • Dean's List</div>
-                        <div className="text-xs text-slate-600">Activities: UF SASE, UF CASA</div>
-                      </div>
-                      <img src="/logos/uf_logo.png" alt="UF" className="h-6 w-auto object-contain opacity-90" />
-                    </div>
-
-                    <div className="mt-6 flex items-start justify-between gap-4">
-                      <div>
-                        <div className="text-sm font-semibold">Buchholz High School</div>
-                        <div className="text-sm">GPA 4.79</div>
-                        <div className="text-xs text-slate-600">2020 – 2024</div>
-                        <div className="text-xs text-slate-600">Activities: Science Team, Math Team, Quiz Bowl</div>
-                      </div>
-                      <img src="/logos/buchholz_logo.png" alt="Buchholz" className="h-11 w-auto object-contain opacity-90" />
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </motion.div>
-          </section>
-
-          {/* PROJECTS */}
-          <Section id="projects" title="Projects">
-            <div className="rounded-2xl border border-slate-200/70 bg-gradient-to-b from-amber-50/60 to-white/50 p-5">
-              <div className="grid gap-6 md:grid-cols-2">
-                {visibleProjects.map((p) => (
-                  <motion.div key={p.name} layout transition={{ duration: 0.35 }}>
-                    <Card>
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <h3 className="text-lg font-semibold">{p.name}</h3>
-                          <p className="mt-1 text-sm text-slate-600">{p.blurb}</p>
-                          <p className="mt-2 text-sm"><span className="font-medium">Impact:</span> {p.impact}</p>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {p.tech.map((t: string) => (
-                              <span key={t} className={chip}>{t}</span>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                          {p.links.demo && (
-                            <a href={p.links.demo} className="text-sm underline-offset-4 hover:underline inline-flex items-center gap-1"><ExternalLink className="h-4 w-4"/> Demo</a>
-                          )}
-                          {p.links.code && (
-                            <a href={p.links.code} className="text-sm underline-offset-4 hover:underline inline-flex items-center gap-1"><Code2 className="h-4 w-4"/> Code</a>
-                          )}
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <motion.button
-                  whileTap={{ scale: 0.96 }}
-                  transition={{ duration: 0.2 }}
-                  onClick={() => setShowExpandedProjects((v) => !v)}
-                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-4 py-2 text-sm shadow-sm transition hover:shadow-md"
+      {/* HERO */}
+      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-20">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <motion.div
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-6"
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
                 >
-                  {showExpandedProjects ? (<><ChevronUp className="h-4 w-4"/> Show less</>) : (<><ChevronDown className="h-4 w-4"/> Expand more</>)}
-                </motion.button>
-              </div>
+                  <Sparkles className="w-4 h-4" />
+                  Available for Summer 2026
+                </motion.div>
+                <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-800 bg-clip-text text-transparent">
+                  {SITE.headline}
+                </h1>
+                <p className="text-xl text-gray-600 mb-6">{SITE.tagline}</p>
+                <p className="text-gray-700 leading-relaxed mb-8">
+                  Computer Science student at the University of Florida passionate about building impactful software. I specialize in algorithms, data structures, and system design — creating technology that meaningfully contributes to society.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { href: SITE.links.github, icon: Github, label: "GitHub" },
+                    { href: SITE.links.linkedin, icon: Linkedin, label: "LinkedIn" },
+                    { href: SITE.links.instagram, icon: Instagram, label: "Instagram" },
+                    { href: `mailto:${SITE.links.email}`, icon: Mail, label: "Email" },
+                  ].map(({ href, icon: Icon, label }) => (
+                    <motion.a
+                      key={label}
+                      href={href}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border-2 border-gray-200 hover:border-blue-500 transition-colors shadow-sm"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Icon className="w-4 h-4" /> {label}
+                    </motion.a>
+                  ))}
+                </div>
+              </motion.div>
             </div>
-          </Section>
-
-          {/* EXPERIENCE */}
-          <Section id="experience" title="Experience">
-            <motion.div layout className="space-y-4">
-              {EXPERIENCE.map((x, i) => (
-                <motion.div key={i} layout transition={{ duration: 0.35 }}>
-                  <Card>
-                    <div className="flex items-start gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 text-sm text-slate-600">
-                          <Briefcase className="h-4 w-4" />
-                          {x.link ? (
-                            <a href={x.link} target="_blank" className="underline underline-offset-2 hover:text-slate-900">{x.org}</a>
-                          ) : (
-                            x.org
-                          )}
-                        </div>
-                        <h3 className="mt-1 text-lg font-semibold">{x.role}</h3>
-                        <div className="mt-1 text-sm text-slate-600">{x.period} • {x.location}</div>
-                        <ul className="ml-5 mt-3 list-disc space-y-1 text-sm">
-                          {x.bullets.map((b, j) => <li key={j}>{b}</li>)}
-                        </ul>
-                      </div>
-                      {x.logo && (
-                        <img src={x.logo} alt={x.org} className="h-[82px] w-[82px] object-contain opacity-95" />
-                      )}
-                    </div>
-                  </Card>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <div className="relative w-full aspect-square max-w-sm mx-auto">
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full blur-3xl opacity-30"
+                  animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
+                  transition={{ duration: 8, repeat: Infinity }}
+                />
+                <img
+                  src="/me.jpg"
+                  alt="Alex Liu"
+                  className="relative w-full h-full object-cover rounded-3xl shadow-2xl border-4 border-white"
+                />
+                <motion.div
+                  className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-3 shadow-xl border border-gray-200"
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
+                  <a
+                    href="https://www.google.com/maps/place/Gainesville,+FL"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-blue-600 transition-colors"
+                  >
+                    <MapPin className="w-4 h-4 text-blue-600" />
+                    <span className="font-medium text-sm">{SITE.location}</span>
+                  </a>
                 </motion.div>
-              ))}
+              </div>
             </motion.div>
-          </Section>
+          </div>
+        </motion.div>
+        {/* Animated background shapes */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute top-20 left-10 w-72 h-72 bg-blue-300/30 rounded-full blur-3xl"
+            animate={{ x: [0, 100, 0], y: [0, 50, 0] }}
+            transition={{ duration: 20, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-300/30 rounded-full blur-3xl"
+            animate={{ x: [0, -100, 0], y: [0, -50, 0] }}
+            transition={{ duration: 15, repeat: Infinity }}
+          />
+        </div>
+      </section>
 
-          {/* VOLUNTEER */}
-          <Section id="volunteer" title="Volunteer">
-            <motion.div layout className="space-y-4">
-              {VOLUNTEER.map((x, i) => (
-                <motion.div key={i} layout transition={{ duration: 0.35 }}>
-                  <Card>
-                    <div className="flex items-start gap-4">
-                      <div className="flex-1">
-                        <div className="text-sm text-slate-600">
-                          {x.link ? (
-                            <a href={x.link} target="_blank" className="underline underline-offset-2 hover:text-slate-900">{x.org}</a>
-                          ) : (
-                            x.org
-                          )}
-                        </div>
-                        <h3 className="mt-1 text-lg font-semibold">{x.role}</h3>
-                        <div className="mt-1 text-sm text-slate-600">{x.period}</div>
-                        <ul className="ml-5 mt-3 list-disc space-y-1 text-sm">
-                          {x.bullets.map((b, j) => <li key={j}>{b}</li>)}
-                        </ul>
-                      </div>
-                      {x.logo && (
-                        <img src={x.logo} alt={x.org} className="h-[82px] w-[82px] object-contain opacity-95" />
-                      )}
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
-          </Section>
-
-          {/* LEADERSHIPS */}
-          <Section id="leaderships" title="Leaderships">
-            <motion.div layout className="space-y-4">
-              {LEADERSHIPS.map((x, i) => (
-                <motion.div key={i} layout transition={{ duration: 0.35 }}>
-                  <Card>
-                    <div className="flex items-start gap-4">
-                      <div className="flex-1">
-                        <div className="text-sm text-slate-600">
-                          {x.link ? (
-                            <a href={x.link} target="_blank" className="underline underline-offset-2 hover:text-slate-900">{x.org}</a>
-                          ) : (
-                            x.org
-                          )}
-                        </div>
-                        <h3 className="mt-1 text-lg font-semibold">{x.role}</h3>
-                        <div className="mt-1 text-sm text-slate-600">{x.period}</div>
-                        <ul className="ml-5 mt-3 list-disc space-y-1 text-sm">
-                          {x.bullets.map((b, j) => <li key={j}>{b}</li>)}
-                        </ul>
-                      </div>
-                      {x.logo && (
-                        <img src={x.logo} alt={x.org} className="h-[82px] w-[82px] object-contain opacity-95" />
-                      )}
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
-          </Section>
-
-          {/* SKILLS */}
-          <Section id="skills" title="Skills">
-            <div className="grid gap-6 md:grid-cols-2">
-              {SKILLS.map((g) => (
-                <Card key={g.group}>
-                  <h3 className="font-medium">{g.group}</h3>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {g.items.map((s: string) => (
-                      <span key={s} className={chip}>{s}</span>
+      {/* PROJECTS */}
+      <Section id="projects" title="Featured Projects" icon={Code2}>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {visibleProjects.map((p, i) => (
+            <motion.div
+              key={p.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <Card className={`bg-gradient-to-br ${p.color} border-0 h-full flex flex-col`}>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold mb-2">{p.name}</h3>
+                  <p className="text-sm text-gray-700 mb-3">{p.blurb}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {p.tech.map((t) => (
+                      <span key={t} className="text-xs px-3 py-1 bg-white/60 rounded-full font-medium">
+                        {t}
+                      </span>
                     ))}
                   </div>
-                </Card>
-              ))}
-            </div>
-          </Section>
-
-          {/* ABOUT */}
-          <Section id="about" title="About">
-            <div className="grid items-start gap-6 md:grid-cols-3">
-              <div className="md:col-span-2">
-                <p className="leading-relaxed text-slate-700">{ABOUT.blurb}</p>
-                <ul className="ml-5 mt-4 list-disc space-y-1 text-slate-800">
-                  {ABOUT.highlights.map((h, i) => (
-                    <li key={i}>{h}</li>
-                  ))}
-                </ul>
-                <div className="mt-6 flex flex-wrap gap-4 text-sm">
-                  <a href={SITE.links.github} className="inline-flex items-center gap-2 underline-offset-4 hover:underline"><Github className="h-4 w-4"/> GitHub</a>
-                  <a href={SITE.links.linkedin} className="inline-flex items-center gap-2 underline-offset-4 hover:underline"><Linkedin className="h-4 w-4"/> LinkedIn</a>
-                  <a href={`mailto:${SITE.links.email}`} className="inline-flex items-center gap-2 underline-offset-4 hover:underline"><Mail className="h-4 w-4"/> Email</a>
-                  <a href={SITE.links.resume} className="inline-flex items-center gap-2 underline-offset-4 hover:underline"><FileText className="h-4 w-4"/> Resume</a>
+                  <p className="text-xs text-gray-600 mb-4">
+                    <strong>Impact:</strong> {p.impact}
+                  </p>
                 </div>
-              </div>
-            </div>
-          </Section>
+                <div className="flex gap-3">
+                  {p.links.code && (
+                    <motion.a
+                      href={p.links.code}
+                      className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                      whileHover={{ x: 5 }}
+                    >
+                      <Code2 className="w-4 h-4" /> Code
+                    </motion.a>
+                  )}
+                  {p.links.demo && (
+                    <motion.a
+                      href={p.links.demo}
+                      className="flex items-center gap-2 text-sm font-medium text-cyan-600 hover:text-cyan-700"
+                      whileHover={{ x: 5 }}
+                    >
+                      <ExternalLink className="w-4 h-4" /> Demo
+                    </motion.a>
+                  )}
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-8 flex justify-center">
+          <motion.button
+            onClick={() => setShowExpandedProjects(!showExpandedProjects)}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border-2 border-gray-200 hover:border-blue-500 transition-colors shadow-sm font-medium"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {showExpandedProjects ? (
+              <>
+                <ChevronUp className="w-4 h-4" /> Show Less
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-4 h-4" /> View All Projects
+              </>
+            )}
+          </motion.button>
+        </div>
+      </Section>
 
-          {/* CONTACT */}
-          <Section id="contact" title="Contact">
-            <Card>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <h3 className="font-medium">Let’s connect</h3>
-                  <p className="mt-2 text-slate-700">{CONTACT.note}</p>
-                  <div className="mt-4 flex flex-wrap gap-3 text-sm">
-                    <a href={`mailto:${SITE.links.email}`} className={cn(chip, "hover:shadow")}><Mail className="h-4 w-4 mr-1"/> Email me</a>
-                    <a href={SITE.links.linkedin} className={cn(chip, "hover:shadow")}><Linkedin className="h-4 w-4 mr-1"/> LinkedIn</a>
-                    <a href={SITE.links.github} className={cn(chip, "hover:shadow")}><Github className="h-4 w-4 mr-1"/> GitHub</a>
+      {/* EXPERIENCE */}
+      <Section id="experience" title="Experience" icon={Briefcase}>
+        <div className="space-y-6">
+          {EXPERIENCE.map((x, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <Card>
+                <div className="flex items-start gap-4">
+                  {x.logo && (
+                    <img src={x.logo} alt={x.org} className="w-16 h-16 object-contain rounded-lg" />
+                  )}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-1">
+                      {x.link ? (
+                        <a href={x.link} target="_blank" className="hover:underline">
+                          {x.org}
+                        </a>
+                      ) : (
+                        x.org
+                      )}
+                    </div>
+                    <h3 className="text-xl font-bold mb-1">{x.role}</h3>
+                    <div className="text-sm text-gray-600 mb-3">
+                      {x.period} • {x.location}
+                    </div>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      {x.bullets.map((b, j) => (
+                        <li key={j} className="flex gap-2">
+                          <span className="text-blue-600 mt-1">→</span>
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-                <div className="text-sm text-slate-600">
-                  <p><span className="font-medium">Email:</span> {SITE.links.email}</p>
-                  <p className="mt-1"><span className="font-medium">Location:</span> {SITE.location}</p>
-                  <p className="mt-1"><span className="font-medium">GitHub:</span> {SITE.links.github}</p>
-                  <p className="mt-1"><span className="font-medium">LinkedIn:</span> {SITE.links.linkedin}</p>
-                  {SITE.links.website && (
-                    <p className="mt-1"><span className="font-medium">Website:</span> {SITE.links.website}</p>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* VOLUNTEER */}
+      <Section id="volunteer" title="Volunteer" icon={Award}>
+        <div className="grid md:grid-cols-2 gap-6">
+          {VOLUNTEER.map((x, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <Card className="h-full">
+                <div className="flex items-start gap-4">
+                  {x.logo && (
+                    <img src={x.logo} alt={x.org} className="w-12 h-12 object-contain" />
                   )}
-                  <p className="mt-1"><span className="font-medium">Phone:</span> {SITE.links.phone}</p>
+                  <div className="flex-1">
+                    <div className="text-sm text-blue-600 font-medium mb-1">
+                      {x.link ? (
+                        <a href={x.link} target="_blank" className="hover:underline">
+                          {x.org}
+                        </a>
+                      ) : (
+                        x.org
+                      )}
+                    </div>
+                    <h3 className="font-bold mb-1">{x.role}</h3>
+                    <div className="text-sm text-gray-600 mb-3">{x.period}</div>
+                    <div className="text-sm text-gray-700">{x.bullets[0]}</div>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* LEADERSHIP */}
+      <Section id="leadership" title="Leadership" icon={Award}>
+        <div className="grid md:grid-cols-2 gap-6">
+          {LEADERSHIPS.map((x, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <Card className="h-full">
+                <div className="flex items-start gap-4">
+                  {x.logo && (
+                    <img src={x.logo} alt={x.org} className="w-12 h-12 object-contain" />
+                  )}
+                  <div className="flex-1">
+                    <div className="text-sm text-blue-600 font-medium mb-1">
+                      {x.link ? (
+                        <a href={x.link} target="_blank" className="hover:underline">
+                          {x.org}
+                        </a>
+                      ) : (
+                        x.org
+                      )}
+                    </div>
+                    <h3 className="font-bold mb-1">{x.role}</h3>
+                    <div className="text-sm text-gray-600 mb-3">{x.period}</div>
+                    <ul className="space-y-1 text-sm text-gray-700">
+                      {x.bullets.map((b, j) => (
+                        <li key={j} className="flex gap-2">
+                          <span className="text-blue-600">•</span>
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* SKILLS */}
+      <Section id="skills" title="Skills & Technologies" icon={Cpu}>
+        <div className="grid md:grid-cols-2 gap-6">
+          {SKILLS.map((g, i) => (
+            <motion.div
+              key={g.group}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-0">
+                <div className="flex items-center gap-3 mb-4">
+                  <g.icon className="w-6 h-6 text-blue-600" />
+                  <h3 className="font-bold text-lg">{g.group}</h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {g.items.map((s) => (
+                    <motion.span
+                      key={s}
+                      className="px-3 py-1.5 bg-white rounded-lg text-sm font-medium shadow-sm"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                    >
+                      {s}
+                    </motion.span>
+                  ))}
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ABOUT */}
+      <Section id="about" title="About Me" icon={Sparkles}>
+        <Card className="bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 border-0">
+          <p className="text-gray-700 leading-relaxed mb-6">{ABOUT.blurb}</p>
+          <ul className="space-y-3 mb-8">
+            {ABOUT.highlights.map((h, i) => (
+              <motion.li
+                key={i}
+                className="flex gap-3 text-gray-800"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <span className="text-blue-600 text-xl">✓</span>
+                <span>{h}</span>
+              </motion.li>
+            ))}
+          </ul>
+
+          {/* EDUCATION SECTION */}
+          <div className="border-t border-gray-200 pt-8">
+            <div className="flex items-center gap-2 text-lg font-bold text-gray-800 mb-6">
+              <Calendar className="w-5 h-5 text-blue-600" />
+              Education
+            </div>
+            <div className="space-y-6">
+              {EDUCATION.map((edu, i) => (
+                <motion.div
+                  key={i}
+                  className="flex items-start gap-4 bg-white rounded-xl p-4 shadow-sm"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <img
+                    src={edu.logo}
+                    alt={edu.school}
+                    className="w-16 h-16 object-contain rounded-lg"
+                  />
+                  <div className="flex-1">
+                    <h4 className="font-bold text-lg mb-1">{edu.school}</h4>
+                    {edu.degree && (
+                      <p className="text-sm text-gray-700 mb-1">{edu.degree}</p>
+                    )}
+                    <p className="text-sm text-gray-600 mb-1">
+                      {edu.gpa} • {edu.period}
+                    </p>
+                    {edu.honors && (
+                      <p className="text-sm text-blue-600 font-medium mb-1">{edu.honors}</p>
+                    )}
+                    <p className="text-sm text-gray-600">{edu.activities}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      </Section>
+
+      {/* PHOTO BOOTH LINK */}
+      <Section id="photos" title="Photo Gallery" icon={Camera}>
+        <motion.a
+          href="/photos"
+          className="block"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <Card className="bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600 border-0 text-white cursor-pointer">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-2xl font-bold mb-2">View My Photo Gallery</h3>
+                <p className="text-blue-50 mb-4">
+                  Check out photos from my work, events, and adventures!
+                </p>
+                <div className="inline-flex items-center gap-2 text-sm font-semibold">
+                  <span>Explore Photos</span>
+                  <ExternalLink className="w-4 h-4" />
                 </div>
               </div>
-            </Card>
-          </Section>
-
-          {/* FOOTER */}
-          <footer className="mt-10 border-t border-slate-200/70 py-10">
-            <div className={cn(shell, "text-sm text-slate-500")}>
-              © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+              <Camera className="w-24 h-24 opacity-20" />
             </div>
-          </footer>
-        </main>
-      </div>
+          </Card>
+        </motion.a>
+      </Section>
+
+      {/* CONTACT */}
+      <Section id="contact" title="Get In Touch" icon={Mail}>
+        <Card className="bg-gradient-to-br from-blue-600 to-cyan-600 text-white border-0">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-2xl font-bold mb-4">Let's Connect</h3>
+              <p className="mb-6 opacity-90">{CONTACT.note}</p>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { href: `mailto:${SITE.links.email}`, icon: Mail, label: "Email Me" },
+                  { href: SITE.links.linkedin, icon: Linkedin, label: "LinkedIn" },
+                  { href: SITE.links.github, icon: Github, label: "GitHub" },
+                  { href: SITE.links.instagram, icon: Instagram, label: "Instagram" },
+                ].map(({ href, icon: Icon, label }) => (
+                  <motion.a
+                    key={label}
+                    href={href}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-blue-600 font-medium shadow-lg"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Icon className="w-4 h-4" /> {label}
+                  </motion.a>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-3">
+                <Mail className="w-5 h-5" />
+                <span>{SITE.links.email}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone className="w-5 h-5" />
+                <span>{SITE.links.phone}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <MapPin className="w-5 h-5" />
+                <a
+                  href="https://www.google.com/maps/place/Gainesville,+FL"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  {SITE.location}
+                </a>
+              </div>
+              <div className="flex items-center gap-3">
+                <Globe className="w-5 h-5" />
+                <a href={SITE.links.website} className="hover:underline">
+                  {SITE.links.website}
+                </a>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </Section>
+
+      {/* FOOTER */}
+      <footer className="relative z-10 py-12 border-t border-gray-200 bg-white/50 backdrop-blur">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-sm text-gray-600">
+              © {new Date().getFullYear()} {SITE.name}. Crafted with passion.
+            </div>
+            <div className="flex gap-4">
+              {[
+                { href: SITE.links.github, icon: Github },
+                { href: SITE.links.linkedin, icon: Linkedin },
+                { href: SITE.links.instagram, icon: Instagram },
+                { href: `mailto:${SITE.links.email}`, icon: Mail },
+              ].map(({ href, icon: Icon }, i) => (
+                <motion.a
+                  key={i}
+                  href={href}
+                  className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Icon className="w-5 h-5" />
+                </motion.a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
