@@ -224,23 +224,32 @@ export default function Portfolio() {
 
         {/* HERO */}
         <section
-          id="home"
-          className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-24"
-        >
+        id="home"
+        className="relative max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-24 pr-40 md:pr-0"
+        >    
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="grid md:grid-cols-2 gap-8 items-center"
+            className="grid md:grid-cols-2 gap-8 items-start"
           >
-            <div>
+            <div className="flex justify-end mb-4">
+    
+  </div>
+            <div><img
+  src="/me.jpg"
+  alt="Alex Liu"
+  className="w-40 h-40 object-cover rounded-xl float-right ml-4 mb-4 border shadow-sm"
+  style={{ width: "300px", height: "300px"}}
+/>
               <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
                 {SITE.headline}
               </h1>
               <p className="text-gray-600 mb-6">{SITE.tagline}</p>
-              <p className="text-gray-800 mt-4 leading-relaxed text-[25px] md:text-[25px]">
+              <p className="text-gray-800 mt-4 leading-relaxed text-[17px] md:text-[17px]">
   Computer Science student at the University of Florida with experience in C++, Python, Java, and JavaScript. Strong foundation in algorithms, data structures, and system design. I’m passionate about building impactful software and continuously learning to solve problems. I’m actively seeking opportunities in software engineering, AI, data analysis, and IT-related fields. I hope to use my knowledge and skills to create technology that meaningfully contributes to society.
 </p>
+
 
               <div className="flex flex-wrap items-center gap-4">
                 <Badge>
@@ -266,56 +275,85 @@ export default function Portfolio() {
                   <Mail className="w-4 h-4" /> Email
                 </a>
               </div>
+              
             </div>
-            <div className="border rounded-2xl p-6">
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-start gap-3">
-                  <Calendar className="w-4 h-4 mt-0.5" /> Available: Summer 2026
-                  internships
-                </li>
-                <li className="flex items-start gap-3">
-                  <Globe className="w-4 h-4 mt-0.5" /> Portfolio:{" "}
-                  {SITE.links.website || "(add a domain)"}
-                </li>
-                <li className="flex items-start gap-3">
-                  <Phone className="w-4 h-4 mt-0.5" /> {SITE.links.phone}
-                </li>
-                
-              </ul>
-              <div className="border rounded-2xl p-5">
-  <div className="text-sm text-gray-600">
-    <h4
-    className="mr-1 text-base leading-none font-[700] inline-block"
-    style={{ fontWeight: 700 }}
-  >
-    Education
-  </h4>
-  </div>
+            
+            <div className="flex flex-col">
+  {/* top-right headshot, aligned to the right just like your experience logos */}
+  
 
-  <div className="flex items-start justify-between mt-1">
-    <div className="font-medium">
-      <div className="flex items-center gap-2">
-        <strong
-    className="mr-1 text-base leading-none font-[700] inline-block"
-    style={{ fontWeight: 700 }}
-  >
-    University of Florida
-  </strong>
+  {/* the original card content goes under the image */}
+  <div className="border rounded-2xl p-6">
+    <ul className="space-y-3 text-sm">
+      <li className="flex items-start gap-3">
+        <Calendar className="w-4 h-4 mt-0.5" /> Available: Summer 2026 internships
+      </li>
+      <li className="flex items-start gap-3">
+        <Globe className="w-4 h-4 mt-0.5" /> Portfolio: {SITE.links.website || "(add a domain)"}
+      </li>
+      <li className="flex items-start gap-3">
+        <Phone className="w-4 h-4 mt-0.5" /> {SITE.links.phone}
+      </li>
+    </ul>
+
+    {/* Education card (kept intact) */}
+    <div className="border rounded-2xl p-5 mt-6">
+      <div className="text-sm text-gray-600">
+        <h4 className="mr-1 text-base leading-none font-[700] inline-block">Education</h4>
       </div>
-      <div className="text-sm mt-1">B.S. in Computer Science (Minor in Geography) • GPA 3.80/4.00</div>
-      <div className="text-sm text-gray-600">2024 – 2028 (expected) • Dean's List</div>
+      <div className="flex items-start justify-between mt-5">
+        <div className="font-medium">
+          <div className="flex items-center gap-2">
+            <strong className="mr-1 text-base leading-none font-[700] inline-block">
+              University of Florida
+            </strong>
+          </div>
+          <div className="text-sm mt-1">
+            B.S. in Computer Science (Minor in Geography) • GPA 3.80/4.00
+          </div>
+          <div className="text-sm text-gray-600">
+            2024 – 2028 (expected) • Dean's List
+          </div>
+          <div className="text-sm text-gray-600">
+            Activities and societies: UF SASE, UF CASA
+          </div>
+        </div>
+        <img
+          src="/logos/uf_logo.png"
+          alt="UF"
+          className="w-10 h-10 object-contain opacity-90"
+          style={{ width: "275px", height: "90px"}}
+        />
+      </div>
+      <div className="flex items-start justify-between mt-20">
+        <div className="font-medium">
+          <div className="flex items-center gap-5">
+            <strong className="mr-1 text-base leading-none font-[700] inline-block">
+              Buchholz High School
+            </strong>
+          </div>
+          <div className="text-sm mt-1">
+           GPA 4.79
+          </div>
+          <div className="text-sm text-gray-600">
+            2020 – 2024 
+          </div>
+          <div className="text-sm text-gray-600">
+            Activities and societies: Buchholz Science Team, Buchholz Math Team, Buchholz Quiz Bowl
+          </div>
+        </div>
+        <img
+          src="/logos/buchholz_logo.png"
+          alt="Buchholz"
+          className="w-10 h-10 object-contain opacity-90"
+          style={{ width: "300px", height: "85px"}}
+        />
+      </div>
     </div>
-    <img
-      src="/logos/uf_logo.png"
-      alt="UF"
-      className="w-8 h-8 object-contain opacity-90"
-      
-    />
   </div>
 </div>
-</div>
-          </motion.div>
-        </section>
+</motion.div>
+</section>
 
         {/* PROJECTS */}
 <Section id="projects" title="Projects">
@@ -396,7 +434,7 @@ export default function Portfolio() {
               src={x.logo}
             alt={x.org}
             className="object-contain opacity-120"
-            style={{ width: "167px", height: "167px" }}
+            style={{ width: "125px", height: "125px" }}
             />
           )}
           </div>
