@@ -36,7 +36,7 @@ const SITE = {
     email: "haozhouliu17@gmail.com",
     resume: "/resume.pdf",
     phone: "+1 (352) 328-4805",
-    website: "https://portfolio-six-teal-77.vercel.app",
+    website: "https://aliu.me/",
   },
 };
 
@@ -860,4 +860,5 @@ export default function PortfolioChinese() {
       </footer>
     </div>
   );
+
 }
