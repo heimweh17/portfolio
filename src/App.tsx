@@ -207,7 +207,10 @@ const Section = ({
   title: string;
   children: React.ReactNode;
 }) => (
-  <section id={id} className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-16">
+  <section
+    id={id}
+    className="scroll-mt-24 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-6"
+  >
     <h2 className="text-2xl md:text-3xl font-semibold tracking-tight mb-8">
       {title}
     </h2>
@@ -215,8 +218,10 @@ const Section = ({
   </section>
 );
 
+
 const Card = ({ children }: { children: React.ReactNode }) => (
-  <div className="rounded-2xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition">
+  <div className="rounded-3xl bg-white border border-gray-100 p-5 shadow-sm hover:shadow-md transition">
+
     {children}
   </div>
 );
@@ -245,6 +250,98 @@ const LinkIcon = ({
     <span className="hidden sm:inline">{label}</span>
   </a>
 );
+function TableOfContents() {
+  const items = [
+    { id: "home",        label: "Home" },
+    { id: "projects",    label: "Projects" },
+    { id: "experience",  label: "Experience" },
+    { id: "volunteer",   label: "Volunteer" },
+    { id: "leaderships", label: "Leaderships" },
+    { id: "skills",      label: "Skills" },
+    { id: "about",       label: "About" },
+    { id: "contact",     label: "Contact" },
+  ];
+
+  const [active, setActive] = React.useState<string>("home");
+
+  // Observe sections ONCE
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        const id = visible?.target?.id;
+        if (id) {
+          setActive((prev) => (prev !== id ? id : prev));
+          if (window.location.hash !== `#${id}`) {
+            history.replaceState(null, "", `#${id}`);
+          }
+        }
+      },
+      { root: null, rootMargin: "0px 0px -60% 0px", threshold: [0.2, 0.4, 0.6] }
+    );
+
+    const sections = items
+      .map((i) => document.getElementById(i.id))
+      .filter(Boolean) as Element[];
+
+    sections.forEach((sec) => observer.observe(sec));
+    return () => observer.disconnect();
+  }, []); // <-- no [active]
+
+  const handleJump = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.replaceState(null, "", `#${id}`);
+      setActive(id);
+    }
+  };
+
+  // Respect initial hash
+  React.useEffect(() => {
+    const hash = window.location.hash?.slice(1);
+    if (hash) {
+      const el = document.getElementById(hash);
+      if (el) el.scrollIntoView({ behavior: "auto", block: "start" }); // 'auto' not 'instant'
+      setActive(hash);
+    }
+  }, []);
+// <div className="bg-white rounded-3xl border border-gray-100 p-6 w-full mt-4">
+  //<div className="grid md:grid-cols-2 gap-6 bg-[#FFF8E6]"></div>
+  return (
+  <aside className="block  lg:block sticky top-16 self-start z-40 bg-[#D3D3D3]">
+    <nav className="text-sm pr-4">
+      <div className="uppercase text-xs tracking-wider text-gray-500 mb-1">On this page</div>
+      <ul className="space-y-px"> {}
+        {items.map((item) => {
+          const isActive = active === item.id;
+          return (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                onClick={(e) => handleJump(e, item.id)}
+                aria-current={isActive ? "true" : undefined}
+                className={[
+                  "block rounded-md px-2 py-0.5 text-xs leading-tight transition",
+                  isActive ? "bg-gray-900 text-white" : "text-gray-600 hover:bg-gray-100"
+                ].join(" ")}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  </aside>
+);
+
+}
+
 
 // ====== PAGE ======
 export default function Portfolio() {
@@ -260,9 +357,10 @@ export default function Portfolio() {
 
   return (
     <>
-      <div className="font-sans antialiased">
+      <div className="font-sans antialiased text-gray-900 bg-[#FFFFFF] min-h-screen">
+        
         {/* NAVBAR */}
-        <header className="sticky top-0 z-30 backdrop-blur bg-white/70 border-b border-gray-100">
+        <header className="sticky top-0 z-30 backdrop-blur bg-[#FFFFFF] border-b border-gray-100">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 h-14 flex items-center justify-between">
             <a href="#home" className="font-semibold">
               {SITE.name}
@@ -295,11 +393,18 @@ export default function Portfolio() {
             </div>
           </div>
         </header>
-
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
+          <div className="lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10">
+            
+          
+            
+            
+            
+            <main>
         {/* HERO */}
         <section
         id="home"
-        className="relative max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-16 md:py-24 pr-40 md:pr-0"
+        className="relative max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-6 pr-40 md:pr-0"
         >    
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -314,7 +419,7 @@ export default function Portfolio() {
   src="/me.jpg"
   alt="Alex Liu"
   className="w-40 h-40 object-cover rounded-xl float-right ml-4 mb-4 border shadow-sm"
-  style={{ width: "300px", height: "300px"}}
+  style={{ width: "235px", height: "235px"}}
 />
               <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
                 {SITE.headline}
@@ -354,10 +459,10 @@ export default function Portfolio() {
             
             <div className="flex flex-col">
   {/* top-right headshot, aligned to the right just like your experience logos */}
-  
+
 
   {/* the original card content goes under the image */}
-  <div className="border rounded-2xl p-6">
+  <div className="border rounded-2xl p-6 bg-[#FFF8E6]">
     <ul className="space-y-3 text-sm">
       <li className="flex items-start gap-3">
         <Calendar className="w-4 h-4 mt-0.5" /> Available: Summer 2026 internships
@@ -371,7 +476,7 @@ export default function Portfolio() {
     </ul>
 
     {/* Education card (kept intact) */}
-    <div className="border rounded-2xl p-5 mt-6">
+    <div className="border rounded-2xl p-5 mt-6 bg-[#FFF8E6]">
       <div className="text-sm text-gray-600">
         <h4 className="mr-1 text-base leading-none font-[700] inline-block">Education</h4>
       </div>
@@ -413,7 +518,7 @@ export default function Portfolio() {
             2020 – 2024 
           </div>
           <div className="text-sm text-gray-600">
-            Activities and societies: Buchholz Science Team, Buchholz Math Team, Buchholz Quiz Bowl
+            Activities and societies: Science Team, Math Team, Quiz Bowl
           </div>
         </div>
         <img
@@ -428,10 +533,12 @@ export default function Portfolio() {
 </div>
 </motion.div>
 </section>
+<TableOfContents />
 
         {/* PROJECTS */}
-<Section id="projects" title="Projects">
-  <div className="grid md:grid-cols-2 gap-6">
+<Section id="projects" title="Projects" >
+<div className="bg-white rounded-3xl border border-gray-100 p-6 w-full mt-4">
+  <div className="grid md:grid-cols-2 gap-6 bg-[#FFF8E6]">
     {visibleProjects.map((p) => (
       <motion.div key={p.name} layout transition={{ duration: 0.35 }}>
         <Card>
@@ -475,12 +582,13 @@ export default function Portfolio() {
       {showExpandedProjects ? (<><ChevronUp className="w-4 h-4"/> Show less</>) : (<><ChevronDown className="w-4 h-4"/> Expand more</>)}
     </motion.button>
   </div>
+  </div>
 </Section>
 
 
         {/* EXPERIENCE */}
 <Section id="experience" title="Experience">
-  <motion.div layout className="space-y-4">
+  <motion.div layout className="space-y-4 bg-[#FFF8E6]">
     {EXPERIENCE.map((x, i) => (
       <motion.div key={i} layout transition={{ duration: 0.35 }}>
         <Card>
@@ -520,7 +628,7 @@ export default function Portfolio() {
 
  {/* Volunteer */}
 <Section id="volunteer" title="Volunteer">
-  <motion.div layout className="space-y-4">
+  <motion.div layout className="space-y-4 bg-[#FFF8E6]" >
     {VOLUNTEER.map((x, i) => (
       <motion.div key={i} layout transition={{ duration: 0.35 }}>
         <Card>
@@ -559,7 +667,7 @@ export default function Portfolio() {
 </Section>
  {/* LEADERSHIPS & ACTIVITIES */}
 <Section id="leaderships" title="Leaderships">
-  <motion.div layout className="space-y-4">
+  <motion.div layout className="space-y-4 bg-[#FFF8E6]">
     {LEADERSHIPS.map((x, i) => (
       <motion.div key={i} layout transition={{ duration: 0.35 }}>
         <Card>
@@ -598,7 +706,7 @@ export default function Portfolio() {
 </Section>
         {/* SKILLS */}
         <Section id="skills" title="Skills">
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 bg-[#FFF8E6]">
             {SKILLS.map((g) => (
               <Card key={g.group}>
                 <h3 className="font-medium">{g.group}</h3>
@@ -637,9 +745,9 @@ export default function Portfolio() {
         </Section>
 
         {/* CONTACT */}
-        <Section id="contact" title="Contact">
+        <Section id="contact" title="Contact ">
           <Card>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-6 bg-[#FFF8E6]">
               <div>
                 <h3 className="font-medium">Let’s connect</h3>
                 <p className="text-gray-700 mt-2">{CONTACT.note}</p>
@@ -696,7 +804,12 @@ export default function Portfolio() {
             © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </div>
         </footer>
+        </main>
+      </div>
+      </div>
       </div>
     </>
+    
   );
+  
 }
