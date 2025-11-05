@@ -46,7 +46,7 @@ const ABOUT = {
   highlights: [
     "C++ / Python / Java / JavaScript — plus React, Flask, SQL, Docker",
     "Hands-on projects: analytics dashboards, assistive tech, games",
-    "Seeking SWE / data / geospatial / AI-adjacent internships (Summer 2026)",
+    "Seeking for SWE / data / geospatial / AI-adjacent internships (Summer 2026)",
   ],
 };
 
