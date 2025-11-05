@@ -315,7 +315,7 @@ function TableOfContents() {
   return (
   <aside className="block  lg:block sticky top-16 self-start z-40 bg-[#D3D3D3]">
     <nav className="text-sm pr-4">
-      <div className="uppercase text-xs tracking-wider text-gray-500 mb-1">On this page</div>
+      <div className="text-xs tracking-wider text-gray-500 mb-1">Table of Contents</div>
       <ul className="space-y-px"> {}
         {items.map((item) => {
           const isActive = active === item.id;
@@ -399,32 +399,47 @@ export default function Portfolio() {
           
             
             
-            
+            <img
+    src="/banner.jpg"
+    alt="banner"
+    className="mx-auto rounded-xl mb-10 object-cover"
+    style={{ width: "100%", height: "167px" }}
+  />
             <main>
+              <div className="max-w-[90%] mx-auto">
+            
         {/* HERO */}
         <section
         id="home"
         className="relative max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-6 pr-40 md:pr-0"
         >    
+        
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="grid md:grid-cols-2 gap-8 items-start"
           >
+            {/* <img
+    src="/banner.jpg"
+    alt="banner"
+    className="mx-auto rounded-xl mb-10 object-cover"
+    style={{ width: "100%", height: "245px" }}
+  /> */}
             <div className="flex justify-end mb-4">
     
   </div>
             <div><img
   src="/me.jpg"
   alt="Alex Liu"
-  className="w-40 h-40 object-cover rounded-xl float-right ml-4 mb-4 border shadow-sm"
+  className="w-40 h-40 float-right ml-4 mb-4 shadow-sm"
   style={{ width: "235px", height: "235px"}}
 />
               <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
                 {SITE.headline}
               </h1>
               <p className="text-gray-600 mb-6">{SITE.tagline}</p>
+              
               <p className="text-gray-800 mt-4 leading-relaxed text-[17px] md:text-[17px]">
   Computer Science student at the University of Florida with experience in C++, Python, Java, and JavaScript. Strong foundation in algorithms, data structures, and system design. I’m passionate about building impactful software and continuously learning to solve problems. I’m actively seeking opportunities in software engineering, AI, data analysis, and IT-related fields. I hope to use my knowledge and skills to create technology that meaningfully contributes to society.
 </p>
@@ -462,7 +477,7 @@ export default function Portfolio() {
 
 
   {/* the original card content goes under the image */}
-  <div className="border rounded-2xl p-6 bg-[#FFF8E6]">
+  <div className=" p-6 bg-[#FFF8E6]">
     <ul className="space-y-3 text-sm">
       <li className="flex items-start gap-3">
         <Calendar className="w-4 h-4 mt-0.5" /> Available: Summer 2026 internships
@@ -476,18 +491,19 @@ export default function Portfolio() {
     </ul>
 
     {/* Education card (kept intact) */}
-    <div className="border rounded-2xl p-5 mt-6 bg-[#FFF8E6]">
+    <div className=" p-5 mt-6 bg-[#FFFFFF]">
+      
       <div className="text-sm text-gray-600">
         <h4 className="mr-1 text-base leading-none font-[700] inline-block">Education</h4>
       </div>
       <div className="flex items-start justify-between mt-5">
         <div className="font-medium">
-          <div className="flex items-center gap-2">
+          <li className="flex items-center gap-2">
             <strong className="mr-1 text-base leading-none font-[700] inline-block">
               University of Florida
             </strong>
-          </div>
-          <div className="text-sm mt-1">
+          </li>
+          <div className="text-sm mt-1 ">
             B.S. in Computer Science (Minor in Geography) • GPA 3.80/4.00
           </div>
           <div className="text-sm text-gray-600">
@@ -520,6 +536,7 @@ export default function Portfolio() {
           <div className="text-sm text-gray-600">
             Activities and societies: Science Team, Math Team, Quiz Bowl
           </div>
+          
         </div>
         <img
           src="/logos/buchholz_logo.png"
@@ -528,6 +545,7 @@ export default function Portfolio() {
           style={{ width: "300px", height: "85px"}}
         />
       </div>
+      
     </div>
   </div>
 </div>
@@ -804,7 +822,11 @@ export default function Portfolio() {
             © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </div>
         </footer>
+        
+        
+        </div>
         </main>
+        
       </div>
       </div>
       </div>
