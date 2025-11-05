@@ -1,73 +1,98 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Alex Liu – Personal Portfolio Website
 
-Currently, two official plugins are available:
+A fully custom personal portfolio built with **React + TypeScript + Vite**, styled with **TailwindCSS**, animated with **Framer Motion**, and deployed via **Vercel**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This site is my live professional identity — showcasing my engineering projects, experience, leadership, community work, and contact info in an interactive, expandable card-based UI.
 
-## React Compiler
+### Live Site  
+https://portfolio-six-teal-77.vercel.app/
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Responsive, mobile-friendly layout with modern theming
+- Project cards w/ expand / collapse animations (Framer Motion)
+- Modular UI primitives built from scratch (Cards, Sections, Badge, LinkIcon, etc.)
+- Dynamic filtering + show-more behavior for both projects & experience
+- Smart resume linking + outbound profile linking (GitHub / LinkedIn / Email)
+- Tailwind utility-driven styling for speed + consistency
+- TypeScript type-safe structured content (Experience / Leadership / Projects)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🔥 Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Category | Tech |
+|----------|------|
+| Frontend Framework | React (TypeScript) |
+| Build System | Vite |
+| Styling | Tailwind CSS |
+| Motion / Interactivity | Framer Motion |
+| Icons | Lucide React |
+| Deployment | Vercel |
+| Language | TypeScript |
+
+---
+
+## Folder Structure
+
+```
+src/
+ ├─ App.tsx        # main website page + layout logic
+ ├─ assets/        # images, logos, headshot
+ ├─ styles/        # global tailwind index.css
+public/
+ ├─ logos/
+ ├─ me.jpg
+ └─ resume.pdf
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Local Development
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/heimweh17/portfolio
+cd portfolio
+npm install
+npm run dev
 ```
+
+---
+
+## Deployment
+
+This project deploys automatically via Vercel:  
+`git push` → triggers auto build + deploy → updates in production instantly.
+
+---
+
+## Why I built this
+
+I wanted a portfolio that actually **felt engineered**, not a template.  
+I built this from scratch to practice:
+
+- component abstraction  
+- design decision making  
+- animation ergonomics  
+- visual communication  
+- fast iteration / deployment pipelines
+
+This is what I will continue improving as I grow as an engineer.
+
+---
+
+## Next Iterations (Roadmap)
+
+- Light/Dark mode switch  
+- Embedded live demos (WebAssembly + GIF previews)  
+- Project metric badges (LOC, stars, performance)  
+- Internationalization toggle (EN / CN)  
+
+---
+
+## License
+
+MIT License — free to reference / fork / modify.
