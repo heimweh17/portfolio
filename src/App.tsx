@@ -188,7 +188,7 @@ const PROJECTS = [
 const SKILLS = [
   { group: "Languages", items: ["C++", "Python", "Java", "TypeScript", "SQL", "RISC-V"] },
   { group: "Frameworks", items: ["React", "Flask", "FastAPI", "Node", "Vite", "Tailwind"] },
-  { group: "Data & Infra", items: ["PostgreSQL", "SQLite", "Docker", "Git", "CI", "Grafana"] },
+  { group: "Data & Infra", items: ["PostgreSQL", " SQLite", "Docker", "Git", "CI", "Grafana"] },
   { group: "Domains", items: ["Algorithms", "Data Structures", "Geospatial (GIS)", "Computer Vision"] },
 ];
 
@@ -222,7 +222,7 @@ const Card = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Badge = ({ children }: { children: React.ReactNode }) => (
-  <span className="text-sm px-2 py-1 rounded-full border border-gray-300">
+  <span className="text-sm px-2 py-1">
     {children}
   </span>
 );
@@ -603,9 +603,12 @@ export default function Portfolio() {
               <Card key={g.group}>
                 <h3 className="font-medium">{g.group}</h3>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {g.items.map((s: string) => (
-                    <Badge key={s}>{s}</Badge>
-                  ))}
+                  {g.items.map((s: string, i: number) => (
+  <React.Fragment key={s}>
+    <Badge>{s}</Badge>
+    {i < g.items.length - 1 && ","}
+  </React.Fragment>
+))}
                 </div>
               </Card>
             ))}
