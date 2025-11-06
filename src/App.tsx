@@ -358,8 +358,9 @@ export default function Portfolio() {
       </motion.div>
 
       {/* HERO */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-20">
+     
+<section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <motion.div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-20">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <motion.div
@@ -832,7 +833,7 @@ export default function Portfolio() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-gray-600">
-              © {new Date().getFullYear()} {SITE.name}. Crafted with passion.
+              © {new Date().getFullYear()} {SITE.name}.
             </div>
             <div className="flex gap-4">
               {[
