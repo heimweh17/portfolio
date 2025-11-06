@@ -358,9 +358,7 @@ export default function Portfolio() {
         </div>
       </motion.div>
 
-     <div>
-      <VisitorMap />
-</div>
+     
       {/* HERO */}
 <section id="home" className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: 'calc(100vh - 200px)' }}>
   <motion.div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-10">
