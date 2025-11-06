@@ -358,10 +358,12 @@ export default function Portfolio() {
         </div>
       </motion.div>
 
-      {/* HERO */}
      
-<section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-  <motion.div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-20">
+      <VisitorMap />
+
+      {/* HERO */}
+<section id="home" className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: 'calc(100vh - 200px)' }}>
+  <motion.div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <motion.div
@@ -369,15 +371,7 @@ export default function Portfolio() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <motion.div
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-6"
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  
-                  <Sparkles className="w-4 h-4" />
-                  Available for Summer 2026
-                </motion.div>
+                
                 
                 <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-800 bg-clip-text text-transparent">
                   {SITE.headline}
@@ -407,9 +401,7 @@ export default function Portfolio() {
                   ))}
                   
                 </div>
-                <div className="mt-8">
-    <VisitorMap />
-  </div>
+                
               </motion.div>
             </div>
             <motion.div
@@ -467,6 +459,9 @@ export default function Portfolio() {
         </div>
         
       </section>
+
+  
+
 
       {/* PROJECTS */}
       <Section id="projects" title="Featured Projects" icon={Code2}>
@@ -759,7 +754,9 @@ export default function Portfolio() {
             </div>
           </div>
         </Card>
-        
+        <div className="mt-8">
+    <VisitorMap />
+  </div>
       </Section>
 
       {/* PHOTO BOOTH LINK */}
