@@ -61,10 +61,10 @@ const EDUCATION = [
     logo: "/logos/uf_logo.png",
   },
   {
-    school: "布霍尔茨高中",
+    school: "Buchholz高中",
     gpa: "GPA 4.79",
     period: "2020 – 2024",
-    activities: "活动：科学队，数学队，知识竞赛",
+    activities: "活动：科学队，数学队，quizbowl",
     logo: "/logos/buchholz_logo.png",
   },
 ];
@@ -100,7 +100,7 @@ const EXPERIENCE = [
 const VOLUNTEER = [
   {
     role: "地图绘制者",
-    org: "开放街道地图",
+    org: "Open Street Map地图",
     period: "2020年9月 – 至今",
     bullets: [
       "我在2020年疫情封锁期间开始绘制地图，从我熟悉的中国东南部和佛罗里达的地方开始。从那时起，我在OpenStreetMap上进行了587+次编辑，支持开放的、社区驱动的地理数据，可以帮助城市、日常用户，甚至灾难响应工作。我喜欢贡献，因为这项工作直接使每个人受益。",
@@ -109,11 +109,11 @@ const VOLUNTEER = [
     link: "https://www.openstreetmap.org/",
   },
   {
-    role: "教师",
-    org: "布霍尔茨数学队",
+    role: "助教",
+    org: "Buchholz High School数学队",
     period: "2022年6月 – 2022年7月；2023年6月 – 2023年7月",
     bullets: [
-      "在布霍尔茨暑期夏令营教授小学和中学生数学，通过个性化指导和练习帮助他们增强解决问题的能力、逻辑推理和批判性思维技能。",
+      "在Buchholz High School暑期夏令营教授小学和中学生数学，通过个性化指导和练习帮助他们增强解决问题的能力、逻辑推理和批判性思维技能。",
     ],
     link: "https://buchholzmathteam.org/",
     logo: "/logos/bhs_logo.png",
@@ -156,7 +156,7 @@ const PROJECTS = [
     color: "from-blue-400/20 to-cyan-400/20",
   },
   {
-    name: "无障碍桥梁",
+    name: "无障碍助手",
     blurb: "辅助技术工具包：头部姿势光标、嘴部摩尔斯打字、眨眼/眉毛点击。",
     impact: "实时计算机视觉约30 FPS，延迟<100ms；改善免提使用的可访问性。",
     tech: ["Python", "OpenCV", "MediaPipe", "PyAutoGUI"],
@@ -205,7 +205,7 @@ const SKILLS = [
 ];
 
 const CONTACT = {
-  note: "开放2026年暑期实习机会。很乐意讨论数据系统、地理空间和无障碍UI。",
+  note: "希望获得2026年暑期实习机会。很乐意讨论数据系统、地理空间和无障碍UI。",
 };
 
 // ====== 浮动粒子 ======
@@ -362,7 +362,7 @@ export default function PortfolioChinese() {
 
       {/* 主页横幅 */}
       <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-20">
+        <motion.div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-20">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <motion.div
@@ -748,7 +748,7 @@ export default function PortfolioChinese() {
       </Section>
 
       {/* 照片画廊链接 */}
-      <Section id="photos" title="照片画廊" icon={Camera}>
+      <Section id="photos" title="照片" icon={Camera}>
         <motion.a
           href="/photos"
           className="block"
@@ -758,12 +758,12 @@ export default function PortfolioChinese() {
           <Card className="bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600 border-0 text-white cursor-pointer">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-bold mb-2">查看我的照片画廊</h3>
+                <h3 className="text-2xl font-bold mb-2">查看我的照片！</h3>
                 <p className="text-blue-50 mb-4">
-                  查看我的工作、活动和冒险的照片！
+                  来看我照片吧！
                 </p>
                 <div className="inline-flex items-center gap-2 text-sm font-semibold">
-                  <span>探索照片</span>
+                  <span>探索照片(英文）</span>
                   <ExternalLink className="w-4 h-4" />
                 </div>
               </div>
@@ -774,11 +774,11 @@ export default function PortfolioChinese() {
       </Section>
 
       {/* 联系方式 */}
-      <Section id="contact" title="联系我" icon={Mail}>
+      <Section id="contact" title="联系方式" icon={Mail}>
         <Card className="bg-gradient-to-br from-blue-600 to-cyan-600 text-white border-0">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4">让我们联系</h3>
+              <h3 className="text-2xl font-bold mb-4">来联系我吧！</h3>
               <p className="mb-6 opacity-90">{CONTACT.note}</p>
               <div className="flex flex-wrap gap-3">
                 {[
@@ -835,7 +835,7 @@ export default function PortfolioChinese() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-gray-600">
-              © {new Date().getFullYear()} {SITE.name}. 用心制作。
+              © {new Date().getFullYear()} {SITE.name}. 制作。
             </div>
             <div className="flex gap-4">
               {[
@@ -860,5 +860,4 @@ export default function PortfolioChinese() {
       </footer>
     </div>
   );
-
 }
