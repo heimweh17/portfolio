@@ -755,7 +755,6 @@ export default function Portfolio() {
           </div>
         </Card>
         <div className="mt-8">
-    <VisitorMap />
   </div>
       </Section>
 
