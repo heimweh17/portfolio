@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import VisitorMap from './VisitorMap';
 import {
   Github,
   Linkedin,
@@ -373,9 +374,11 @@ export default function Portfolio() {
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
+                  
                   <Sparkles className="w-4 h-4" />
                   Available for Summer 2026
                 </motion.div>
+                
                 <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-800 bg-clip-text text-transparent">
                   {SITE.headline}
                 </h1>
@@ -383,6 +386,7 @@ export default function Portfolio() {
                 <p className="text-gray-700 leading-relaxed mb-8">
                   Computer Science student at the University of Florida passionate about building impactful software. I specialize in algorithms, data structures, and system design — creating technology that meaningfully contributes to society.
                 </p>
+                
                 <div className="flex flex-wrap gap-3">
                   {[
                     { href: SITE.links.github, icon: Github, label: "GitHub" },
@@ -399,8 +403,13 @@ export default function Portfolio() {
                     >
                       <Icon className="w-4 h-4" /> {label}
                     </motion.a>
+                    
                   ))}
+                  
                 </div>
+                <div className="mt-8">
+    <VisitorMap />
+  </div>
               </motion.div>
             </div>
             <motion.div
@@ -415,6 +424,7 @@ export default function Portfolio() {
                   animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
                   transition={{ duration: 8, repeat: Infinity }}
                 />
+                
                 <img
                   src="/me.jpg"
                   alt="Alex Liu"
@@ -434,11 +444,14 @@ export default function Portfolio() {
                     <MapPin className="w-4 h-4 text-blue-600" />
                     <span className="font-medium text-sm">{SITE.location}</span>
                   </a>
+                  
                 </motion.div>
               </div>
+              
             </motion.div>
           </div>
         </motion.div>
+        
         {/* Animated background shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -452,11 +465,14 @@ export default function Portfolio() {
             transition={{ duration: 15, repeat: Infinity }}
           />
         </div>
+        
       </section>
 
       {/* PROJECTS */}
       <Section id="projects" title="Featured Projects" icon={Code2}>
+        
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
           {visibleProjects.map((p, i) => (
             <motion.div
               key={p.name}
@@ -743,6 +759,7 @@ export default function Portfolio() {
             </div>
           </div>
         </Card>
+        
       </Section>
 
       {/* PHOTO BOOTH LINK */}
