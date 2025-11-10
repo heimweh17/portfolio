@@ -37,7 +37,7 @@ const PHOTOS = [
   },
   {
     id: 4,
-    src: "/photos/photo4.jpg",
+    src: "/photos/photo4.jpeg",
     title: "Photo 4",
     location: "University of Florida",
     date: "Nov 2025",
