@@ -31,7 +31,7 @@ const PHOTOS = [
     id: 3,
     src: "/photos/photo3.jpg",
     title: "Photo 3",
-    location: "Tampa Bay!",
+    location: "Tampa Bay, FL",
     date: "Aug 2022",
     description: "seeking for dolphins",
   },

@@ -148,6 +148,14 @@ const LEADERSHIPS = [
 
 const PROJECTS = [
   {
+    name: "佛罗里达大学健康咨询中心",
+    blurb: "AI 医疗文书助手：将医生—患者的实时对话自动转写，并生成结构化 SOAP 病历笔记。",
+    impact: "面向临床场景设计，预计可将文书时间降低 60%+；AI 分析 <5 秒出结果；内置患者看板（搜索/增删改）与就诊历史。",
+    tech: ["JavaScript", "HTML/CSS", "Supabase", "PostgreSQL", "DeepGram API", "Gemini API"],
+    links: { demo: "", code: "https://github.com/heimweh17/SmartScribe" },
+    color: "from-green-400/20 to-blue-400/20",
+  },
+  {
     name: "成绩追踪器",
     blurb: "全栈网页应用，通过交互式图表可视化学生表现。",
     impact: "Docker化开发使设置速度提高85%；在几秒钟内处理CSV以呈现趋势。",
