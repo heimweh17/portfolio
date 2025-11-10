@@ -6,7 +6,7 @@ A fully custom personal portfolio built with **React + TypeScript + Vite**, styl
 This site is my live professional identity — showcasing my engineering projects, experience, leadership, community work, and contact info in an interactive, expandable card-based UI.
 
 ### Live Site  
-https://portfolio-six-teal-77.vercel.app/
+https://aliu.me
 
 ---
 

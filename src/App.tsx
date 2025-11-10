@@ -149,6 +149,14 @@ const LEADERSHIPS = [
 
 const PROJECTS = [
   {
+    name: "UF Health SmartScribe",
+    blurb: "AI-powered medical scribe that auto-generates SOAP notes from doctor-patient conversations.",
+    impact: "Real-time transcription with speaker diarization; reduces clinical documentation time by 60%.",
+    tech: ["JavaScript", "HTML/CSS", "Supabase", "PostgreSQL", "DeepGram API", "Gemini API"],
+    links: { demo: "", code: "https://github.com/heimweh17/SmartScribe" },
+    color: "from-green-400/20 to-blue-400/20",
+  },
+  {
     name: "Grade Track",
     blurb: "Full-stack web app to visualize student performance with interactive charts.",
     impact: "Dockerized dev makes setup 85% faster; processes CSVs to surface trends in seconds.",
