@@ -35,6 +35,14 @@ const PHOTOS = [
     date: "Aug 2022",
     description: "seeking for dolphins",
   },
+  {
+    id: 4,
+    src: "/photos/photo4.jpg",
+    title: "Photo 4",
+    location: "University of Florida",
+    date: "Nov 2025",
+    description: "My first hackathon!",
+  },
 ];
 
 // ====== FLOATING PARTICLES ======
