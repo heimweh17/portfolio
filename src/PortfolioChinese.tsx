@@ -291,6 +291,33 @@ export default function PortfolioChinese() {
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
   const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
   const visibleProjects = showExpandedProjects ? PROJECTS : PROJECTS.slice(0, 3);
+  // 本地的简短博客（我的故事）状态，保存在 localStorage
+  const [cnPosts, setCnPosts] = useState(() => {
+    try {
+      const raw = localStorage.getItem('cn_mystory_posts');
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+  const [mystoryTitle, setMystoryTitle] = useState("");
+  const [mystoryBody, setMystoryBody] = useState("");
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('cn_mystory_posts', JSON.stringify(cnPosts));
+    } catch (e) {
+      // ignore
+    }
+  }, [cnPosts]);
+
+  const handlePublish = () => {
+    if (!mystoryBody.trim()) return;
+    const post = { id: Date.now(), title: mystoryTitle.trim(), body: mystoryBody.trim(), date: new Date().toISOString() };
+    setCnPosts((p) => [post, ...p]);
+    setMystoryTitle("");
+    setMystoryBody("");
+  };
 
   return (
     <div className="font-mono antialiased text-gray-900 bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 min-h-screen relative overflow-x-hidden">
@@ -312,8 +339,22 @@ export default function PortfolioChinese() {
             {SITE.name}
           </motion.a>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            {["关于", "项目", "经历", "技能", "联系"].map((item, index) => {
-              const ids = ["about", "projects", "experience", "skills", "contact"];
+            {[
+              "关于",
+              "我的故事",
+              "项目",
+              "经历",
+              "技能",
+              "联系",
+            ].map((item, index) => {
+              const ids = [
+                "about",
+                "mystory",
+                "projects",
+                "experience",
+                "skills",
+                "contact",
+              ];
               return (
                 <motion.a
                   key={item}
@@ -750,6 +791,59 @@ export default function PortfolioChinese() {
                   </div>
                 </motion.div>
               ))}
+            </div>
+          </div>
+        </Card>
+      </Section>
+      {/* 我的故事（简短博客） */}
+      <Section id="mystory" title="我的故事" icon={Sparkles}>
+        <Card className="bg-gradient-to-br from-white to-blue-50">
+          <div>
+            <p className="text-gray-700 mb-4">在这里我会写一些短篇随想、项目笔记或学习心得 — 简短、随性。内容保存在本地浏览器（localStorage）。</p>
+
+            {/* Blog composer (React 控制) */}
+            <div className="space-y-3 mb-6">
+              <input
+                value={mystoryTitle}
+                onChange={(e) => setMystoryTitle(e.target.value)}
+                placeholder="标题（可选）"
+                className="w-full px-3 py-2 rounded-lg border border-gray-200"
+              />
+              <textarea
+                value={mystoryBody}
+                onChange={(e) => setMystoryBody(e.target.value)}
+                placeholder="写下你的故事..."
+                rows={4}
+                className="w-full px-3 py-2 rounded-lg border border-gray-200"
+              />
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handlePublish}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white hover:shadow-lg"
+                >
+                  发布
+                </button>
+                <span className="text-sm text-gray-500">发布到本地存储，仅在该浏览器可见。</span>
+              </div>
+            </div>
+
+            {/* Posts list (React 渲染) */}
+            <div className="space-y-4">
+              {cnPosts.length === 0 ? (
+                <div className="text-sm text-gray-500">还没有文章，写一篇吧！</div>
+              ) : (
+                cnPosts.map((p) => (
+                  <div key={p.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-bold">{p.title || "（无标题）"}</h4>
+                        <div className="text-xs text-gray-500">{new Date(p.date).toLocaleString()}</div>
+                      </div>
+                    </div>
+                    <p className="mt-3 text-gray-700 whitespace-pre-wrap">{p.body}</p>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </Card>

@@ -146,15 +146,23 @@ const LEADERSHIPS = [
     logo: "/logos/casa_logo.jpg",
   },
 ];
-
+// Geography Dashboard, React, Leaflet, Supabase(SQL),Vite,TypeScript
 const PROJECTS = [
+  {
+    name: "Geography Dashboard",
+    blurb: "Interactive geospatial web platform that visualizes real-time OpenStreetMap data, compares urban regions, and personalizes insights through user accounts.",
+    impact: "Enabled users to explore and compare city-level patterns through multi-layer analytics, saving tools, and dynamic spatial queries—enhancing decision-making for 100% of dashboard interactions.",
+    tech: ["React", "Leaflet", "Supabase(SQL)", "Vite", "TypeScript"],
+    links: { demo: "https://thegeodashboard.vercel.app/", code: "https://github.com/heimweh17/Geo-Dashboard" },
+    color: "from-blue-400/20 to-blue-400/20",
+  },
   {
     name: "UF Health SmartScribe",
     blurb: "AI-powered medical scribe that auto-generates SOAP notes from doctor-patient conversations.",
     impact: "Real-time transcription with speaker diarization; reduces clinical documentation time by 60%.",
     tech: ["JavaScript", "HTML/CSS", "Supabase", "PostgreSQL", "DeepGram API", "Gemini API"],
     links: { demo: "", code: "https://github.com/heimweh17/SmartScribe" },
-    color: "from-green-400/20 to-blue-400/20",
+    color: "from-blue-400/20 to-blue-400/20",
   },
   {
     name: "Grade Track",
@@ -162,7 +170,7 @@ const PROJECTS = [
     impact: "Dockerized dev makes setup 85% faster; processes CSVs to surface trends in seconds.",
     tech: ["Flask", "React", "SQLAlchemy", "PostgreSQL", "Docker"],
     links: { demo: "", code: "https://github.com/heimweh17/Grade-Track" },
-    color: "from-blue-400/20 to-cyan-400/20",
+    color: "from-blue-400/20 to-blue-400/20",
   },
   {
     name: "Ability Bridge",
@@ -170,7 +178,7 @@ const PROJECTS = [
     impact: "Real-time CV at ~30 FPS with <100ms latency; improves accessibility for hands-free use.",
     tech: ["Python", "OpenCV", "MediaPipe", "PyAutoGUI"],
     links: { demo: "", code: "https://github.com/heimweh17/Ability-Bridge" },
-    color: "from-cyan-400/20 to-blue-500/20",
+    color: "from-blue-400/20 to-blue-500/20",
   },
   {
     name: "Minesweeper (SFML)",
@@ -178,7 +186,7 @@ const PROJECTS = [
     impact: "350+ tiles; persistent top-5 scores via file I/O; modular OOP design.",
     tech: ["C++", "SFML"],
     links: { demo: "", code: "https://github.com/heimweh17/Minesweeper-game" },
-    color: "from-blue-500/20 to-indigo-500/20",
+    color: "from-blue-500/20 to-blue-500/20",
   },
   {
     name: "Bin Packing: Best-Fit vs First-Fit",
@@ -186,7 +194,7 @@ const PROJECTS = [
     impact: "Object-oriented placement framework streamlines experimentation and metrics.",
     tech: ["C++"],
     links: { demo: "", code: "https://github.com/heimweh17/best-fit-fitst-fit" },
-    color: "from-indigo-500/20 to-blue-600/20",
+    color: "from-blue-500/20 to-blue-600/20",
   },
   {
     name: "AVL Tree Data Structure",
@@ -194,7 +202,7 @@ const PROJECTS = [
     impact: "Supported 1,000+ operations and validated correctness with custom test suite.",
     tech: ["C++"],
     links: { code: "https://github.com/heimweh17/AVL-TREE" },
-    color: "from-blue-600/20 to-cyan-500/20",
+    color: "from-blue-600/20 to-blue-500/20",
   },
   {
     name: "Sudoku Game",
@@ -202,7 +210,7 @@ const PROJECTS = [
     impact: "Implemented UI state handling, win/lose detection, reset control, and smooth UX.",
     tech: ["Python"],
     links: { code: "https://github.com/heimweh17/suduku-project" },
-    color: "from-cyan-500/20 to-blue-400/20",
+    color: "from-blue-500/20 to-blue-400/20",
   },
 ];
 
