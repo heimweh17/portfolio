@@ -38,6 +38,7 @@ const SITE = {
     website: "https://aliu.me/",
   },
 };
+const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
 const ABOUT = {
   blurb:
@@ -284,6 +285,142 @@ const Card = ({ children, className = "", hover = true }) => (
     {children}
   </motion.div>
 );
+// ====== MESSAGE FORM (Formspree) ======
+function MessageForm() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [error, setError] = useState("");
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (status === "success" || status === "error") {
+      setStatus("idle");
+      setError("");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.message.trim()) {
+      setError("Please write a message before sending.");
+      setStatus("error");
+      return;
+    }
+
+    try {
+      setStatus("submitting");
+      setError("");
+
+      const res = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setStatus("error");
+        setError("Something went wrong. Please try again later.");
+      }
+    } catch (err) {
+      setStatus("error");
+      setError("Network error. Please try again later.");
+    }
+  };
+
+  return (
+    <Card className="mt-8 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-slate-700/80">
+      <div className="mb-5">
+        <h3 className="text-sm font-semibold text-slate-100 mb-1">
+          Leave a Message
+        </h3>
+        <p className="text-xs text-slate-300 leading-relaxed max-w-md">
+          Send me a private note about anything—projects, internships, maps, or just
+          something you want to share.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-[11px] text-slate-300 mb-1">
+              Name (optional)
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400"
+              placeholder="How should I address you?"
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] text-slate-300 mb-1">
+              Email (optional, if you&apos;d like a reply)
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400"
+              placeholder="you@example.com"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-[11px] text-slate-300 mb-1">
+            Message <span className="text-sky-300">*</span>
+          </label>
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            className="w-full min-h-[120px] rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical"
+            placeholder="Write anything you want to tell me..."
+          />
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+          <motion.button
+            type="submit"
+            disabled={status === "submitting"}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-sky-500 text-slate-950 text-[11px] font-semibold hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-colors shadow-[0_0_20px_rgba(56,189,248,0.4)]"
+            whileHover={status !== "submitting" ? { y: -1 } : {}}
+            whileTap={status !== "submitting" ? { scale: 0.97 } : {}}
+          >
+            {status === "submitting" ? "Sending..." : "Send Message"}
+          </motion.button>
+
+          
+        </div>
+
+        {status === "success" && (
+          <div className="text-[11px] text-emerald-300 mt-1">
+            Thanks! Your message has been sent.
+          </div>
+        )}
+        {status === "error" && error && (
+          <div className="text-[11px] text-rose-300 mt-1">⚠ {error}</div>
+        )}
+      </form>
+    </Card>
+  );
+}
 
 // ====== PAGE ======
 export default function Portfolio() {
@@ -844,7 +981,7 @@ export default function Portfolio() {
         </motion.a>
       </Section>
 
-      {/* CONTACT */}
+            {/* CONTACT */}
       <Section id="contact" title="Get In Touch" icon={Mail}>
         <Card className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-slate-700/80">
           <div className="grid md:grid-cols-2 gap-8">
@@ -901,9 +1038,11 @@ export default function Portfolio() {
             </div>
           </div>
         </Card>
-      </Section>
 
-      {/* FOOTER */}
+        {/* NEW: private message form under the contact card */}
+        <MessageForm />
+      </Section>
+    {/* FOOTER */}
       <footer className="py-10 border-t border-slate-800 bg-slate-950">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">

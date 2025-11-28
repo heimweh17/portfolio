@@ -38,7 +38,7 @@ const SITE = {
     website: "https://aliu.me/",
   },
 };
-
+const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 const ABOUT = {
   blurb:
     "我是佛罗里达大学的计算机科学学生，主要关注算法、数据结构和数据系统，也特别喜欢把数据做成“看得见、点得动”的可视化工具。最近在做的事情包括地理可视化仪表盘、医疗工具和无障碍交互界面。",
@@ -285,6 +285,141 @@ const Card = ({ children, className = "", hover = true }) => (
     {children}
   </motion.div>
 );
+// ====== MESSAGE FORM (Formspree) ======
+function MessageForm() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [error, setError] = useState("");
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (status === "success" || status === "error") {
+      setStatus("idle");
+      setError("");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.message.trim()) {
+      setError("Please write a message before sending.");
+      setStatus("error");
+      return;
+    }
+
+    try {
+      setStatus("submitting");
+      setError("");
+
+      const res = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setStatus("error");
+        setError("Something went wrong. Please try again later.");
+      }
+    } catch (err) {
+      setStatus("error");
+      setError("Network error. Please try again later.");
+    }
+  };
+
+  return (
+    <Card className="mt-8 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-slate-700/80">
+      <div className="mb-5">
+        <h3 className="text-sm font-semibold text-slate-100 mb-1">
+          给我留言
+        </h3>
+        <p className="text-xs text-slate-300 leading-relaxed max-w-md">
+          给我留言吧！无论是项目、实习机会，还是想分享的任何事情都可以。
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-[11px] text-slate-300 mb-1">
+              名字 (可选)
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400"
+              placeholder="我应该怎么称呼你？"
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] text-slate-300 mb-1">
+              电子邮件 (可选)
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400"
+              placeholder="张三@example.com"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-[11px] text-slate-300 mb-1">
+            Message <span className="text-sky-300">*</span>
+          </label>
+          <textarea
+            name="留言"
+            value={formData.message}
+            onChange={handleChange}
+            className="w-full min-h-[120px] rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical"
+            placeholder="写一些东西吧！"
+          />
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+          <motion.button
+            type="submit"
+            disabled={status === "submitting"}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-sky-500 text-slate-950 text-[11px] font-semibold hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-colors shadow-[0_0_20px_rgba(56,189,248,0.4)]"
+            whileHover={status !== "submitting" ? { y: -1 } : {}}
+            whileTap={status !== "submitting" ? { scale: 0.97 } : {}}
+          >
+            {status === "submitting" ? "Sending..." : "Send Message"}
+          </motion.button>
+
+          
+        </div>
+
+        {status === "success" && (
+          <div className="text-[11px] text-emerald-300 mt-1">
+            感谢！你的留言已发送。
+          </div>
+        )}
+        {status === "error" && error && (
+          <div className="text-[11px] text-rose-300 mt-1">⚠ {error}</div>
+        )}
+      </form>
+    </Card>
+  );
+}
 
 // ====== 页面 ======
 export default function PortfolioChinese() {
@@ -922,6 +1057,7 @@ export default function PortfolioChinese() {
             </div>
           </div>
         </Card>
+        <MessageForm />
       </Section>
 
       {/* 页脚 */}
@@ -929,7 +1065,7 @@ export default function PortfolioChinese() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-[11px] text-slate-400">
-              © {new Date().getFullYear()} {SITE.name} · 使用 React、Tailwind 与 Framer Motion 构建。
+              © {new Date().getFullYear()} {SITE.name} 
             </div>
             <div className="flex gap-3">
               {[
