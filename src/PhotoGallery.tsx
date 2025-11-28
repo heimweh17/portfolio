@@ -5,7 +5,6 @@ import {
   MapPin,
   Calendar,
   ArrowLeft,
-  Clock,
   Info,
 } from "lucide-react";
 
@@ -45,24 +44,28 @@ const PHOTOS = [
   },
 ];
 
-// ====== FLOATING PARTICLES ======
+// ====== FLOATING PARTICLES (subtle, dark) ======
 function FloatingParticles() {
+  if (typeof window === "undefined") return null;
+
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {[...Array(15)].map((_, i) => (
+      {[...Array(18)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
+          className="absolute w-1.5 h-1.5 rounded-full bg-sky-500/15"
           initial={{
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
+            opacity: 0.4 + Math.random() * 0.4,
           }}
           animate={{
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
+            opacity: [0.3, 0.8, 0.3],
           }}
           transition={{
-            duration: Math.random() * 20 + 10,
+            duration: 18 + Math.random() * 14,
             repeat: Infinity,
             repeatType: "reverse",
           }}
@@ -78,17 +81,21 @@ function PhotoCard({ photo, index }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 26 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.2, duration: 0.6 }}
+      transition={{ delay: index * 0.12, duration: 0.5 }}
       className="relative group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <motion.div
-        whileHover={{ scale: 1.03, y: -8 }}
-        transition={{ duration: 0.3 }}
-        className="relative bg-white rounded-3xl overflow-hidden shadow-xl border-4 border-white"
+        whileHover={{
+          scale: 1.02,
+          y: -6,
+          boxShadow: "0 0 40px rgba(56,189,248,0.30)",
+        }}
+        transition={{ duration: 0.25 }}
+        className="relative rounded-3xl overflow-hidden border border-slate-800/80 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"
       >
         {/* Photo */}
         <div className="relative aspect-[4/3] overflow-hidden">
@@ -97,53 +104,54 @@ function PhotoCard({ photo, index }) {
             alt={photo.title}
             className="w-full h-full object-cover"
           />
-          
-          {/* Overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0" />
-        </div>
 
-        {/* Info overlay - shows on hover */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{
-            opacity: isHovered ? 1 : 0,
-            y: isHovered ? 0 : 20,
-          }}
-          transition={{ duration: 0.3 }}
-          className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-blue-900/95 via-blue-800/90 to-transparent text-white"
-        >
-          <h3 className="text-2xl font-bold mb-3">{photo.title}</h3>
-          
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <MapPin className="w-4 h-4 text-cyan-300" />
-              <span>{photo.location}</span>
-            </div>
-            
-            <div className="flex items-center gap-2 text-sm">
-              <Calendar className="w-4 h-4 text-cyan-300" />
-              <span>{photo.date}</span>
-            </div>
-            
-            
-            {photo.description && (
-              <div className="flex items-start gap-2 text-sm mt-3 pt-3 border-t border-cyan-300/30">
-                <Info className="w-4 h-4 text-cyan-300 mt-0.5 flex-shrink-0" />
-                <span className="text-blue-100">{photo.description}</span>
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0" />
+
+          {/* Info overlay */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{
+              opacity: isHovered ? 1 : 0,
+              y: isHovered ? 0 : 20,
+            }}
+            transition={{ duration: 0.25 }}
+            className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-slate-950/95 via-slate-900/90 to-transparent text-slate-50"
+          >
+            <h3 className="text-lg font-semibold mb-2">{photo.title}</h3>
+
+            <div className="space-y-1.5 text-xs">
+              <div className="flex items-center gap-2 text-slate-200">
+                <MapPin className="w-4 h-4 text-sky-300" />
+                <span>{photo.location}</span>
               </div>
-            )}
-          </div>
-        </motion.div>
+
+              <div className="flex items-center gap-2 text-slate-300">
+                <Calendar className="w-4 h-4 text-sky-300" />
+                <span>{photo.date}</span>
+              </div>
+
+              {photo.description && (
+                <div className="flex items-start gap-2 mt-3 pt-3 border-t border-sky-400/25 text-slate-200">
+                  <Info className="w-4 h-4 text-sky-300 mt-0.5 flex-shrink-0" />
+                  <span className="text-[11px] leading-relaxed">
+                    {photo.description}
+                  </span>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
       </motion.div>
 
-      {/* Decorative corner accent */}
+      {/* Corner accent */}
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-        className="absolute -top-3 -right-3 w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-lg z-10"
+        transition={{ duration: 0.25 }}
+        className="absolute -top-3 -right-3 w-11 h-11 bg-gradient-to-br from-sky-500 to-indigo-500 rounded-full flex items-center justify-center shadow-[0_0_24px_rgba(56,189,248,0.8)] z-10"
       >
-        <Camera className="w-6 h-6 text-white" />
+        <Camera className="w-5 h-5 text-white" />
       </motion.div>
     </motion.div>
   );
@@ -152,130 +160,126 @@ function PhotoCard({ photo, index }) {
 // ====== MAIN PAGE ======
 export default function PhotoGallery() {
   return (
-    <div className="font-mono antialiased text-gray-900 bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 min-h-screen relative overflow-x-hidden">
+    <div className="font-sans antialiased bg-slate-950 min-h-screen text-slate-100 relative overflow-x-hidden">
       <FloatingParticles />
 
-      {/* HEADER */}
+      {/* HEADER - match portfolio style */}
       <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="sticky top-0 z-40 backdrop-blur-xl bg-white/80 border-b border-gray-200 shadow-sm"
+        initial={{ y: -16, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <motion.a
             href="/"
-            className="inline-flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors"
-            whileHover={{ x: -5 }}
+            className="inline-flex items-center gap-2 text-xs text-slate-200 hover:text-sky-300"
+            whileHover={{ x: -4 }}
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Back to Home</span>
+            <ArrowLeft className="w-4 h-4" />
+            <span className="font-medium">Back to Portfolio</span>
           </motion.a>
-          
+
           <motion.div
-            className="font-bold text-xl bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent"
+            className="font-semibold text-sm bg-gradient-to-r from-sky-400 via-sky-300 to-cyan-300 bg-clip-text text-transparent tracking-[0.2em] uppercase"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
           >
             Photo Gallery
           </motion.div>
-          
-          <div className="w-32" /> {/* Spacer for centering */}
+
+          <div className="w-28" />
         </div>
       </motion.header>
 
       {/* HERO SECTION */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+      <section className="relative py-16 overflow-hidden">
+        {/* background glows */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-40 -left-40 h-72 w-72 rounded-full bg-sky-500/25 blur-3xl" />
+          <div className="absolute -bottom-40 right-0 h-80 w-80 rounded-full bg-indigo-500/25 blur-3xl" />
+          <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.18)_0,_transparent_55%)]" />
+          <div className="absolute inset-0 opacity-25 bg-[linear-gradient(120deg,rgba(148,163,184,0.20)_1px,transparent_1px),linear-gradient(210deg,rgba(15,23,42,0.7)_1px,transparent_1px)] bg-[length:220px_220px]" />
+        </div>
+
+        <div className="relative max-w-6xl mx-auto px-6">
+          {/* Title */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
             <motion.div
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-6"
-              animate={{ y: [0, -10, 0] }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/80 border border-slate-700 text-[11px] font-medium text-slate-100 mb-5 shadow-[0_0_24px_rgba(56,189,248,0.2)]"
+              animate={{ y: [0, -6, 0] }}
               transition={{ duration: 3, repeat: Infinity }}
             >
-              <Camera className="w-5 h-5" />
-              My Photo Collection
+              <Camera className="w-4 h-4 text-sky-300" />
+              Moments from my journey
             </motion.div>
-            
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-800 bg-clip-text text-transparent">
+
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 tracking-tight text-slate-50">
               Photo Gallery
             </h1>
-            
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              A collection of moments from my journey — capturing experiences, events, and adventures.
+
+            <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              A small collection of moments — travel、campus life、hackathons、
+              and the places that made me want to keep exploring and building.
             </p>
           </motion.div>
 
-          {/* PHOTO GRID */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {/* GRID */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7 relative z-10">
             {PHOTOS.map((photo, index) => (
               <PhotoCard key={photo.id} photo={photo} index={index} />
             ))}
           </div>
 
-          {/* Stats Section */}
+          {/* Stats strip matching dark style */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 26 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            className="mt-20 text-center"
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="mt-16 flex justify-center"
           >
-            <div className="inline-flex items-center gap-8 bg-white rounded-2xl px-8 py-6 shadow-lg border border-gray-200">
-              <div>
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <div className="inline-flex items-center gap-8 rounded-2xl border border-slate-800 bg-slate-950/80 px-8 py-5 shadow-[0_0_30px_rgba(15,23,42,0.9)] text-center">
+              <div className="min-w-[80px]">
+                <div className="text-2xl font-semibold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
                   {PHOTOS.length}
                 </div>
-                <div className="text-sm text-gray-600 mt-1">Photos</div>
+                <div className="text-[11px] text-slate-400 mt-1">Photos</div>
               </div>
-              <div className="w-px h-12 bg-gray-200" />
-              <div>
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                  2025
+              <div className="h-10 w-px bg-slate-800" />
+              <div className="min-w-[80px]">
+                <div className="text-2xl font-semibold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+                  3
                 </div>
-                <div className="text-sm text-gray-600 mt-1">Year</div>
+                <div className="text-[11px] text-slate-400 mt-1">Cities</div>
               </div>
-              <div className="w-px h-12 bg-gray-200" />
-              <div>
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              <div className="h-10 w-px bg-slate-800" />
+              <div className="min-w-[80px]">
+                <div className="text-2xl font-semibold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
                   ∞
                 </div>
-                <div className="text-sm text-gray-600 mt-1">Memories</div>
+                <div className="text-[11px] text-slate-400 mt-1">Memories</div>
               </div>
             </div>
           </motion.div>
         </div>
-
-        {/* Background decorations */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            className="absolute top-20 left-10 w-72 h-72 bg-blue-300/20 rounded-full blur-3xl"
-            animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
-            transition={{ duration: 15, repeat: Infinity }}
-          />
-          <motion.div
-            className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl"
-            animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
-            transition={{ duration: 20, repeat: Infinity }}
-          />
-        </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="relative z-10 py-12 border-t border-gray-200 bg-white/50 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+      {/* FOOTER - match portfolio */}
+      <footer className="relative z-10 py-10 border-t border-slate-800 bg-slate-950">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-gray-600">
-              © {new Date().getFullYear()} Alex Liu. All photos are my own.
+            <div className="text-[11px] text-slate-400">
+              © {new Date().getFullYear()} Alex Liu · All photos are my own.
             </div>
             <motion.a
               href="/"
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-              whileHover={{ scale: 1.05 }}
+              className="text-[11px] font-medium text-sky-300 hover:text-sky-200"
+              whileHover={{ x: -2 }}
             >
               ← Back to Portfolio
             </motion.a>
