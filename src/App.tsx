@@ -43,7 +43,7 @@ const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
 const ABOUT = {
   blurb:
-    "Computer Science student at the University of Florida focusing on algorithms, data systems, and geospatial applications. I enjoy building tools that turn real-world complexity into something visual, interactive, and useful.",
+    "Computer Science student at the University of Florida focusing on algorithms, data systems, and geospatial applications. I enjoy building tools that turn real-world complexity into something visual, interactive, and useful. Authorized to work in the US for any employer with no visa required in the future.",
   highlights: [
     "Core: Data structures, algorithms, systems, and full-stack development",
     "Tech stack: C++, Python, TypeScript, React, Flask, SQL, Docker",
