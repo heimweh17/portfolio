@@ -23,7 +23,6 @@ import {
   X,
 } from "lucide-react";
 
-// ====== DATA ======
 const SITE = {
   tagline: "CS @ University of Florida • Geography Minor",
   location: "Gainesville, FL",
@@ -39,6 +38,7 @@ const SITE = {
     website: "https://aliu.me/",
   },
 };
+
 const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
 const ABOUT = {
@@ -70,7 +70,6 @@ const EDUCATION = [
   },
 ];
 
-// Experience：Logic Lab 不写 logo 字段
 const EXPERIENCE = [
   {
     role: "Instructor",
@@ -97,7 +96,6 @@ const EXPERIENCE = [
   },
 ];
 
-// Volunteer：使用你原来的两条
 const VOLUNTEER = [
   {
     role: "Mapper",
@@ -122,7 +120,6 @@ const VOLUNTEER = [
   },
 ];
 
-// Leadership & Involvement：SASE + CASA
 const LEADERSHIPS = [
   {
     role: "SASE Intern",
@@ -158,6 +155,10 @@ const PROJECTS = [
       demo: "https://thegeodashboard.vercel.app/",
       code: "https://github.com/heimweh17/Geo-Dashboard",
     },
+    screenshots: [
+      "/screenshots/geodashboard-1.png",
+      "/screenshots/geodashboard-2.png",
+    ],
   },
   {
     name: "UF Health SmartScribe",
@@ -167,6 +168,10 @@ const PROJECTS = [
       "Real-time transcription with speaker diarization; significantly reduces manual documentation time and cognitive load for clinicians.",
     tech: ["JavaScript", "HTML/CSS", "Supabase", "PostgreSQL", "DeepGram API", "Gemini API"],
     links: { demo: "", code: "https://github.com/heimweh17/SmartScribe" },
+    screenshots: [
+      "/screenshots/smartscribe-1.png",
+      "/screenshots/smartscribe-2.png",
+    ],
   },
   {
     name: "Grade Track",
@@ -224,61 +229,195 @@ const PROJECTS = [
   },
 ];
 
-const SKILLS = [
-  {
-    group: "Languages",
-    items: ["C++", "Python", "Java", "TypeScript", "SQL", "RISC-V"],
-    icon: Terminal,
-  },
-  {
-    group: "Frameworks",
-    items: ["React", "Flask", "FastAPI", "Node", "Vite", "Tailwind"],
-    icon: Code2,
-  },
-  {
-    group: "Data & Infra",
-    items: ["PostgreSQL", "SQLite", "Docker", "Git", "CI", "Grafana"],
-    icon: Cpu,
-  },
-  {
-    group: "Domains",
-    items: ["Algorithms", "Data Structures", "Geospatial (GIS)", "Computer Vision"],
-    icon: Code2,
-  },
-];
 const HOBBIES = [
   {
     name: "Badminton",
     emoji: "🏸",
     blurb: "Fast rallies, light trash talk, good cardio.",
+    details: [
+      "Usually play doubles and think about rotations like a small strategy game.",
+      "Best way to reset after a long coding or study session.",
+    ],
     tags: ["doubles", "footwork", "after-class reset"],
   },
   {
     name: "Pickleball",
     emoji: "🥒",
     blurb: "Easy to learn, secretly very competitive.",
+    details: [
+      "Play mostly casual games but still care a lot about placement and spin.",
+      "Fun way to meet people outside CS and tech circles.",
+    ],
     tags: ["casual games", "kitchen line", "new friends"],
   },
   {
     name: "Photography Walks",
     emoji: "📷",
-    blurb: "Walk around, take photos, mentally edit the map.",
+    blurb: "Walk around, spot details, mentally edit the map.",
+    details: [
+      "Notice street details, signage, and patterns you never see on satellite imagery.",
+      "Often connects back to OpenStreetMap edits and geospatial ideas.",
+    ],
     tags: ["street details", "city patterns", "OSM brain"],
   },
   {
     name: "Road Trips & Driving",
     emoji: "🚗",
     blurb: "Long drives, playlists, watching the landscape change.",
+    details: [
+      "Like planning routes that balance efficiency with interesting stops.",
+      "Good time for audiobooks, podcasts, or quietly thinking about projects.",
+    ],
     tags: ["highways", "audiobooks", "scenic detours"],
   },
 ];
 
+type SkillItem = {
+  name: string;
+  blurb: string;
+  usedIn?: string;
+};
+
+type SkillGroup = {
+  group: string;
+  icon: React.ComponentType<{ className?: string }>;
+  items: SkillItem[];
+};
+
+const SKILLS: SkillGroup[] = [
+  {
+    group: "Languages",
+    icon: Terminal,
+    items: [
+      {
+        name: "C++",
+        blurb: "Primary language for data structures, algorithms, and systems-heavy projects.",
+        usedIn: "AVL Tree, Minesweeper, Bin Packing heuristics, PageRank assignments.",
+      },
+      {
+        name: "Python",
+        blurb: "Go-to for quick experiments, scripting, and computer vision work.",
+        usedIn: "Ability Bridge, Sudoku, smaller data scripts.",
+      },
+      {
+        name: "TypeScript",
+        blurb: "Used for front-end safety and better DX in React-based dashboards.",
+        usedIn: "Geography Dashboard and portfolio site.",
+      },
+      {
+        name: "SQL",
+        blurb: "Comfortable designing schemas and writing queries for analytics and apps.",
+        usedIn: "Grade Track, SmartScribe, Supabase-backed projects.",
+      },
+      {
+        name: "Java",
+        blurb: "Used in coursework and for understanding strongly-typed OOP patterns.",
+      },
+      {
+        name: "RISC-V",
+        blurb: "Used in low-level assignments to understand how code maps to hardware.",
+      },
+    ],
+  },
+  {
+    group: "Frameworks",
+    icon: Code2,
+    items: [
+      {
+        name: "React",
+        blurb: "Default choice for interactive UIs and dashboards.",
+        usedIn: "Geo Dashboard, portfolio, Grade Track frontend.",
+      },
+      {
+        name: "Flask",
+        blurb: "Simple but powerful API/backend framework for data and analytics apps.",
+        usedIn: "Grade Track backend.",
+      },
+      {
+        name: "FastAPI",
+        blurb: "Used for quick JSON APIs with type hints and auto docs.",
+      },
+      {
+        name: "Node",
+        blurb: "Backend glue for hackathons and quick prototypes.",
+        usedIn: "SmartScribe and small utilities.",
+      },
+      {
+        name: "Vite",
+        blurb: "Bundler of choice for dev speed and a clean TS/React setup.",
+        usedIn: "Geo Dashboard and experiments.",
+      },
+      {
+        name: "Tailwind",
+        blurb: "Utility-first CSS to move fast while still keeping design consistent.",
+        usedIn: "Portfolio UI and dashboards.",
+      },
+    ],
+  },
+  {
+    group: "Data & Infra",
+    icon: Cpu,
+    items: [
+      {
+        name: "PostgreSQL",
+        blurb: "Favorite relational database for structured data projects.",
+        usedIn: "SmartScribe, Grade Track, Supabase-backed projects.",
+      },
+      {
+        name: "SQLite",
+        blurb: "Great for small experiments and local data storage.",
+      },
+      {
+        name: "Docker",
+        blurb: "Used to keep dev environments reproducible.",
+        usedIn: "Grade Track stack and some local dev setups.",
+      },
+      {
+        name: "Git",
+        blurb: "Daily driver for version control and collaboration.",
+      },
+      {
+        name: "CI",
+        blurb: "Comfortable wiring up simple pipelines for testing and builds.",
+      },
+      {
+        name: "Grafana",
+        blurb: "Used for visualizing metrics and getting a feel for dashboards.",
+      },
+    ],
+  },
+  {
+    group: "Domains",
+    icon: Code2,
+    items: [
+      {
+        name: "Algorithms",
+        blurb: "Interested in how choices trade off between runtime, memory, and simplicity.",
+        usedIn: "Bin packing, AVL trees, homework and contest-style problems.",
+      },
+      {
+        name: "Data Structures",
+        blurb: "Enjoy implementing trees, graphs, and custom structures from scratch.",
+        usedIn: "AVL tree project and path-finding style problems.",
+      },
+      {
+        name: "Geospatial (GIS)",
+        blurb: "Where CS and geography intersect into maps, routing, and spatial reasoning.",
+        usedIn: "OpenStreetMap edits and Geo Dashboard.",
+      },
+      {
+        name: "Computer Vision",
+        blurb: "Interested in camera-based interaction and accessibility.",
+        usedIn: "Ability Bridge and related prototypes.",
+      },
+    ],
+  },
+];
 
 const CONTACT = {
   note: "Open to internships for Summer 2026, especially roles involving backend systems, data, or geospatial applications. Always happy to talk about maps, infrastructure, or accessibility.",
 };
 
-// ====== MODAL TYPES & COMPONENT ======
 type ModalLink = {
   label: string;
   href: string;
@@ -384,7 +523,6 @@ const DetailModal = ({
   );
 };
 
-// ====== UI PRIMITIVES ======
 const Section = ({
   id,
   title,
@@ -444,7 +582,6 @@ const Card = ({ children, className = "", hover = true, onClick }: CardProps) =>
   );
 };
 
-// ====== MESSAGE FORM (Formspree) ======
 function MessageForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -493,7 +630,7 @@ function MessageForm() {
         setStatus("error");
         setError("Something went wrong. Please try again later.");
       }
-    } catch (err) {
+    } catch {
       setStatus("error");
       setError("Network error. Please try again later.");
     }
@@ -579,16 +716,24 @@ function MessageForm() {
   );
 }
 
-// ====== PAGE ======
 export default function Portfolio() {
+  const [modal, setModal] = useState<ModalContent | null>(null);
+
+  const firstSkillGroup = SKILLS[0];
+  const firstSkillItem = firstSkillGroup?.items[0];
+  const [activeSkill, setActiveSkill] = useState<
+    { group: string; item: SkillItem } | null
+  >(
+    firstSkillGroup && firstSkillItem
+      ? { group: firstSkillGroup.group, item: firstSkillItem }
+      : null
+  );
+
   const [showExpandedProjects, setShowExpandedProjects] = useState(false);
   const visibleProjects = showExpandedProjects ? PROJECTS : PROJECTS.slice(0, 3);
 
-  const [modal, setModal] = useState<ModalContent | null>(null);
-
   return (
     <div className="font-sans antialiased bg-slate-950 min-h-screen text-slate-100">
-      {/* NAVBAR */}
       <motion.header
         initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -604,16 +749,18 @@ export default function Portfolio() {
             <span className="sm:hidden">Alex Liu</span>
           </motion.a>
           <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-200">
-            {["About", "Projects", "Experience", "Skills", "Hobbies", "Contact"].map((item) => (
-              <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="hover:text-sky-300 transition-colors"
-                whileHover={{ y: -1 }}
-              >
-                {item}
-              </motion.a>
-            ))}
+            {["About", "Projects", "Experience", "Skills", "Hobbies", "Contact"].map(
+              (item) => (
+                <motion.a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="hover:text-sky-300 transition-colors"
+                  whileHover={{ y: -1 }}
+                >
+                  {item}
+                </motion.a>
+              )
+            )}
           </nav>
           <div className="flex items-center gap-3">
             <motion.a
@@ -637,7 +784,6 @@ export default function Portfolio() {
         </div>
       </motion.header>
 
-      {/* HERO */}
       <section
         id="home"
         className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-slate-50"
@@ -734,7 +880,6 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* ABOUT + EDUCATION */}
       <Section id="about" title="Profile Overview" icon={Briefcase}>
         <div className="grid lg:grid-cols-3 gap-8">
           <Card className="lg:col-span-2">
@@ -829,12 +974,10 @@ export default function Portfolio() {
         </div>
       </Section>
 
-      {/* PROJECTS */}
       <Section id="projects" title="Featured Projects" icon={Code2}>
         <p className="text-sm text-slate-300 mb-6 max-w-3xl">
           A subset of projects that represent how I like to work: combining algorithms and
-          data structures with visualization, spatial reasoning, and real users—whether
-          they are students, clinicians, or people navigating cities.
+          data structures with visualization, spatial reasoning, and real users.
         </p>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {visibleProjects.map((p, i) => (
@@ -854,76 +997,52 @@ export default function Portfolio() {
                     eyebrow: "Project",
                     tags: p.tech,
                     body: (
-                      <div className="space-y-3">
-                        <p>{p.blurb}</p>
-                        {p.impact && (
-                          <p>
-                            <span className="font-semibold text-slate-100">
-                              Impact:&nbsp;
-                            </span>
-                            {p.impact}
-                          </p>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <p>{p.blurb}</p>
+                          {p.impact && (
+                            <p>
+                              <span className="font-semibold text-slate-100">
+                                Impact:&nbsp;
+                              </span>
+                              {p.impact}
+                            </p>
+                          )}
+                        </div>
+                        {p.screenshots && p.screenshots.length > 0 && (
+                          <div className="space-y-2">
+                            <div className="text-[11px] font-semibold text-slate-300">
+                              Screenshots
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              {p.screenshots.map((src) => (
+                                <img
+                                  key={src}
+                                  src={src}
+                                  alt={`${p.name} screenshot`}
+                                  className="w-full h-28 object-cover rounded-xl border border-slate-800 bg-slate-900"
+                                />
+                              ))}
+                            </div>
+                          </div>
                         )}
-
                         {p.name === "Grade Track" && (
                           <ul className="list-disc list-inside space-y-1 text-slate-200/90">
                             <li>
-                              Engineered a full-stack analytics dashboard that visualizes
-                              student performance trends using Flask APIs, React, and
-                              Recharts.
+                              Full-stack analytics dashboard that turns CSV grade data into visual summaries.
                             </li>
                             <li>
-                              Orchestrated containerized deployment with Docker Compose,
-                              reducing setup time by ~85% and keeping dev environments
-                              consistent.
-                            </li>
-                            <li>
-                              Integrated real-time aggregation and visual analytics to
-                              highlight grade distributions and at-risk cohorts.
+                              Dockerized environment so setup is a single command instead of a long checklist.
                             </li>
                           </ul>
                         )}
-
                         {p.name === "Ability Bridge" && (
                           <ul className="list-disc list-inside space-y-1 text-slate-200/90">
                             <li>
-                              Processes 14,000+ facial landmark points/sec to drive
-                              head-pose cursor control, mouth-Morse typing, and
-                              eyebrow/blink clicks.
+                              Head-pose cursor control, mouth-Morse typing, and facial gestures mapped to clicks.
                             </li>
                             <li>
-                              Achieved ~30 FPS with &lt;100 ms end-to-end latency through
-                              optimized OpenCV + MediaPipe pipelines.
-                            </li>
-                            <li>
-                              Added calibration, exponential smoothing, and hysteresis to
-                              reduce false positives in noisy lighting environments.
-                            </li>
-                          </ul>
-                        )}
-
-                        {p.name === "Bin Packing: Best-Fit vs First-Fit" && (
-                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                            <li>
-                              Benchmarked First-Fit vs Best-Fit over 100k+ rectangles to
-                              study trade-offs between runtime and space utilization.
-                            </li>
-                            <li>
-                              Designed an OOP framework to share core placement logic and
-                              make it easy to plug in new heuristics.
-                            </li>
-                          </ul>
-                        )}
-
-                        {p.name === "Minesweeper (SFML)" && (
-                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                            <li>
-                              Implemented recursive flood-fill reveal, debug view, pause
-                              mode, and a persistent top-5 leaderboard via file I/O.
-                            </li>
-                            <li>
-                              Structured the grid, tiles, and UI into clean C++ classes
-                              for maintainable game-state management.
+                              Tuned smoothing and thresholds to balance responsiveness with stability.
                             </li>
                           </ul>
                         )}
@@ -941,7 +1060,16 @@ export default function Portfolio() {
                 }
               >
                 <div className="pointer-events-none absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.35)_0,_transparent_55%)]" />
-                <div className="relative flex-1">
+                <div className="relative flex-1 flex flex-col">
+                  {p.screenshots && p.screenshots.length > 0 && (
+                    <div className="mb-3 rounded-xl overflow-hidden border border-slate-800 bg-slate-950/80">
+                      <img
+                        src={p.screenshots[0]}
+                        alt={`${p.name} preview`}
+                        className="w-full h-32 object-cover"
+                      />
+                    </div>
+                  )}
                   <h3 className="text-sm font-semibold mb-1.5 text-slate-50">
                     {p.name}
                   </h3>
@@ -1011,10 +1139,8 @@ export default function Portfolio() {
         </div>
       </Section>
 
-      {/* EXPERIENCE / VOLUNTEER / LEADERSHIP */}
       <Section id="experience" title="Experience & Involvement" icon={Briefcase}>
         <div className="space-y-10">
-          {/* Experience */}
           <div>
             <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
@@ -1034,20 +1160,12 @@ export default function Portfolio() {
                       setModal({
                         title: x.role,
                         subtitle: x.org,
-                        eyebrow: `Experience · ${x.period}${
-                          x.location ? " • " + x.location : ""
-                        }`,
+                        eyebrow: `Experience · ${x.period}${x.location ? " • " + x.location : ""}`,
                         body: (
                           <div className="space-y-3">
                             <p>
-                              At{" "}
-                              <span className="font-semibold">
-                                {x.org}
-                              </span>
-                              , I worked as a{" "}
-                              <span className="font-semibold">
-                                {x.role}
-                              </span>
+                              At <span className="font-semibold">{x.org}</span>, I worked as a{" "}
+                              <span className="font-semibold">{x.role}</span>
                               {x.location && <> based in {x.location}</>}.
                             </p>
                             <ul className="list-disc list-inside space-y-1 text-slate-200/90">
@@ -1109,7 +1227,6 @@ export default function Portfolio() {
             </div>
           </div>
 
-          {/* Volunteer */}
           <div>
             <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
@@ -1134,14 +1251,8 @@ export default function Portfolio() {
                           <div className="space-y-3">
                             <p>
                               Volunteer work with{" "}
-                              <span className="font-semibold">
-                                {x.org}
-                              </span>{" "}
-                              as a{" "}
-                              <span className="font-semibold">
-                                {x.role}
-                              </span>
-                              .
+                              <span className="font-semibold">{x.org}</span> as a{" "}
+                              <span className="font-semibold">{x.role}</span>.
                             </p>
                             <ul className="list-disc list-inside space-y-1 text-slate-200/90">
                               {x.bullets.map((b) => (
@@ -1195,7 +1306,6 @@ export default function Portfolio() {
             </div>
           </div>
 
-          {/* Leadership & Involvement */}
           <div>
             <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
@@ -1219,15 +1329,8 @@ export default function Portfolio() {
                         body: (
                           <div className="space-y-3">
                             <p>
-                              In{" "}
-                              <span className="font-semibold">
-                                {x.org}
-                              </span>
-                              , I serve as{" "}
-                              <span className="font-semibold">
-                                {x.role}
-                              </span>
-                              .
+                              In <span className="font-semibold">{x.org}</span>, I serve as{" "}
+                              <span className="font-semibold">{x.role}</span>.
                             </p>
                             <ul className="list-disc list-inside space-y-1 text-slate-200/90">
                               {x.bullets.map((b) => (
@@ -1283,41 +1386,91 @@ export default function Portfolio() {
         </div>
       </Section>
 
-      {/* SKILLS */}
       <Section id="skills" title="Skills & Technologies" icon={Cpu}>
-        <div className="grid md:grid-cols-2 gap-6">
-          {SKILLS.map((g, i) => (
-            <motion.div
-              key={g.group}
-              initial={{ opacity: 0, scale: 0.97 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-            >
-              <Card>
-                <div className="flex items-center gap-3 mb-3">
-                  <g.icon className="w-5 h-5 text-sky-300" />
-                  <h3 className="font-semibold text-sm text-slate-100">
-                    {g.group}
+        <div className="grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)] gap-8 items-start">
+          <div className="space-y-6">
+            {SKILLS.map((g, i) => (
+              <motion.div
+                key={g.group}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+              >
+                <Card className="bg-slate-950/80">
+                  <div className="flex items-center gap-3 mb-3">
+                    <g.icon className="w-5 h-5 text-sky-300" />
+                    <h3 className="font-semibold text-sm text-slate-100">
+                      {g.group}
+                    </h3>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {g.items.map((s) => {
+                      const isActive =
+                        activeSkill &&
+                        activeSkill.group === g.group &&
+                        activeSkill.item.name === s.name;
+                      return (
+                        <motion.button
+                          key={s.name}
+                          type="button"
+                          onMouseEnter={() =>
+                            setActiveSkill({ group: g.group, item: s })
+                          }
+                          onFocus={() => setActiveSkill({ group: g.group, item: s })}
+                          className={`px-3 py-1.5 rounded-full text-[11px] font-mono border transition-colors ${
+                            isActive
+                              ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.5)]"
+                              : "bg-slate-950/80 border-slate-700 text-slate-100 hover:border-sky-400 hover:text-sky-200"
+                          }`}
+                          whileHover={{ y: -1 }}
+                          whileTap={{ scale: 0.97 }}
+                        >
+                          {s.name}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+          <div className="space-y-3">
+            <Card className="bg-slate-950/90 px-4 py-4 max-w-sm mx-auto">
+              {activeSkill ? (
+                <div className="space-y-2">
+                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-300 uppercase">
+                    {activeSkill.group}
+                  </div>
+                  <h3 className="text-sm font-semibold text-slate-50">
+                    {activeSkill.item.name}
                   </h3>
+                  <p className="text-[11px] text-slate-200 leading-relaxed">
+                    {activeSkill.item.blurb}
+                  </p>
+                  {activeSkill.item.usedIn && (
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                      <span className="font-semibold text-slate-100">Used in: </span>
+                      {activeSkill.item.usedIn}
+                    </p>
+                  )}
                 </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {g.items.map((s) => (
-                    <motion.span
-                      key={s}
-                      className="px-3 py-1.5 bg-slate-950/80 border border-slate-700 rounded-full text-[11px] font-mono text-slate-100"
-                      whileHover={{ scale: 1.05, borderColor: "#38bdf8" }}
-                    >
-                      {s}
-                    </motion.span>
-                  ))}
+              ) : (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-slate-50">
+                    Hover a skill to see how I use it
+                  </h3>
+                  <p className="text-[11px] text-slate-200">
+                    Move your cursor over any skill pill to see where it shows up in my
+                    projects or coursework.
+                  </p>
                 </div>
-              </Card>
-            </motion.div>
-          ))}
+              )}
+            </Card>
+          </div>
         </div>
       </Section>
-            {/* HOBBIES */}
+
       <Section id="hobbies" title="Hobbies" icon={Award}>
         <p className="text-sm text-slate-300 mb-6 max-w-3xl">
           A few things I do when I&apos;m not debugging, mapping, or refreshing grades.
@@ -1331,8 +1484,29 @@ export default function Portfolio() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
             >
-              <Card className="h-full flex flex-col items-start gap-3">
-                {/* 竖着的小卡片，偏可爱一点 */}
+              <Card
+                className="h-full flex flex-col items-start gap-3"
+                onClick={() =>
+                  setModal({
+                    title: hobby.name,
+                    subtitle: "Hobby",
+                    eyebrow: "Outside of code",
+                    tags: hobby.tags,
+                    body: (
+                      <div className="space-y-3">
+                        <p>{hobby.blurb}</p>
+                        {hobby.details && (
+                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                            {hobby.details.map((d) => (
+                              <li key={d}>{d}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ),
+                  })
+                }
+              >
                 <div className="text-2xl">
                   {hobby.emoji}
                 </div>
@@ -1360,8 +1534,6 @@ export default function Portfolio() {
         </div>
       </Section>
 
-
-      {/* PHOTO GALLERY */}
       <Section id="photos" title="Photo Gallery" icon={Camera}>
         <motion.a
           href="/photos"
@@ -1389,7 +1561,6 @@ export default function Portfolio() {
         </motion.a>
       </Section>
 
-      {/* CONTACT */}
       <Section id="contact" title="Get In Touch" icon={Mail}>
         <Card className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-slate-700/80">
           <div className="grid md:grid-cols-2 gap-8">
@@ -1447,11 +1618,9 @@ export default function Portfolio() {
           </div>
         </Card>
 
-        {/* private message form */}
         <MessageForm />
       </Section>
 
-      {/* FOOTER */}
       <footer className="py-10 border-t border-slate-800 bg-slate-950">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -1480,7 +1649,6 @@ export default function Portfolio() {
         </div>
       </footer>
 
-      {/* 全局详情弹窗 */}
       <DetailModal modal={modal} onClose={() => setModal(null)} />
     </div>
   );
