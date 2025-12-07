@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Github,
   Linkedin,
@@ -20,6 +20,7 @@ import {
   Instagram,
   Languages,
   Camera,
+  X,
 } from "lucide-react";
 
 // ====== DATA ======
@@ -245,13 +246,156 @@ const SKILLS = [
     icon: Code2,
   },
 ];
+const HOBBIES = [
+  {
+    name: "Badminton",
+    emoji: "🏸",
+    blurb: "Fast rallies, light trash talk, good cardio.",
+    tags: ["doubles", "footwork", "after-class reset"],
+  },
+  {
+    name: "Pickleball",
+    emoji: "🥒",
+    blurb: "Easy to learn, secretly very competitive.",
+    tags: ["casual games", "kitchen line", "new friends"],
+  },
+  {
+    name: "Photography Walks",
+    emoji: "📷",
+    blurb: "Walk around, take photos, mentally edit the map.",
+    tags: ["street details", "city patterns", "OSM brain"],
+  },
+  {
+    name: "Road Trips & Driving",
+    emoji: "🚗",
+    blurb: "Long drives, playlists, watching the landscape change.",
+    tags: ["highways", "audiobooks", "scenic detours"],
+  },
+];
+
 
 const CONTACT = {
   note: "Open to internships for Summer 2026, especially roles involving backend systems, data, or geospatial applications. Always happy to talk about maps, infrastructure, or accessibility.",
 };
 
+// ====== MODAL TYPES & COMPONENT ======
+type ModalLink = {
+  label: string;
+  href: string;
+  icon?: React.ComponentType<{ className?: string }>;
+};
+
+type ModalContent = {
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  body: React.ReactNode;
+  tags?: string[];
+  links?: ModalLink[];
+};
+
+const DetailModal = ({
+  modal,
+  onClose,
+}: {
+  modal: ModalContent | null;
+  onClose: () => void;
+}) => {
+  return (
+    <AnimatePresence>
+      {modal && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            className="max-w-xl w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-700/80 rounded-2xl p-6 shadow-[0_0_40px_rgba(15,23,42,0.9)]"
+            initial={{ scale: 0.9, y: 20, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            exit={{ scale: 0.9, y: 10, opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <div className="space-y-1">
+                {modal.eyebrow && (
+                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-300 uppercase">
+                    {modal.eyebrow}
+                  </div>
+                )}
+                <h2 className="text-lg font-semibold text-slate-50">
+                  {modal.title}
+                </h2>
+                {modal.subtitle && (
+                  <p className="text-xs text-slate-300">{modal.subtitle}</p>
+                )}
+              </div>
+              <button
+                onClick={onClose}
+                className="shrink-0 w-8 h-8 rounded-full border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-sky-300 hover:border-sky-400 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {modal.tags && modal.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {modal.tags.map((t) => (
+                  <span
+                    key={t}
+                    className="px-2.5 py-1 rounded-full bg-slate-950/80 border border-slate-700 text-[10px] font-mono text-slate-100"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div className="mb-4 text-sm text-slate-200 space-y-3">
+              {modal.body}
+            </div>
+
+            {modal.links && modal.links.length > 0 && (
+              <div className="flex flex-wrap gap-3 pt-3 border-t border-slate-800/80">
+                {modal.links.map((l) => {
+                  const Icon = l.icon;
+                  return (
+                    <a
+                      key={l.href}
+                      href={l.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold text-sky-300 hover:text-sky-100 hover:bg-slate-900/80 border border-slate-700/80"
+                    >
+                      {Icon && <Icon className="w-3.5 h-3.5" />}
+                      <span>{l.label}</span>
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
 // ====== UI PRIMITIVES ======
-const Section = ({ id, title, children, icon: Icon }) => (
+const Section = ({
+  id,
+  title,
+  children,
+  icon: Icon,
+}: {
+  id: string;
+  title: string;
+  children: React.ReactNode;
+  icon?: React.ComponentType<{ className?: string }>;
+}) => (
   <section id={id} className="scroll-mt-24 max-w-6xl mx-auto px-6 py-16 text-slate-100">
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -272,19 +416,34 @@ const Section = ({ id, title, children, icon: Icon }) => (
   </section>
 );
 
-const Card = ({ children, className = "", hover = true }) => (
-  <motion.div
-    whileHover={
-      hover
-        ? { y: -3, scale: 1.01, boxShadow: "0 0 40px rgba(56,189,248,0.25)" }
-        : {}
-    }
-    transition={{ duration: 0.2 }}
-    className={`bg-gradient-to-br from-slate-950/80 via-slate-900/80 to-slate-950/90 border border-slate-800/80 rounded-2xl p-6 shadow-[0_0_20px_rgba(15,23,42,0.8)] ${className}`}
-  >
-    {children}
-  </motion.div>
-);
+interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+  hover?: boolean;
+  onClick?: () => void;
+}
+
+const Card = ({ children, className = "", hover = true, onClick }: CardProps) => {
+  const clickable = Boolean(onClick);
+  return (
+    <motion.div
+      whileHover={
+        hover
+          ? { y: -3, scale: 1.01, boxShadow: "0 0 40px rgba(56,189,248,0.25)" }
+          : {}
+      }
+      whileTap={clickable ? { scale: 0.98, y: 0 } : {}}
+      transition={{ duration: 0.2 }}
+      onClick={onClick}
+      className={`bg-gradient-to-br from-slate-950/80 via-slate-900/80 to-slate-950/90 border border-slate-800/80 rounded-2xl p-6 shadow-[0_0_20px_rgba(15,23,42,0.8)] ${
+        clickable ? "cursor-pointer" : ""
+      } ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 // ====== MESSAGE FORM (Formspree) ======
 function MessageForm() {
   const [formData, setFormData] = useState({
@@ -405,8 +564,6 @@ function MessageForm() {
           >
             {status === "submitting" ? "Sending..." : "Send Message"}
           </motion.button>
-
-          
         </div>
 
         {status === "success" && (
@@ -427,6 +584,8 @@ export default function Portfolio() {
   const [showExpandedProjects, setShowExpandedProjects] = useState(false);
   const visibleProjects = showExpandedProjects ? PROJECTS : PROJECTS.slice(0, 3);
 
+  const [modal, setModal] = useState<ModalContent | null>(null);
+
   return (
     <div className="font-sans antialiased bg-slate-950 min-h-screen text-slate-100">
       {/* NAVBAR */}
@@ -441,7 +600,6 @@ export default function Portfolio() {
             className="flex items-center gap-2 font-medium text-xs tracking-wide text-slate-100"
             whileHover={{ scale: 1.03 }}
           >
-            
             <span className="hidden sm:inline">Alex Liu - Portfolio</span>
             <span className="sm:hidden">Alex Liu</span>
           </motion.a>
@@ -479,7 +637,7 @@ export default function Portfolio() {
         </div>
       </motion.header>
 
-      {/* HERO：删掉上面那个 CS @ UF pill，保留标题 + 文案 */}
+      {/* HERO */}
       <section
         id="home"
         className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-slate-50"
@@ -552,7 +710,6 @@ export default function Portfolio() {
               </div>
             </motion.div>
 
-            {/* 右侧只保留头像，不再有 Focus Areas 浮框 */}
             <motion.div
               className="md:col-span-2"
               initial={{ opacity: 0, scale: 0.96 }}
@@ -577,7 +734,7 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* ABOUT + EDUCATION 深色块 */}
+      {/* ABOUT + EDUCATION */}
       <Section id="about" title="Profile Overview" icon={Briefcase}>
         <div className="grid lg:grid-cols-3 gap-8">
           <Card className="lg:col-span-2">
@@ -603,7 +760,6 @@ export default function Portfolio() {
               ))}
             </ul>
 
-            {/* Focus Areas 从 Hero 移到这里 */}
             <div className="mt-6 border-t border-slate-800 pt-4">
               <div className="flex items-center gap-2 text-xs text-slate-200 mb-2">
                 <Code2 className="w-4 h-4 text-sky-300" />
@@ -689,7 +845,101 @@ export default function Portfolio() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
             >
-              <Card className="h-full flex flex-col relative overflow-hidden">
+              <Card
+                className="h-full flex flex-col relative overflow-hidden"
+                onClick={() =>
+                  setModal({
+                    title: p.name,
+                    subtitle: p.tech.join(" · "),
+                    eyebrow: "Project",
+                    tags: p.tech,
+                    body: (
+                      <div className="space-y-3">
+                        <p>{p.blurb}</p>
+                        {p.impact && (
+                          <p>
+                            <span className="font-semibold text-slate-100">
+                              Impact:&nbsp;
+                            </span>
+                            {p.impact}
+                          </p>
+                        )}
+
+                        {p.name === "Grade Track" && (
+                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                            <li>
+                              Engineered a full-stack analytics dashboard that visualizes
+                              student performance trends using Flask APIs, React, and
+                              Recharts.
+                            </li>
+                            <li>
+                              Orchestrated containerized deployment with Docker Compose,
+                              reducing setup time by ~85% and keeping dev environments
+                              consistent.
+                            </li>
+                            <li>
+                              Integrated real-time aggregation and visual analytics to
+                              highlight grade distributions and at-risk cohorts.
+                            </li>
+                          </ul>
+                        )}
+
+                        {p.name === "Ability Bridge" && (
+                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                            <li>
+                              Processes 14,000+ facial landmark points/sec to drive
+                              head-pose cursor control, mouth-Morse typing, and
+                              eyebrow/blink clicks.
+                            </li>
+                            <li>
+                              Achieved ~30 FPS with &lt;100 ms end-to-end latency through
+                              optimized OpenCV + MediaPipe pipelines.
+                            </li>
+                            <li>
+                              Added calibration, exponential smoothing, and hysteresis to
+                              reduce false positives in noisy lighting environments.
+                            </li>
+                          </ul>
+                        )}
+
+                        {p.name === "Bin Packing: Best-Fit vs First-Fit" && (
+                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                            <li>
+                              Benchmarked First-Fit vs Best-Fit over 100k+ rectangles to
+                              study trade-offs between runtime and space utilization.
+                            </li>
+                            <li>
+                              Designed an OOP framework to share core placement logic and
+                              make it easy to plug in new heuristics.
+                            </li>
+                          </ul>
+                        )}
+
+                        {p.name === "Minesweeper (SFML)" && (
+                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                            <li>
+                              Implemented recursive flood-fill reveal, debug view, pause
+                              mode, and a persistent top-5 leaderboard via file I/O.
+                            </li>
+                            <li>
+                              Structured the grid, tiles, and UI into clean C++ classes
+                              for maintainable game-state management.
+                            </li>
+                          </ul>
+                        )}
+                      </div>
+                    ),
+                    links: [
+                      p.links.code
+                        ? { label: "View Code", href: p.links.code, icon: Code2 }
+                        : null,
+                      p.links.demo
+                        ? { label: "Live Demo", href: p.links.demo, icon: ExternalLink }
+                        : null,
+                    ].filter(Boolean) as ModalLink[],
+                  })
+                }
+              >
                 <div className="pointer-events-none absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.35)_0,_transparent_55%)]" />
                 <div className="relative flex-1">
                   <h3 className="text-sm font-semibold mb-1.5 text-slate-50">
@@ -719,6 +969,7 @@ export default function Portfolio() {
                   {p.links.code && (
                     <motion.a
                       href={p.links.code}
+                      onClick={(e) => e.stopPropagation()}
                       className="flex items-center gap-1.5 text-[11px] font-semibold text-sky-300 hover:text-sky-200"
                       whileHover={{ x: 2 }}
                     >
@@ -728,6 +979,7 @@ export default function Portfolio() {
                   {p.links.demo && (
                     <motion.a
                       href={p.links.demo}
+                      onClick={(e) => e.stopPropagation()}
                       className="flex items-center gap-1.5 text-[11px] font-semibold text-sky-300 hover:text-sky-200"
                       whileHover={{ x: 2 }}
                     >
@@ -759,7 +1011,7 @@ export default function Portfolio() {
         </div>
       </Section>
 
-      {/* EXPERIENCE / VOLUNTEER / LEADERSHIP 三段，竖着排 */}
+      {/* EXPERIENCE / VOLUNTEER / LEADERSHIP */}
       <Section id="experience" title="Experience & Involvement" icon={Briefcase}>
         <div className="space-y-10">
           {/* Experience */}
@@ -777,7 +1029,46 @@ export default function Portfolio() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
                 >
-                  <Card>
+                  <Card
+                    onClick={() =>
+                      setModal({
+                        title: x.role,
+                        subtitle: x.org,
+                        eyebrow: `Experience · ${x.period}${
+                          x.location ? " • " + x.location : ""
+                        }`,
+                        body: (
+                          <div className="space-y-3">
+                            <p>
+                              At{" "}
+                              <span className="font-semibold">
+                                {x.org}
+                              </span>
+                              , I worked as a{" "}
+                              <span className="font-semibold">
+                                {x.role}
+                              </span>
+                              {x.location && <> based in {x.location}</>}.
+                            </p>
+                            <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                              {x.bullets.map((b) => (
+                                <li key={b}>{b}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        ),
+                        links: x.link
+                          ? [
+                              {
+                                label: "Visit organization",
+                                href: x.link,
+                                icon: ExternalLink,
+                              },
+                            ]
+                          : undefined,
+                      })
+                    }
+                  >
                     <div className="flex items-start gap-4">
                       {x.logo && (
                         <img
@@ -818,7 +1109,7 @@ export default function Portfolio() {
             </div>
           </div>
 
-          {/* Volunteer：用你以前那两个 */}
+          {/* Volunteer */}
           <div>
             <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
@@ -833,7 +1124,44 @@ export default function Portfolio() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
                 >
-                  <Card>
+                  <Card
+                    onClick={() =>
+                      setModal({
+                        title: x.role,
+                        subtitle: x.org,
+                        eyebrow: `Volunteer · ${x.period}`,
+                        body: (
+                          <div className="space-y-3">
+                            <p>
+                              Volunteer work with{" "}
+                              <span className="font-semibold">
+                                {x.org}
+                              </span>{" "}
+                              as a{" "}
+                              <span className="font-semibold">
+                                {x.role}
+                              </span>
+                              .
+                            </p>
+                            <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                              {x.bullets.map((b) => (
+                                <li key={b}>{b}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        ),
+                        links: x.link
+                          ? [
+                              {
+                                label: "Learn more",
+                                href: x.link,
+                                icon: ExternalLink,
+                              },
+                            ]
+                          : undefined,
+                      })
+                    }
+                  >
                     <div className="flex items-start gap-3">
                       {x.logo && (
                         <img
@@ -882,7 +1210,44 @@ export default function Portfolio() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
                 >
-                  <Card>
+                  <Card
+                    onClick={() =>
+                      setModal({
+                        title: x.role,
+                        subtitle: x.org,
+                        eyebrow: `Leadership · ${x.period}`,
+                        body: (
+                          <div className="space-y-3">
+                            <p>
+                              In{" "}
+                              <span className="font-semibold">
+                                {x.org}
+                              </span>
+                              , I serve as{" "}
+                              <span className="font-semibold">
+                                {x.role}
+                              </span>
+                              .
+                            </p>
+                            <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                              {x.bullets.map((b) => (
+                                <li key={b}>{b}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        ),
+                        links: x.link
+                          ? [
+                              {
+                                label: "Organization site",
+                                href: x.link,
+                                icon: ExternalLink,
+                              },
+                            ]
+                          : undefined,
+                      })
+                    }
+                  >
                     <div className="flex items-start gap-3">
                       {x.logo && (
                         <img
@@ -952,6 +1317,49 @@ export default function Portfolio() {
           ))}
         </div>
       </Section>
+            {/* HOBBIES */}
+      <Section id="hobbies" title="Hobbies" icon={Award}>
+        <p className="text-sm text-slate-300 mb-6 max-w-3xl">
+          A few things I do when I&apos;m not debugging, mapping, or refreshing grades.
+        </p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {HOBBIES.map((hobby, i) => (
+            <motion.div
+              key={hobby.name}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+            >
+              <Card className="h-full flex flex-col items-start gap-3">
+                {/* 竖着的小卡片，偏可爱一点 */}
+                <div className="text-2xl">
+                  {hobby.emoji}
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-50 mb-1">
+                    {hobby.name}
+                  </h3>
+                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                    {hobby.blurb}
+                  </p>
+                </div>
+                <div className="mt-auto flex flex-wrap gap-1.5">
+                  {hobby.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-0.5 rounded-full bg-slate-950/80 border border-slate-700 text-[10px] text-slate-200"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
 
       {/* PHOTO GALLERY */}
       <Section id="photos" title="Photo Gallery" icon={Camera}>
@@ -981,7 +1389,7 @@ export default function Portfolio() {
         </motion.a>
       </Section>
 
-            {/* CONTACT */}
+      {/* CONTACT */}
       <Section id="contact" title="Get In Touch" icon={Mail}>
         <Card className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-slate-700/80">
           <div className="grid md:grid-cols-2 gap-8">
@@ -1039,10 +1447,11 @@ export default function Portfolio() {
           </div>
         </Card>
 
-        {/* NEW: private message form under the contact card */}
+        {/* private message form */}
         <MessageForm />
       </Section>
-    {/* FOOTER */}
+
+      {/* FOOTER */}
       <footer className="py-10 border-t border-slate-800 bg-slate-950">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -1070,6 +1479,9 @@ export default function Portfolio() {
           </div>
         </div>
       </footer>
+
+      {/* 全局详情弹窗 */}
+      <DetailModal modal={modal} onClose={() => setModal(null)} />
     </div>
   );
 }
