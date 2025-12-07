@@ -604,7 +604,7 @@ export default function Portfolio() {
             <span className="sm:hidden">Alex Liu</span>
           </motion.a>
           <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-200">
-            {["About", "Projects", "Experience", "Skills", "Contact"].map((item) => (
+            {["About", "Projects", "Experience", "Skills", "Hobbies", "Contact"].map((item) => (
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
