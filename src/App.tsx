@@ -102,7 +102,7 @@ const VOLUNTEER = [
     org: "OpenStreetMap",
     period: "Sep 2020 – Present",
     bullets: [
-      "Started mapping during the 2020 lockdown, focusing on Southeast China and Florida to support open, community-driven geographic data.",
+      "Started mapping during the 2020 lockdown to support open, community-driven geographic data.",
       "Contributed 587+ edits that improve navigation, local knowledge, and downstream applications for everyday users and disaster response.",
     ],
     logo: "/logos/osm_logo.svg",
@@ -181,6 +181,9 @@ const PROJECTS = [
       "Dockerized dev environment makes onboarding faster; transforms raw course data into interactive visual summaries in seconds.",
     tech: ["Flask", "React", "SQLAlchemy", "PostgreSQL", "Docker"],
     links: { demo: "", code: "https://github.com/heimweh17/Grade-Track" },
+    screenshots: [
+      "/screenshots/gradetrack-1.png",
+    ],
   },
   {
     name: "Ability Bridge",
