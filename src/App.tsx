@@ -810,8 +810,9 @@ export default function Portfolio() {
     "contact",
   ];
 
-  useEffect(() => {
+    useEffect(() => {
     const handleScroll = () => {
+      // ===== 进度条 =====
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
       const docHeight =
@@ -819,43 +820,46 @@ export default function Portfolio() {
         document.documentElement.clientHeight;
       const progress = docHeight > 0 ? scrollTop / docHeight : 0;
       setScrollProgress(progress);
-    };
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+      // ===== 计算当前所在的 section =====
+      const sections = SECTION_IDS
+        .map((id) => document.getElementById(id))
+        .filter(Boolean) as HTMLElement[];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort(
-            (a, b) =>
-              (a.target as HTMLElement).offsetTop -
-              (b.target as HTMLElement).offsetTop
-          );
-        if (visible.length > 0) {
-          const id = visible[0].target.id;
-          if (SECTION_IDS.includes(id)) {
-            setActiveSection(id);
+      // 默认给第一个(about)
+      let currentId = SECTION_IDS[0];
+      let minDelta = Infinity;
+
+      const viewportAnchor = window.innerHeight * 0.25; // 视口上方 1/4 作为参考线
+
+      sections.forEach((sec) => {
+        const rect = sec.getBoundingClientRect();
+        // 只考虑和视口有交集的 section
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          const delta = Math.abs(rect.top - viewportAnchor);
+          if (delta < minDelta) {
+            minDelta = delta;
+            currentId = sec.id;
           }
         }
-      },
-      {
-        threshold: 0.35,
-        rootMargin: "-20% 0px -55% 0px",
-      }
-    );
+      });
 
-    SECTION_IDS.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
+      setActiveSection(currentId);
+    };
 
-    return () => observer.disconnect();
+    handleScroll(); // 初始执行一次，保证刷新后高亮正确
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
+
+
+  
+
 
   const filteredProjects = PROJECTS.filter((p) => {
     if (projectFilter === "All") return true;
