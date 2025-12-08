@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Github,
@@ -43,11 +43,11 @@ const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
 const ABOUT = {
   blurb:
-    "Computer Science student at the University of Florida focusing on algorithms, data systems, and geospatial applications. I enjoy building tools that turn real-world complexity into something visual, interactive, and useful. Authorized to work in the US for any employer with no visa required in the future.",
+    "Computer Science student at the University of Florida who likes problems where code, data, and geography intersect. I enjoy turning messy real-world information into tools that feel visual and practical—whether that’s a map, a dashboard, or a small script that saves someone time. Authorized to work in the US for any employer; no current or future visa sponsorship needed.",
   highlights: [
-    "Core: Data structures, algorithms, systems, and full-stack development",
-    "Tech stack: C++, Python, TypeScript, React, Flask, SQL, Docker",
-    "Interests: Geospatial (GIS), data-driven systems, accessibility & HCI",
+    "Core focus: data structures, algorithms, systems, and full-stack development",
+    "Tech I reach for most: C++, Python, TypeScript, React, Flask, SQL, Docker",
+    "Interest areas: geospatial (GIS), data-driven systems, accessibility & HCI",
   ],
 };
 
@@ -77,8 +77,9 @@ const EXPERIENCE = [
     period: "Jun 2022 – Jul 2022",
     location: "Gainesville, FL",
     bullets: [
-      "Planned and taught math and chess lessons for a class of 30+ elementary students, emphasizing structured problem-solving and logical reasoning.",
-      "Designed progressive exercises and feedback loops that made abstract concepts approachable for younger learners.",
+      "Planned and taught math and chess lessons for 30+ elementary students, breaking ideas into step-by-step examples.",
+      "Adjusted weekly lesson plans based on how students responded, similar to iterating on a technical project.",
+      "Collaborated with a 6-person team to grade work, give feedback, and keep students engaged in problem-solving.",
     ],
     link: "http://www.logiclabgainesville.com/",
   },
@@ -88,8 +89,9 @@ const EXPERIENCE = [
     period: "Jan 2025 – May 2025",
     location: "Gainesville, FL",
     bullets: [
-      "Performed traditional lion and dragon dance at university and community events, representing Asian culture to audiences of 300+.",
-      "Collaborated with a team to synchronize complex routines, demonstrating discipline, timing, and communication under pressure.",
+      "Performed traditional lion and dragon dance at university and community events for audiences of 300+.",
+      "Practiced timing, communication, and coordination to keep complex routines in sync under pressure.",
+      "Helped with backstage logistics and transitions between sets to keep events running smoothly.",
     ],
     logo: "/logos/jiating_logo.jpg",
     link: "https://jiatingliondragon.com/",
@@ -102,8 +104,9 @@ const VOLUNTEER = [
     org: "OpenStreetMap",
     period: "Sep 2020 – Present",
     bullets: [
-      "Started mapping during the 2020 lockdown to support open, community-driven geographic data.",
-      "Contributed 587+ edits that improve navigation, local knowledge, and downstream applications for everyday users and disaster response.",
+      "Contribute map edits focused on roads, POIs, and land use in different regions worldwide.",
+      "Cross-check field observations, satellite imagery, and local context before updating geometry or tags.",
+      "Enjoy watching small edits propagate into better routing and analysis in downstream apps.",
     ],
     logo: "/logos/osm_logo.svg",
     link: "https://www.openstreetmap.org/",
@@ -114,6 +117,7 @@ const VOLUNTEER = [
     period: "Jun 2022 – Jul 2022 ; Jun 2023 – Jul 2023",
     bullets: [
       "Taught elementary and middle school students math during a summer camp, helping them strengthen problem-solving, logical reasoning, and critical thinking.",
+      "Prepared handouts, graded practice problems, and helped students debug their own approaches instead of just giving answers.",
     ],
     logo: "/logos/bhs_logo.png",
     link: "https://buchholzmathteam.org/",
@@ -126,7 +130,7 @@ const LEADERSHIPS = [
     org: "UF Society of Asian Scientists & Engineers",
     period: "Aug 2025 – Present",
     bullets: [
-      "Support professional and technical events for 100+ members, including logistics and programming for a 150+ attendee event.",
+      "Support professional and technical events for 100+ members, handling logistics, communication, and on-site coordination for events up to 150+ attendees.",
     ],
     logo: "/logos/sase_logo.jpg",
     link: "https://ufsase.com/",
@@ -136,7 +140,7 @@ const LEADERSHIPS = [
     org: "UF Chinese American Student Association",
     period: "2024 – Present",
     bullets: [
-      "Help design and run cultural programming that highlights Chinese American identity and community on campus.",
+      "Help design and run cultural programming that highlights Chinese American identity and builds community on campus.",
     ],
     logo: "/logos/casa_logo.jpg",
     link: "https://orgs.studentinvolvement.ufl.edu/Organization/Chinese-American-Student-Association",
@@ -146,10 +150,11 @@ const LEADERSHIPS = [
 const PROJECTS = [
   {
     name: "Geography Dashboard",
+    flagship: true,
     blurb:
-      "Interactive geospatial platform that visualizes real-time OpenStreetMap data, compares urban regions, and personalizes insights through user accounts.",
+      "Interactive dashboard that pulls live OpenStreetMap data to compare cities and explore amenities on a map.",
     impact:
-      "Enables users to explore city-level patterns via multi-layer analytics, saved views, and spatial queries—bridging CS and geography in a single tool.",
+      "Lets users search cities worldwide, toggle layers, and inspect 10k+ OSM features with smooth panning and filtering.",
     tech: ["React", "Leaflet", "Supabase(SQL)", "Vite", "TypeScript"],
     links: {
       demo: "https://thegeodashboard.vercel.app/",
@@ -159,77 +164,105 @@ const PROJECTS = [
       "/screenshots/geodashboard-1.png",
       "/screenshots/geodashboard-2.png",
     ],
+    categories: ["Geospatial & Maps", "Web & Data"],
   },
   {
     name: "UF Health SmartScribe",
+    flagship: true,
     blurb:
-      "AI-powered medical scribe that converts doctor–patient conversations into structured SOAP notes.",
+      "AI-powered medical scribe that turns doctor–patient conversations into structured SOAP notes.",
     impact:
-      "Real-time transcription with speaker diarization; significantly reduces manual documentation time and cognitive load for clinicians.",
-    tech: ["JavaScript", "HTML/CSS", "Supabase", "PostgreSQL", "DeepGram API", "Gemini API"],
+      "Streams transcripts with speaker diarization and assembles editable SOAP notes, cutting manual documentation time in mock workflows.",
+    tech: [
+      "JavaScript",
+      "HTML/CSS",
+      "Supabase",
+      "PostgreSQL",
+      "DeepGram API",
+      "Gemini API",
+    ],
     links: { demo: "", code: "https://github.com/heimweh17/SmartScribe" },
     screenshots: [
       "/screenshots/smartscribe-1.png",
       "/screenshots/smartscribe-2.png",
     ],
+    categories: ["Health & Accessibility", "Web & Data"],
   },
   {
     name: "Grade Track",
+    flagship: true,
     blurb:
-      "Full-stack analytics dashboard that ingests CSV data to surface grade distributions, trends, and at-risk segments.",
+      "Analytics dashboard that ingests CSV grade exports and visualizes distributions, trends, and at-risk segments.",
     impact:
-      "Dockerized dev environment makes onboarding faster; transforms raw course data into interactive visual summaries in seconds.",
+      "Dockerized dev environment makes setup a single command and turns raw course data into interactive charts in seconds.",
     tech: ["Flask", "React", "SQLAlchemy", "PostgreSQL", "Docker"],
     links: { demo: "", code: "https://github.com/heimweh17/Grade-Track" },
-    screenshots: [
-      "/screenshots/gradetrack-1.png",
-    ],
+    screenshots: ["/screenshots/gradetrack-1.png"],
+    categories: ["Web & Data"],
   },
   {
     name: "Ability Bridge",
+    flagship: true,
     blurb:
-      "Assistive toolkit providing head-pose cursor control, mouth-Morse typing, and blink/eyebrow clicking.",
+      "Assistive toolkit that provides head-pose cursor control, mouth-Morse typing, and facial-gesture clicking.",
     impact:
-      "Runs at ~30 FPS with <100ms latency and hands-free interaction, exploring how computer vision can support accessibility use cases.",
+      "Runs at ~30 FPS with <100 ms latency and hands-free interaction, exploring how computer vision can support accessibility use cases.",
     tech: ["Python", "OpenCV", "MediaPipe", "PyAutoGUI"],
     links: { demo: "", code: "https://github.com/heimweh17/Ability-Bridge" },
+    categories: ["Health & Accessibility", "C++ / Algorithms"],
   },
   {
     name: "Minesweeper (SFML)",
     blurb:
-      "Interactive C++ Minesweeper implementation with recursive reveal, flags, pause/debug modes, timer, and leaderboard.",
+      "C++ Minesweeper with recursive reveal, flags, pause/debug modes, timer, and a persistent leaderboard.",
     impact:
-      "Uses modular OOP design and file I/O for persistent top-5 scores; ~350 tiles per board with robust game state handling.",
+      "Uses modular OOP design and file I/O for top-5 scores; handles ~350 tiles per board with robust game-state transitions.",
     tech: ["C++", "SFML"],
     links: { demo: "", code: "https://github.com/heimweh17/Minesweeper-game" },
+    categories: ["C++ / Algorithms"],
   },
   {
     name: "Bin Packing: Best-Fit vs First-Fit",
     blurb:
-      "Algorithmic comparison framework processing 100k+ rectangles to study runtime and packing efficiency trade-offs.",
+      "Algorithmic comparison framework that processes 100k+ rectangles to study runtime and packing efficiency trade-offs.",
     impact:
-      "Provides a reusable experiment harness to test heuristics, gather metrics, and visualize performance of different strategies.",
+      "Provides a reusable experiment harness to test heuristics, collect metrics, and visualize the performance of different strategies.",
     tech: ["C++"],
-    links: { demo: "", code: "https://github.com/heimweh17/best-fit-fitst-fit" },
+    links: {
+      demo: "",
+      code: "https://github.com/heimweh17/best-fit-fitst-fit",
+    },
+    categories: ["C++ / Algorithms"],
   },
   {
     name: "AVL Tree Data Structure",
     blurb:
-      "Self-balancing AVL tree with insert, delete, search, and rotation operations for maintaining ordered student records.",
+      "Self-balancing AVL tree with insert, delete, search, and rotations for maintaining ordered student records.",
     impact:
-      "Handles 1,000+ operations while preserving height balance; validated with a custom test suite for edge cases and rotations.",
+      "Handles 1,000+ operations while preserving height balance; validated with a custom test suite that targets edge cases.",
     tech: ["C++"],
     links: { code: "https://github.com/heimweh17/AVL-TREE" },
+    categories: ["C++ / Algorithms"],
   },
   {
     name: "Sudoku Game",
     blurb:
       "Python-based Sudoku game with multiple difficulty levels, validity checking, and smooth UI interactions.",
     impact:
-      "Implements clean game state management, error feedback, and reset controls, focusing on UX and correctness.",
+      "Implements clean game-state management, clear error feedback, and reset controls with a focus on UX and correctness.",
     tech: ["Python"],
     links: { code: "https://github.com/heimweh17/suduku-project" },
+    categories: ["C++ / Algorithms"],
   },
+];
+
+const PROJECT_FILTERS = [
+  "All",
+  "Core",
+  "Geospatial & Maps",
+  "Health & Accessibility",
+  "Web & Data",
+  "C++ / Algorithms",
 ];
 
 const HOBBIES = [
@@ -294,31 +327,38 @@ const SKILLS: SkillGroup[] = [
     items: [
       {
         name: "C++",
-        blurb: "Primary language for data structures, algorithms, and systems-heavy projects.",
-        usedIn: "AVL Tree, Minesweeper, Bin Packing heuristics, PageRank assignments.",
+        blurb:
+          "Primary language for data structures, algorithms, and systems-heavy projects.",
+        usedIn:
+          "AVL Tree, Minesweeper, Bin Packing heuristics, PageRank assignments.",
       },
       {
         name: "Python",
-        blurb: "Go-to for quick experiments, scripting, and computer vision work.",
+        blurb:
+          "Go-to for quick experiments, scripting, and computer vision work.",
         usedIn: "Ability Bridge, Sudoku, smaller data scripts.",
       },
       {
         name: "TypeScript",
-        blurb: "Used for front-end safety and better DX in React-based dashboards.",
+        blurb:
+          "Used for front-end safety and better DX in React-based dashboards.",
         usedIn: "Geography Dashboard and portfolio site.",
       },
       {
         name: "SQL",
-        blurb: "Comfortable designing schemas and writing queries for analytics and apps.",
+        blurb:
+          "Comfortable designing schemas and writing queries for analytics and apps.",
         usedIn: "Grade Track, SmartScribe, Supabase-backed projects.",
       },
       {
         name: "Java",
-        blurb: "Used in coursework and for understanding strongly-typed OOP patterns.",
+        blurb:
+          "Used in coursework and for understanding strongly-typed OOP patterns.",
       },
       {
         name: "RISC-V",
-        blurb: "Used in low-level assignments to understand how code maps to hardware.",
+        blurb:
+          "Used in low-level assignments to understand how code maps to hardware.",
       },
     ],
   },
@@ -333,7 +373,8 @@ const SKILLS: SkillGroup[] = [
       },
       {
         name: "Flask",
-        blurb: "Simple but powerful API/backend framework for data and analytics apps.",
+        blurb:
+          "Simple but powerful API/backend framework for data and analytics apps.",
         usedIn: "Grade Track backend.",
       },
       {
@@ -347,12 +388,14 @@ const SKILLS: SkillGroup[] = [
       },
       {
         name: "Vite",
-        blurb: "Bundler of choice for dev speed and a clean TS/React setup.",
+        blurb:
+          "Bundler of choice for dev speed and a clean TS/React setup.",
         usedIn: "Geo Dashboard and experiments.",
       },
       {
         name: "Tailwind",
-        blurb: "Utility-first CSS to move fast while still keeping design consistent.",
+        blurb:
+          "Utility-first CSS to move fast while still keeping design consistent.",
         usedIn: "Portfolio UI and dashboards.",
       },
     ],
@@ -377,15 +420,18 @@ const SKILLS: SkillGroup[] = [
       },
       {
         name: "Git",
-        blurb: "Daily driver for version control and collaboration.",
+        blurb:
+          "Daily driver for version control and collaboration.",
       },
       {
         name: "CI",
-        blurb: "Comfortable wiring up simple pipelines for testing and builds.",
+        blurb:
+          "Comfortable wiring up simple pipelines for testing and builds.",
       },
       {
         name: "Grafana",
-        blurb: "Used for visualizing metrics and getting a feel for dashboards.",
+        blurb:
+          "Used for visualizing metrics and getting a feel for dashboards.",
       },
     ],
   },
@@ -395,22 +441,26 @@ const SKILLS: SkillGroup[] = [
     items: [
       {
         name: "Algorithms",
-        blurb: "Interested in how choices trade off between runtime, memory, and simplicity.",
+        blurb:
+          "Interested in how choices trade off between runtime, memory, and simplicity.",
         usedIn: "Bin packing, AVL trees, homework and contest-style problems.",
       },
       {
         name: "Data Structures",
-        blurb: "Enjoy implementing trees, graphs, and custom structures from scratch.",
+        blurb:
+          "Enjoy implementing trees, graphs, and custom structures from scratch.",
         usedIn: "AVL tree project and path-finding style problems.",
       },
       {
         name: "Geospatial (GIS)",
-        blurb: "Where CS and geography intersect into maps, routing, and spatial reasoning.",
+        blurb:
+          "Where CS and geography intersect into maps, routing, and spatial reasoning.",
         usedIn: "OpenStreetMap edits and Geo Dashboard.",
       },
       {
         name: "Computer Vision",
-        blurb: "Interested in camera-based interaction and accessibility.",
+        blurb:
+          "Interested in camera-based interaction and accessibility.",
         usedIn: "Ability Bridge and related prototypes.",
       },
     ],
@@ -418,7 +468,7 @@ const SKILLS: SkillGroup[] = [
 ];
 
 const CONTACT = {
-  note: "Open to internships for Summer 2026, especially roles involving backend systems, data, or geospatial applications. Always happy to talk about maps, infrastructure, or accessibility.",
+  note: "Open to internships for Summer 2026, especially roles involving backend systems, data, IT, or geospatial applications. Always happy to talk about maps, infrastructure, accessibility, or projects you’re working on.",
 };
 
 type ModalLink = {
@@ -537,7 +587,10 @@ const Section = ({
   children: React.ReactNode;
   icon?: React.ComponentType<{ className?: string }>;
 }) => (
-  <section id={id} className="scroll-mt-24 max-w-6xl mx-auto px-6 py-16 text-slate-100">
+  <section
+    id={id}
+    className="scroll-mt-24 max-w-6xl mx-auto px-6 py-16 text-slate-100"
+  >
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -564,7 +617,12 @@ interface CardProps {
   onClick?: () => void;
 }
 
-const Card = ({ children, className = "", hover = true, onClick }: CardProps) => {
+const Card = ({
+  children,
+  className = "",
+  hover = true,
+  onClick,
+}: CardProps) => {
   const clickable = Boolean(onClick);
   return (
     <motion.div
@@ -591,7 +649,9 @@ function MessageForm() {
     email: "",
     message: "",
   });
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
   const [error, setError] = useState("");
 
   const handleChange = (
@@ -646,8 +706,8 @@ function MessageForm() {
           Leave a Message
         </h3>
         <p className="text-xs text-slate-300 leading-relaxed max-w-md">
-          Send me a private note about anything—projects, internships, maps, or just
-          something you want to share.
+          Send me a private note about anything—projects, internships, maps, or
+          just something you want to share.
         </p>
       </div>
 
@@ -724,23 +784,121 @@ export default function Portfolio() {
 
   const firstSkillGroup = SKILLS[0];
   const firstSkillItem = firstSkillGroup?.items[0];
-  const [activeSkill, setActiveSkill] = useState<
-    { group: string; item: SkillItem } | null
-  >(
+  const [activeSkill, setActiveSkill] = useState<{
+    group: string;
+    item: SkillItem;
+  } | null>(
     firstSkillGroup && firstSkillItem
       ? { group: firstSkillGroup.group, item: firstSkillItem }
       : null
   );
 
   const [showExpandedProjects, setShowExpandedProjects] = useState(false);
-  const visibleProjects = showExpandedProjects ? PROJECTS : PROJECTS.slice(0, 3);
+  const [projectFilter, setProjectFilter] = useState<string>("All");
+  const [activeSection, setActiveSection] = useState<string>("about");
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [copiedField, setCopiedField] = useState<"email" | "phone" | null>(
+    null
+  );
+
+  const SECTION_IDS = [
+    "about",
+    "projects",
+    "experience",
+    "skills",
+    "hobbies",
+    "contact",
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const docHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+      setScrollProgress(progress);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort(
+            (a, b) =>
+              (a.target as HTMLElement).offsetTop -
+              (b.target as HTMLElement).offsetTop
+          );
+        if (visible.length > 0) {
+          const id = visible[0].target.id;
+          if (SECTION_IDS.includes(id)) {
+            setActiveSection(id);
+          }
+        }
+      },
+      {
+        threshold: 0.35,
+        rootMargin: "-20% 0px -55% 0px",
+      }
+    );
+
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const filteredProjects = PROJECTS.filter((p) => {
+    if (projectFilter === "All") return true;
+    if (projectFilter === "Core") return p.flagship;
+    return p.categories?.includes(projectFilter);
+  });
+
+  useEffect(() => {
+    setShowExpandedProjects(false);
+  }, [projectFilter]);
+
+  const visibleProjects = showExpandedProjects
+    ? filteredProjects
+    : filteredProjects.slice(0, 3);
+
+  const handleCopy = (value: string, field: "email" | "phone") => {
+    if (
+      typeof navigator !== "undefined" &&
+      navigator.clipboard &&
+      navigator.clipboard.writeText
+    ) {
+      navigator.clipboard
+        .writeText(value)
+        .then(() => {
+          setCopiedField(field);
+          setTimeout(() => setCopiedField(null), 1500);
+        })
+        .catch(() => {
+          setCopiedField(field);
+          setTimeout(() => setCopiedField(null), 1500);
+        });
+    } else {
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 1500);
+    }
+  };
 
   return (
     <div className="font-sans antialiased bg-slate-950 min-h-screen text-slate-100">
       <motion.header
         initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80"
+        className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 relative"
       >
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <motion.a
@@ -753,16 +911,27 @@ export default function Portfolio() {
           </motion.a>
           <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-200">
             {["About", "Projects", "Experience", "Skills", "Hobbies", "Contact"].map(
-              (item) => (
-                <motion.a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="hover:text-sky-300 transition-colors"
-                  whileHover={{ y: -1 }}
-                >
-                  {item}
-                </motion.a>
-              )
+              (item) => {
+                const sectionId = item.toLowerCase();
+                const isActive = activeSection === sectionId;
+                return (
+                  <motion.a
+                    key={item}
+                    href={`#${sectionId}`}
+                    className={`relative transition-colors ${
+                      isActive
+                        ? "text-sky-300"
+                        : "text-slate-200 hover:text-sky-300"
+                    }`}
+                    whileHover={{ y: -1 }}
+                  >
+                    {item}
+                    {isActive && (
+                      <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-sky-400 rounded-full" />
+                    )}
+                  </motion.a>
+                );
+              }
             )}
           </nav>
           <div className="flex items-center gap-3">
@@ -784,6 +953,12 @@ export default function Portfolio() {
               <FileText className="w-4 h-4" /> Resume
             </motion.a>
           </div>
+        </div>
+        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-slate-900/80 overflow-hidden">
+          <motion.div
+            className="h-full bg-sky-400"
+            style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }}
+          />
         </div>
       </motion.header>
 
@@ -820,7 +995,7 @@ export default function Portfolio() {
                 {SITE.tagline}
               </p>
 
-              <div className="flex items-center gap-2 text-xs text-slate-300">
+              <div className="flex items-center gap-2 text-xs text-slate-300 mt-4">
                 <MapPin className="w-4 h-4 text-sky-300" />
                 <a
                   href="https://www.google.com/maps/place/Gainesville,+FL"
@@ -833,10 +1008,15 @@ export default function Portfolio() {
               </div>
 
               <p className="text-sm md:text-base text-slate-200/90 leading-relaxed max-w-xl">
-                I study Computer Science with a focus on algorithms, data structures, and
-                how to turn data into something you can see and interact with. Recently,
-                that's meant geospatial dashboards, medical tooling, and accessibility-oriented
+                I study Computer Science with a focus on algorithms, data
+                structures, and how to turn data into something you can see and
+                interact with. Recently, that&apos;s meant geospatial
+                dashboards, medical tooling, and accessibility-oriented
                 interfaces.
+              </p>
+              <p className="text-sm md:text-base text-slate-200/90 leading-relaxed max-w-xl">
+                OPEN TO: Summer 2026 · Software / Data / IT / Geospatial
+                Internships
               </p>
 
               <div className="flex flex-wrap gap-3 pt-2">
@@ -876,6 +1056,7 @@ export default function Portfolio() {
                   className="relative w-full object-cover rounded-3xl border border-slate-700 shadow-[0_0_45px_rgba(15,23,42,1)]"
                   whileHover={{ scale: 1.02, rotate: 0.2 }}
                   transition={{ duration: 0.3 }}
+                  loading="lazy"
                 />
               </div>
             </motion.div>
@@ -949,6 +1130,7 @@ export default function Portfolio() {
                       src={edu.logo}
                       alt={edu.school}
                       className="w-12 h-12 object-contain rounded-xl"
+                      loading="lazy"
                     />
                   )}
                   <div className="flex-1">
@@ -968,7 +1150,9 @@ export default function Portfolio() {
                         {edu.honors}
                       </p>
                     )}
-                    <p className="text-[11px] text-slate-300">{edu.activities}</p>
+                    <p className="text-[11px] text-slate-300">
+                      {edu.activities}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -978,10 +1162,34 @@ export default function Portfolio() {
       </Section>
 
       <Section id="projects" title="Featured Projects" icon={Code2}>
-        <p className="text-sm text-slate-300 mb-6 max-w-3xl">
-          A subset of projects that represent how I like to work: combining algorithms and
-          data structures with visualization, spatial reasoning, and real users.
+        <p className="text-sm text-slate-300 mb-4 max-w-3xl">
+          A subset of projects that represent how I like to work: combining
+          algorithms and data structures with visualization, spatial reasoning,
+          and real users.
         </p>
+
+        <div className="flex flex-wrap gap-2 mb-6">
+          {PROJECT_FILTERS.map((filter) => {
+            const isActive = projectFilter === filter;
+            return (
+              <motion.button
+                key={filter}
+                type="button"
+                onClick={() => setProjectFilter(filter)}
+                className={`px-3 py-1.5 rounded-full text-[11px] border transition-colors ${
+                  isActive
+                    ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.5)]"
+                    : "bg-slate-950/80 border-slate-700 text-slate-100 hover:border-sky-400 hover:text-sky-200"
+                }`}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                {filter}
+              </motion.button>
+            );
+          })}
+        </div>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {visibleProjects.map((p, i) => (
             <motion.div
@@ -1024,6 +1232,7 @@ export default function Portfolio() {
                                   src={src}
                                   alt={`${p.name} screenshot`}
                                   className="w-full h-28 object-cover rounded-xl border border-slate-800 bg-slate-900"
+                                  loading="lazy"
                                 />
                               ))}
                             </div>
@@ -1032,20 +1241,24 @@ export default function Portfolio() {
                         {p.name === "Grade Track" && (
                           <ul className="list-disc list-inside space-y-1 text-slate-200/90">
                             <li>
-                              Full-stack analytics dashboard that turns CSV grade data into visual summaries.
+                              Full-stack analytics dashboard that turns CSV
+                              grade data into visual summaries.
                             </li>
                             <li>
-                              Dockerized environment so setup is a single command instead of a long checklist.
+                              Dockerized environment so setup is a single
+                              command instead of a long checklist.
                             </li>
                           </ul>
                         )}
                         {p.name === "Ability Bridge" && (
                           <ul className="list-disc list-inside space-y-1 text-slate-200/90">
                             <li>
-                              Head-pose cursor control, mouth-Morse typing, and facial gestures mapped to clicks.
+                              Head-pose cursor control, mouth-Morse typing, and
+                              facial gestures mapped to clicks.
                             </li>
                             <li>
-                              Tuned smoothing and thresholds to balance responsiveness with stability.
+                              Tuned smoothing and thresholds to balance
+                              responsiveness with stability.
                             </li>
                           </ul>
                         )}
@@ -1070,12 +1283,20 @@ export default function Portfolio() {
                         src={p.screenshots[0]}
                         alt={`${p.name} preview`}
                         className="w-full h-32 object-cover"
+                        loading="lazy"
                       />
                     </div>
                   )}
-                  <h3 className="text-sm font-semibold mb-1.5 text-slate-50">
-                    {p.name}
-                  </h3>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <h3 className="text-sm font-semibold text-slate-50">
+                      {p.name}
+                    </h3>
+                    {p.flagship && (
+                      <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-400/60 text-[10px] font-semibold text-amber-200">
+                        Core
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs text-slate-200/90 mb-3 leading-relaxed">
                     {p.blurb}
                   </p>
@@ -1091,7 +1312,9 @@ export default function Portfolio() {
                   </div>
                   {p.impact && (
                     <p className="text-[11px] text-slate-300 mb-3 leading-relaxed">
-                      <span className="font-semibold text-slate-50">Impact: </span>
+                      <span className="font-semibold text-slate-50">
+                        Impact:{" "}
+                      </span>
                       {p.impact}
                     </p>
                   )}
@@ -1122,27 +1345,34 @@ export default function Portfolio() {
             </motion.div>
           ))}
         </div>
-        <div className="mt-8 flex justify-center">
-          <motion.button
-            onClick={() => setShowExpandedProjects(!showExpandedProjects)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-700 rounded-full bg-slate-950/80 text-[11px] hover:border-sky-400 hover:text-sky-200 hover:bg-slate-900 transition-colors font-medium"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            {showExpandedProjects ? (
-              <>
-                <ChevronUp className="w-4 h-4" /> Show Fewer
-              </>
-            ) : (
-              <>
-                <ChevronDown className="w-4 h-4" /> View All Projects
-              </>
-            )}
-          </motion.button>
-        </div>
+
+        {filteredProjects.length > 3 && (
+          <div className="mt-8 flex justify-center">
+            <motion.button
+              onClick={() => setShowExpandedProjects(!showExpandedProjects)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-700 rounded-full bg-slate-950/80 text-[11px] hover:border-sky-400 hover:text-sky-200 hover:bg-slate-900 transition-colors font-medium"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {showExpandedProjects ? (
+                <>
+                  <ChevronUp className="w-4 h-4" /> Show Fewer
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" /> View All Projects
+                </>
+              )}
+            </motion.button>
+          </div>
+        )}
       </Section>
 
-      <Section id="experience" title="Experience & Involvement" icon={Briefcase}>
+      <Section
+        id="experience"
+        title="Experience & Involvement"
+        icon={Briefcase}
+      >
         <div className="space-y-10">
           <div>
             <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
@@ -1163,11 +1393,15 @@ export default function Portfolio() {
                       setModal({
                         title: x.role,
                         subtitle: x.org,
-                        eyebrow: `Experience · ${x.period}${x.location ? " • " + x.location : ""}`,
+                        eyebrow: `Experience · ${x.period}${
+                          x.location ? " • " + x.location : ""
+                        }`,
                         body: (
                           <div className="space-y-3">
                             <p>
-                              At <span className="font-semibold">{x.org}</span>, I worked as a{" "}
+                              At{" "}
+                              <span className="font-semibold">{x.org}</span>, I
+                              worked as a{" "}
                               <span className="font-semibold">{x.role}</span>
                               {x.location && <> based in {x.location}</>}.
                             </p>
@@ -1196,12 +1430,18 @@ export default function Portfolio() {
                           src={x.logo}
                           alt={x.org}
                           className="w-14 h-14 object-contain rounded-xl border border-slate-800/80 bg-slate-950/80"
+                          loading="lazy"
                         />
                       )}
                       <div className="flex-1">
                         <div className="text-[11px] text-sky-300 font-semibold mb-1">
                           {x.link ? (
-                            <a href={x.link} target="_blank" className="hover:underline">
+                            <a
+                              href={x.link}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="hover:underline"
+                            >
                               {x.org}
                             </a>
                           ) : (
@@ -1215,8 +1455,8 @@ export default function Portfolio() {
                           {x.period} • {x.location}
                         </div>
                         <ul className="space-y-1.5 text-xs text-slate-200 leading-relaxed">
-                          {x.bullets.map((b, j) => (
-                            <li key={j} className="flex gap-2">
+                          {x.bullets.slice(0, 2).map((b) => (
+                            <li key={b} className="flex gap-2">
                               <span className="mt-1 h-1 w-1 rounded-full bg-sky-400" />
                               <span>{b}</span>
                             </li>
@@ -1254,7 +1494,8 @@ export default function Portfolio() {
                           <div className="space-y-3">
                             <p>
                               Volunteer work with{" "}
-                              <span className="font-semibold">{x.org}</span> as a{" "}
+                              <span className="font-semibold">{x.org}</span> as
+                              a{" "}
                               <span className="font-semibold">{x.role}</span>.
                             </p>
                             <ul className="list-disc list-inside space-y-1 text-slate-200/90">
@@ -1282,12 +1523,18 @@ export default function Portfolio() {
                           src={x.logo}
                           alt={x.org}
                           className="w-10 h-10 object-contain rounded-xl border border-slate-800/80 bg-slate-950/80"
+                          loading="lazy"
                         />
                       )}
                       <div className="flex-1">
                         <div className="text-[11px] text-sky-300 font-semibold mb-1">
                           {x.link ? (
-                            <a href={x.link} target="_blank" className="hover:underline">
+                            <a
+                              href={x.link}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="hover:underline"
+                            >
                               {x.org}
                             </a>
                           ) : (
@@ -1297,7 +1544,9 @@ export default function Portfolio() {
                         <h4 className="font-semibold text-xs mb-1 text-slate-50">
                           {x.role}
                         </h4>
-                        <div className="text-[10px] text-slate-400 mb-1">{x.period}</div>
+                        <div className="text-[10px] text-slate-400 mb-1">
+                          {x.period}
+                        </div>
                         <p className="text-[11px] text-slate-200 leading-relaxed">
                           {x.bullets[0]}
                         </p>
@@ -1332,7 +1581,9 @@ export default function Portfolio() {
                         body: (
                           <div className="space-y-3">
                             <p>
-                              In <span className="font-semibold">{x.org}</span>, I serve as{" "}
+                              In{" "}
+                              <span className="font-semibold">{x.org}</span>, I
+                              serve as{" "}
                               <span className="font-semibold">{x.role}</span>.
                             </p>
                             <ul className="list-disc list-inside space-y-1 text-slate-200/90">
@@ -1360,12 +1611,18 @@ export default function Portfolio() {
                           src={x.logo}
                           alt={x.org}
                           className="w-10 h-10 object-contain rounded-xl border border-slate-800/80 bg-slate-950/80"
+                          loading="lazy"
                         />
                       )}
                       <div className="flex-1">
                         <div className="text-[11px] text-sky-300 font-semibold mb-1">
                           {x.link ? (
-                            <a href={x.link} target="_blank" className="hover:underline">
+                            <a
+                              href={x.link}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="hover:underline"
+                            >
                               {x.org}
                             </a>
                           ) : (
@@ -1375,7 +1632,9 @@ export default function Portfolio() {
                         <h4 className="font-semibold text-xs mb-1 text-slate-50">
                           {x.role}
                         </h4>
-                        <div className="text-[10px] text-slate-400 mb-1">{x.period}</div>
+                        <div className="text-[10px] text-slate-400 mb-1">
+                          {x.period}
+                        </div>
                         <p className="text-[11px] text-slate-200 leading-relaxed">
                           {x.bullets[0]}
                         </p>
@@ -1420,7 +1679,9 @@ export default function Portfolio() {
                           onMouseEnter={() =>
                             setActiveSkill({ group: g.group, item: s })
                           }
-                          onFocus={() => setActiveSkill({ group: g.group, item: s })}
+                          onFocus={() =>
+                            setActiveSkill({ group: g.group, item: s })
+                          }
                           className={`px-3 py-1.5 rounded-full text-[11px] font-mono border transition-colors ${
                             isActive
                               ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.5)]"
@@ -1453,7 +1714,9 @@ export default function Portfolio() {
                   </p>
                   {activeSkill.item.usedIn && (
                     <p className="text-[11px] text-slate-300 leading-relaxed">
-                      <span className="font-semibold text-slate-100">Used in: </span>
+                      <span className="font-semibold text-slate-100">
+                        Used in:{" "}
+                      </span>
                       {activeSkill.item.usedIn}
                     </p>
                   )}
@@ -1464,8 +1727,8 @@ export default function Portfolio() {
                     Hover a skill to see how I use it
                   </h3>
                   <p className="text-[11px] text-slate-200">
-                    Move your cursor over any skill pill to see where it shows up in my
-                    projects or coursework.
+                    Move your cursor over any skill pill to see where it shows
+                    up in my projects or coursework.
                   </p>
                 </div>
               )}
@@ -1475,9 +1738,7 @@ export default function Portfolio() {
       </Section>
 
       <Section id="hobbies" title="Hobbies" icon={Award}>
-        <p className="text-sm text-slate-300 mb-6 max-w-3xl">
-          A few things I do when I&apos;m not debugging, mapping, or refreshing grades.
-        </p>
+        
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {HOBBIES.map((hobby, i) => (
             <motion.div
@@ -1494,7 +1755,7 @@ export default function Portfolio() {
                     title: hobby.name,
                     subtitle: "Hobby",
                     eyebrow: "Outside of code",
-                    tags: hobby.tags,
+                    
                     body: (
                       <div className="space-y-3">
                         <p>{hobby.blurb}</p>
@@ -1510,9 +1771,7 @@ export default function Portfolio() {
                   })
                 }
               >
-                <div className="text-2xl">
-                  {hobby.emoji}
-                </div>
+                <div className="text-2xl">{hobby.emoji}</div>
                 <div>
                   <h3 className="text-sm font-semibold text-slate-50 mb-1">
                     {hobby.name}
@@ -1522,14 +1781,7 @@ export default function Portfolio() {
                   </p>
                 </div>
                 <div className="mt-auto flex flex-wrap gap-1.5">
-                  {hobby.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 py-0.5 rounded-full bg-slate-950/80 border border-slate-700 text-[10px] text-slate-200"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  
                 </div>
               </Card>
             </motion.div>
@@ -1551,7 +1803,8 @@ export default function Portfolio() {
                   View My Photo Gallery
                 </h3>
                 <p className="text-xs text-sky-100 mb-3 leading-relaxed max-w-md">
-                  Occasional snapshots from projects, events, and the places I map.
+                  Occasional snapshots from projects, events, and the places I
+                  map.
                 </p>
                 <div className="inline-flex items-center gap-2 text-[11px] font-semibold text-white">
                   <span>Explore Photos</span>
@@ -1568,13 +1821,19 @@ export default function Portfolio() {
         <Card className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-slate-700/80">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-xl font-semibold mb-3 text-white">Let's Connect</h3>
+              <h3 className="text-xl font-semibold mb-3 text-white">
+                Let&apos;s Connect
+              </h3>
               <p className="mb-5 text-sm text-slate-200 leading-relaxed">
                 {CONTACT.note}
               </p>
               <div className="flex flex-wrap gap-3">
                 {[
-                  { href: `mailto:${SITE.links.email}`, icon: Mail, label: "Email Me" },
+                  {
+                    href: `mailto:${SITE.links.email}`,
+                    icon: Mail,
+                    label: "Email Me",
+                  },
                   { href: SITE.links.linkedin, icon: Linkedin, label: "LinkedIn" },
                   { href: SITE.links.github, icon: Github, label: "GitHub" },
                   { href: SITE.links.instagram, icon: Instagram, label: "Instagram" },
@@ -1592,14 +1851,36 @@ export default function Portfolio() {
               </div>
             </div>
             <div className="space-y-3 text-xs text-slate-100">
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5" />
-                <span>{SITE.links.email}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5" />
-                <span>{SITE.links.phone}</span>
-              </div>
+              <button
+                type="button"
+                onClick={() => handleCopy(SITE.links.email, "email")}
+                className="flex items-center gap-3 group"
+              >
+                <Mail className="w-5 h-5 group-hover:text-sky-300 transition-colors" />
+                <span className="flex items-center gap-2">
+                  {SITE.links.email}
+                  {copiedField === "email" && (
+                    <span className="text-[10px] text-emerald-300">
+                      Copied
+                    </span>
+                  )}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleCopy(SITE.links.phone, "phone")}
+                className="flex items-center gap-3 group"
+              >
+                <Phone className="w-5 h-5 group-hover:text-sky-300 transition-colors" />
+                <span className="flex items-center gap-2">
+                  {SITE.links.phone}
+                  {copiedField === "phone" && (
+                    <span className="text-[10px] text-emerald-300">
+                      Copied
+                    </span>
+                  )}
+                </span>
+              </button>
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5" />
                 <a
@@ -1613,7 +1894,12 @@ export default function Portfolio() {
               </div>
               <div className="flex items-center gap-3">
                 <Globe className="w-5 h-5" />
-                <a href={SITE.links.website} className="hover:underline">
+                <a
+                  href={SITE.links.website}
+                  className="hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {SITE.links.website}
                 </a>
               </div>
