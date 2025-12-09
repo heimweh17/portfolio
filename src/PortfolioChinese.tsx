@@ -26,8 +26,8 @@ import {
 const SITE = {
   tagline: "佛罗里达大学计算机科学专业 · 地理学辅修",
   location: "Gainesville, FL",
-  headline: "Alex Liu",
-  name: "Alex Liu",
+  headline: "刘昊洲",
+  name: "刘昊洲",
   links: {
     github: "https://github.com/heimweh17",
     linkedin: "https://www.linkedin.com/in/alex-liu7/",
@@ -889,8 +889,8 @@ export default function Portfolio() {
             className="flex items-center gap-2 font-medium text-xs tracking-wide text-slate-100"
             whileHover={{ scale: 1.03 }}
           >
-            <span className="hidden sm:inline">Alex Liu · 个人主页</span>
-            <span className="sm:hidden">Alex Liu</span>
+            <span className="hidden sm:inline">刘昊洲 · 个人主页</span>
+            <span className="sm:hidden">刘昊洲</span>
           </motion.a>
           <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-200">
             {NAV_ITEMS.map(({ id, label }) => {
@@ -1027,7 +1027,7 @@ export default function Portfolio() {
                 />
                 <motion.img
                   src="/me.jpg"
-                  alt="Alex Liu"
+                  alt="刘昊洲"
                   className="relative w-full object-cover rounded-3xl border border-slate-700 shadow-[0_0_45px_rgba(15,23,42,1)]"
                   whileHover={{ scale: 1.02, rotate: 0.2 }}
                   transition={{ duration: 0.3 }}
