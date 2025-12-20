@@ -21,10 +21,12 @@ import {
   Languages,
   Camera,
   X,
+  Zap, // Added icon for "Highlights"
 } from "lucide-react";
 
+// --- SITE CONFIGURATION ---
 const SITE = {
-  tagline: "CS @ University of Florida • Geography Minor",
+  tagline: "CS Major @ UF · Geography Minor",
   location: "Gainesville, FL",
   headline: "Alex Liu",
   name: "Alex Liu",
@@ -43,20 +45,20 @@ const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
 const ABOUT = {
   blurb:
-    "Computer Science student at the University of Florida who likes problems where code, data, and geography intersect. I enjoy turning messy real-world information into tools that feel visual and practical—whether that’s a map, a dashboard, or a small script that saves someone time. Authorized to work in the US for any employer; no current or future visa sponsorship needed.",
+    "I am a Computer Science student at the University of Florida, passionate about the intersection of code, data, and geography. I enjoy transforming messy real-world information into intuitive tools—whether it's interactive maps, analytics dashboards, or automation scripts. I am authorized to work in the U.S. and do not require visa sponsorship now or in the future.",
   highlights: [
-    "Core focus: data structures, algorithms, systems, and full-stack development",
-    "Tech I reach for most: C++, Python, TypeScript, React, Flask, SQL, Docker",
-    "Interest areas: geospatial (GIS), data-driven systems, accessibility & HCI",
+    "Core Focus: Data Structures, Algorithms, Systems, & Full Stack Dev",
+    "Tech Stack: C++, Python, TypeScript, React, Flask, SQL, Docker",
+    "Interests: Geospatial (GIS), Data-Driven Systems, Accessibility & HCI",
   ],
 };
 
 const EDUCATION = [
   {
     school: "University of Florida",
-    degree: "B.S. in Computer Science (Minor in Geography)",
+    degree: "B.S. Computer Science (Minor in Geography)",
     gpa: "GPA 3.80/4.00",
-    period: "2024 – 2028 (expected)",
+    period: "2024 – 2028 (Expected)",
     honors: "Dean's List",
     activities: "UF SASE · UF CASA",
     logo: "/logos/uf_logo.png",
@@ -77,9 +79,9 @@ const EXPERIENCE = [
     period: "Jun 2022 – Jul 2022",
     location: "Gainesville, FL",
     bullets: [
-      "Planned and taught math and chess lessons for 30+ elementary students, breaking ideas into step-by-step examples.",
-      "Adjusted weekly lesson plans based on how students responded, similar to iterating on a technical project.",
-      "Collaborated with a 6-person team to grade work, give feedback, and keep students engaged in problem-solving.",
+      "Led and instructed a class of 30+ students in math and chess, breaking down abstract concepts into actionable steps.",
+      "Refined lesson plans weekly based on student feedback, similar to iterating on technical requirements.",
+      "Collaborated with a 6-person team to grade assignments and provide feedback, fostering critical thinking.",
     ],
     link: "http://www.logiclabgainesville.com/",
   },
@@ -89,9 +91,9 @@ const EXPERIENCE = [
     period: "Jan 2025 – May 2025",
     location: "Gainesville, FL",
     bullets: [
-      "Performed traditional lion and dragon dance at university and community events for audiences of 300+.",
-      "Practiced timing, communication, and coordination to keep complex routines in sync under pressure.",
-      "Helped with backstage logistics and transitions between sets to keep events running smoothly.",
+      "Performed traditional Lion and Dragon dance for 300+ attendees at university and community cultural events.",
+      "Practiced rhythm, team communication, and synchronization under high-pressure performance conditions.",
+      "Assisted with backstage logistics and stage transitions to ensure smooth event flow.",
     ],
     logo: "/logos/jiating_logo.jpg",
     link: "https://jiatingliondragon.com/",
@@ -100,13 +102,13 @@ const EXPERIENCE = [
 
 const VOLUNTEER = [
   {
-    role: "Mapper",
+    role: "Volunteer Mapper",
     org: "OpenStreetMap",
     period: "Sep 2020 – Present",
     bullets: [
-      "Contribute map edits focused on roads, POIs, and land use in different regions worldwide.",
-      "Cross-check field observations, satellite imagery, and local context before updating geometry or tags.",
-      "Enjoy watching small edits propagate into better routing and analysis in downstream apps.",
+      "Maintained map data for roads, POIs, and land use across various regions.",
+      "Cross-referenced satellite imagery, street view, and local knowledge to validate geometry and tags.",
+      "Contributed to the open-source data ecosystem used by downstream navigation and humanitarian applications.",
     ],
     logo: "/logos/osm_logo.svg",
     link: "https://www.openstreetmap.org/",
@@ -116,8 +118,8 @@ const VOLUNTEER = [
     org: "Buchholz Math Team",
     period: "Jun 2022 – Jul 2022 ; Jun 2023 – Jul 2023",
     bullets: [
-      "Taught elementary and middle school students math during a summer camp, helping them strengthen problem-solving, logical reasoning, and critical thinking.",
-      "Prepared handouts, graded practice problems, and helped students debug their own approaches instead of just giving answers.",
+      "Tutored elementary and middle school students in competitive mathematics and logic.",
+      "Created handouts and graded practice sets, focusing on guiding students to debug their own thought processes.",
     ],
     logo: "/logos/bhs_logo.png",
     link: "https://buchholzmathteam.org/",
@@ -130,7 +132,7 @@ const LEADERSHIPS = [
     org: "UF Society of Asian Scientists & Engineers",
     period: "Aug 2025 – Present",
     bullets: [
-      "Support professional and technical events for 100+ members, handling logistics, communication, and on-site coordination for events up to 150+ attendees.",
+      "Assisted in planning professional and technical events for 100+ members, managing logistics and communication.",
     ],
     logo: "/logos/sase_logo.jpg",
     link: "https://ufsase.com/",
@@ -140,22 +142,27 @@ const LEADERSHIPS = [
     org: "UF Chinese American Student Association",
     period: "2024 – Present",
     bullets: [
-      "Help design and run cultural programming that highlights Chinese American identity and builds community on campus.",
+      "Helped plan and execute cultural events, fostering community and cultural awareness on campus.",
     ],
     logo: "/logos/casa_logo.jpg",
     link: "https://orgs.studentinvolvement.ufl.edu/Organization/Chinese-American-Student-Association",
   },
 ];
 
+// --- UPDATED PROJECTS WITH RESUME HIGHLIGHTS ---
 const PROJECTS = [
   {
-    name: "Geography Dashboard",
+    name: "GeoDashboard",
     flagship: true,
-    blurb:
-      "Interactive dashboard that pulls live OpenStreetMap data to compare cities and explore amenities on a map.",
-    impact:
-      "Lets users search cities worldwide, toggle layers, and inspect 10k+ OSM features with smooth panning and filtering.",
-    tech: ["React", "Leaflet", "Supabase(SQL)", "Vite", "TypeScript"],
+    blurb: "A full-stack geospatial analytics platform using microservices to separate AI inference from core mapping.",
+    // Highlights appear in the modal when clicked
+    highlights: [
+      "Engineered a microservices architecture using Docker to decouple high-load AI inference from core spatial analytics.",
+      "Systematized the release lifecycle via GitHub Actions (CI/CD), automating deployment to Railway.",
+      "Integrated Gemini AI for spatial pattern interpretation, enforcing database-level rate limiting to control costs.",
+      "Visualized city-scale datasets with sub-second layer switching and DBSCAN clustering.",
+    ],
+    tech: ["React", "FastAPI", "PostgreSQL", "Docker", "GitHub Actions"],
     links: {
       demo: "https://thegeodashboard.vercel.app/",
       code: "https://github.com/heimweh17/Geo-Dashboard",
@@ -169,17 +176,18 @@ const PROJECTS = [
   {
     name: "UF Health SmartScribe",
     flagship: true,
-    blurb:
-      "AI-powered medical scribe that turns doctor–patient conversations into structured SOAP notes.",
-    impact:
-      "Streams transcripts with speaker diarization and assembles editable SOAP notes, cutting manual documentation time in mock workflows.",
+    blurb: "Hackathon Prototype: Real-time AI medical documentation system built in 24 hours.",
+    highlights: [
+      "Engineered a real-time transcription pipeline using Deepgram and Gemini API to generate structured SOAP notes.",
+      "Reduced simulated administrative documentation time by ~60% with sub-5-second analysis latency.",
+      "Architected a secure backend using Supabase to manage patient records and visit history.",
+    ],
     tech: [
-      "JavaScript",
-      "HTML/CSS",
+      "Node.js",
       "Supabase",
-      "PostgreSQL",
-      "DeepGram API",
       "Gemini API",
+      "Deepgram API",
+      "HTML/JS",
     ],
     links: { demo: "", code: "https://github.com/heimweh17/SmartScribe" },
     screenshots: [
@@ -191,11 +199,13 @@ const PROJECTS = [
   {
     name: "Grade Track",
     flagship: true,
-    blurb:
-      "Analytics dashboard that ingests CSV grade exports and visualizes distributions, trends, and at-risk segments.",
-    impact:
-      "Dockerized dev environment makes setup a single command and turns raw course data into interactive charts in seconds.",
-    tech: ["Flask", "React", "SQLAlchemy", "PostgreSQL", "Docker"],
+    blurb: "Full-stack analytics dashboard for visualizing student performance trends.",
+    highlights: [
+      "Orchestrated containerized deployment using Docker Compose, reducing local setup time by 85%.",
+      "Developed a Flask + React architecture to visualize statistical metrics (median, std dev) via Recharts.",
+      "Implemented robust CSV parsing to transform raw gradebook data into interactive visual insights.",
+    ],
+    tech: ["Flask", "React", "Docker", "PostgreSQL", "Recharts"],
     links: { demo: "", code: "https://github.com/heimweh17/Grade-Track" },
     screenshots: ["/screenshots/gradetrack-1.png"],
     categories: ["Web & Data"],
@@ -203,31 +213,36 @@ const PROJECTS = [
   {
     name: "Ability Bridge",
     flagship: true,
-    blurb:
-      "Assistive toolkit that provides head-pose cursor control, mouth-Morse typing, and facial-gesture clicking.",
-    impact:
-      "Runs at ~30 FPS with <100 ms latency and hands-free interaction, exploring how computer vision can support accessibility use cases.",
+    blurb: "Hands-free accessibility interface controlled via facial gestures.",
+    highlights: [
+      "Constructed a vision-based controller processing 14,000+ facial landmarks/sec for precise cursor mapping.",
+      "Optimized signal processing (exponential smoothing) to achieve 30 FPS with <100ms latency.",
+      "Enabled accessible interactions via head-pose tracking, mouth-motion Morse code, and blink detection.",
+    ],
     tech: ["Python", "OpenCV", "MediaPipe", "PyAutoGUI"],
     links: { demo: "", code: "https://github.com/heimweh17/Ability-Bridge" },
     categories: ["Health & Accessibility", "C++ / Algorithms"],
   },
   {
     name: "Minesweeper (SFML)",
-    blurb:
-      "C++ Minesweeper with recursive reveal, flags, pause/debug modes, timer, and a persistent leaderboard.",
-    impact:
-      "Uses modular OOP design and file I/O for top-5 scores; handles ~350 tiles per board with robust game-state transitions.",
+    blurb: "Classic Minesweeper recreated in C++ with recursive mechanics and leaderboards.",
+    highlights: [
+      "Designed a modular OOP architecture separating game logic from SFML rendering.",
+      "Implemented recursive flood-fill algorithms to handle tile clearing efficiency.",
+      "Managed game state persistence and file I/O for high-score tracking.",
+    ],
     tech: ["C++", "SFML"],
     links: { demo: "", code: "https://github.com/heimweh17/Minesweeper-game" },
     categories: ["C++ / Algorithms"],
   },
   {
-    name: "Bin Packing: Best-Fit vs First-Fit",
-    blurb:
-      "Algorithmic comparison framework that processes 100k+ rectangles to study runtime and packing efficiency trade-offs.",
-    impact:
-      "Provides a reusable experiment harness to test heuristics, collect metrics, and visualize the performance of different strategies.",
-    tech: ["C++"],
+    name: "Bin Packing Analysis",
+    blurb: "Performance comparison of Best-Fit vs First-Fit algorithms on large datasets.",
+    highlights: [
+      "Built a reusable testing framework to analyze time complexity and space efficiency.",
+      "Processed 100,000+ randomized rectangle inputs to visualize heuristic trade-offs.",
+    ],
+    tech: ["C++", "Algorithm"],
     links: {
       demo: "",
       code: "https://github.com/heimweh17/best-fit-fitst-fit",
@@ -235,21 +250,23 @@ const PROJECTS = [
     categories: ["C++ / Algorithms"],
   },
   {
-    name: "AVL Tree Data Structure",
-    blurb:
-      "Self-balancing AVL tree with insert, delete, search, and rotations for maintaining ordered student records.",
-    impact:
-      "Handles 1,000+ operations while preserving height balance; validated with a custom test suite that targets edge cases.",
-    tech: ["C++"],
+    name: "AVL Tree Implementation",
+    blurb: "Self-balancing Binary Search Tree built from scratch.",
+    highlights: [
+      "Implemented complex tree rotations (left/right) to maintain O(log n) lookup times.",
+      "Validated robustness through 1,000+ random insertion/deletion test cases.",
+    ],
+    tech: ["C++", "Data Structures"],
     links: { code: "https://github.com/heimweh17/AVL-TREE" },
     categories: ["C++ / Algorithms"],
   },
   {
     name: "Sudoku Game",
-    blurb:
-      "Python-based Sudoku game with multiple difficulty levels, validity checking, and smooth UI interactions.",
-    impact:
-      "Implements clean game-state management, clear error feedback, and reset controls with a focus on UX and correctness.",
+    blurb: "Python-based Sudoku with backtracking generation and validation.",
+    highlights: [
+      "Implemented a backtracking algorithm to generate valid puzzles and solve boards.",
+      "Designed a clean UI with real-time input validation and error feedback.",
+    ],
     tech: ["Python"],
     links: { code: "https://github.com/heimweh17/suduku-project" },
     categories: ["C++ / Algorithms"],
@@ -269,42 +286,42 @@ const HOBBIES = [
   {
     name: "Badminton",
     emoji: "🏸",
-    blurb: "Fast rallies, light trash talk, good cardio.",
+    blurb: "Fast-paced, communicative, and a great workout.",
     details: [
-      "Usually play doubles and think about rotations like a small strategy game.",
-      "Best way to reset after a long coding or study session.",
+      "I usually play doubles, treating positioning and rotation like a mini strategy game.",
+      "My favorite way to reset after a long day of coding.",
     ],
-    tags: ["doubles", "footwork", "after-class reset"],
+    tags: ["Doubles", "Footwork", "Reset"],
   },
   {
     name: "Pickleball",
     emoji: "🥒",
-    blurb: "Easy to learn, secretly very competitive.",
+    blurb: "Easy to start, but surprisingly competitive.",
     details: [
-      "Play mostly casual games but still care a lot about placement and spin.",
-      "Fun way to meet people outside CS and tech circles.",
+      "Mostly casual games, though I get particular about spin and placement.",
+      "A great way to meet people outside the CS bubble.",
     ],
-    tags: ["casual games", "kitchen line", "new friends"],
+    tags: ["Casual", "Kitchen Line", "Social"],
   },
   {
-    name: "Photography Walks",
+    name: "Photo Walks",
     emoji: "📷",
-    blurb: "Walk around, spot details, mentally edit the map.",
+    blurb: "Walking and shooting, while mentally mapping the city.",
     details: [
-      "Notice street details, signage, and patterns you never see on satellite imagery.",
-      "Often connects back to OpenStreetMap edits and geospatial ideas.",
+      "I notice street details, signage, and patterns that aren't visible on satellite maps.",
+      "Often leads to OpenStreetMap edits later.",
     ],
-    tags: ["street details", "city patterns", "OSM brain"],
+    tags: ["Street View", "Urban Texture", "OSM"],
   },
   {
-    name: "Road Trips & Driving",
+    name: "Road Trips",
     emoji: "🚗",
-    blurb: "Long drives, playlists, watching the landscape change.",
+    blurb: "Long drives, playlists, and changing landscapes.",
     details: [
-      "Like planning routes that balance efficiency with interesting stops.",
-      "Good time for audiobooks, podcasts, or quietly thinking about projects.",
+      "I enjoy balancing efficiency with 'scenic detours' when planning routes.",
+      "Perfect time for audiobooks, podcasts, or thinking through project ideas.",
     ],
-    tags: ["highways", "audiobooks", "scenic detours"],
+    tags: ["Highways", "Audiobooks", "Detours"],
   },
 ];
 
@@ -327,148 +344,129 @@ const SKILLS: SkillGroup[] = [
     items: [
       {
         name: "C++",
-        blurb:
-          "Primary language for data structures, algorithms, and systems-heavy projects.",
-        usedIn:
-          "AVL Tree, Minesweeper, Bin Packing heuristics, PageRank assignments.",
+        blurb: "My primary language for data structures, algorithms, and systems programming.",
+        usedIn: "AVL Tree, Minesweeper, Bin Packing, PageRank assignments.",
       },
       {
         name: "Python",
-        blurb:
-          "Go-to for quick experiments, scripting, and computer vision work.",
-        usedIn: "Ability Bridge, Sudoku, smaller data scripts.",
+        blurb: "Go-to for scripting, computer vision, and quick experiments.",
+        usedIn: "Ability Bridge, Sudoku, Data Analysis scripts.",
       },
       {
         name: "TypeScript",
-        blurb:
-          "Used for front-end safety and better DX in React-based dashboards.",
-        usedIn: "Geography Dashboard and portfolio site.",
+        blurb: "Used for type safety and better DX in React projects.",
+        usedIn: "GeoDashboard, Portfolio Website.",
       },
       {
         name: "SQL",
-        blurb:
-          "Comfortable designing schemas and writing queries for analytics and apps.",
-        usedIn: "Grade Track, SmartScribe, Supabase-backed projects.",
+        blurb: "Designing schemas and writing queries for backend analysis.",
+        usedIn: "Grade Track, SmartScribe, Supabase projects.",
       },
       {
         name: "Java",
-        blurb:
-          "Used in coursework and for understanding strongly-typed OOP patterns.",
+        blurb: "Used in coursework to understand strict OOP patterns.",
       },
       {
         name: "RISC-V",
-        blurb:
-          "Used in low-level assignments to understand how code maps to hardware.",
+        blurb: "Assembly language used to understand hardware-software mapping.",
       },
     ],
   },
   {
-    group: "Frameworks",
+    group: "Frameworks & Tools",
     icon: Code2,
     items: [
       {
         name: "React",
-        blurb: "Default choice for interactive UIs and dashboards.",
-        usedIn: "Geo Dashboard, portfolio, Grade Track frontend.",
+        blurb: "Preferred library for building interactive UIs and dashboards.",
+        usedIn: "GeoDashboard, Portfolio, Grade Track Frontend.",
       },
       {
         name: "Flask",
-        blurb:
-          "Simple but powerful API/backend framework for data and analytics apps.",
-        usedIn: "Grade Track backend.",
+        blurb: "Lightweight backend framework for APIs and data processing.",
+        usedIn: "Grade Track Backend.",
       },
       {
         name: "FastAPI",
-        blurb: "Used for quick JSON APIs with type hints and auto docs.",
+        blurb: "High-performance framework for building typed JSON APIs.",
+        usedIn: "GeoDashboard Backend.",
       },
       {
-        name: "Node",
-        blurb: "Backend glue for hackathons and quick prototypes.",
-        usedIn: "SmartScribe and small utilities.",
+        name: "Node.js",
+        blurb: "Backend logic for hackathons and scripts.",
+        usedIn: "SmartScribe.",
       },
       {
         name: "Vite",
-        blurb:
-          "Bundler of choice for dev speed and a clean TS/React setup.",
-        usedIn: "Geo Dashboard and experiments.",
+        blurb: "Fast build tool, my default for React + TS projects.",
+        usedIn: "GeoDashboard.",
       },
       {
         name: "Tailwind",
-        blurb:
-          "Utility-first CSS to move fast while still keeping design consistent.",
-        usedIn: "Portfolio UI and dashboards.",
+        blurb: "Utility-first CSS for rapid, consistent styling.",
+        usedIn: "Portfolio, Dashboards.",
       },
     ],
   },
   {
-    group: "Data & Infra",
+    group: "Data & Infrastructure",
     icon: Cpu,
     items: [
       {
         name: "PostgreSQL",
-        blurb: "Favorite relational database for structured data projects.",
-        usedIn: "SmartScribe, Grade Track, Supabase-backed projects.",
-      },
-      {
-        name: "SQLite",
-        blurb: "Great for small experiments and local data storage.",
+        blurb: "Reliable relational database for structured data.",
+        usedIn: "SmartScribe, Grade Track, GeoDashboard.",
       },
       {
         name: "Docker",
-        blurb: "Used to keep dev environments reproducible.",
-        usedIn: "Grade Track stack and some local dev setups.",
+        blurb: "Containerization to ensure consistent environments.",
+        usedIn: "GeoDashboard, Grade Track.",
+      },
+      {
+        name: "GitHub Actions",
+        blurb: "CI/CD for automated testing and deployment.",
+        usedIn: "GeoDashboard.",
       },
       {
         name: "Git",
-        blurb:
-          "Daily driver for version control and collaboration.",
-      },
-      {
-        name: "CI",
-        blurb:
-          "Comfortable wiring up simple pipelines for testing and builds.",
+        blurb: "Version control and team collaboration.",
       },
       {
         name: "Grafana",
-        blurb:
-          "Used for visualizing metrics and getting a feel for dashboards.",
+        blurb: "Visualization tools for system metrics.",
       },
     ],
   },
   {
-    group: "Domains",
+    group: "Domains & Concepts",
     icon: Code2,
     items: [
       {
         name: "Algorithms",
-        blurb:
-          "Interested in how choices trade off between runtime, memory, and simplicity.",
-        usedIn: "Bin packing, AVL trees, homework and contest-style problems.",
+        blurb: "Analyzing trade-offs between time, space, and implementation complexity.",
+        usedIn: "Bin Packing, AVL Trees, LeetCode style problems.",
       },
       {
         name: "Data Structures",
-        blurb:
-          "Enjoy implementing trees, graphs, and custom structures from scratch.",
-        usedIn: "AVL tree project and path-finding style problems.",
+        blurb: "Implementing trees, graphs, and custom structures from scratch.",
+        usedIn: "AVL Tree, Pathfinding.",
       },
       {
         name: "Geospatial (GIS)",
-        blurb:
-          "Where CS and geography intersect into maps, routing, and spatial reasoning.",
-        usedIn: "OpenStreetMap edits and Geo Dashboard.",
+        blurb: "The intersection of CS and Geography: Maps, spatial queries.",
+        usedIn: "OpenStreetMap, GeoDashboard.",
       },
       {
         name: "Computer Vision",
-        blurb:
-          "Interested in camera-based interaction and accessibility.",
-        usedIn: "Ability Bridge and related prototypes.",
+        blurb: "Camera-based interaction and accessibility tools.",
+        usedIn: "Ability Bridge.",
       },
     ],
   },
 ];
 
 const CONTACT = {
-  note: "Open to internships for Summer 2026, especially roles involving backend systems, data, IT, or geospatial applications. Always happy to talk about maps, infrastructure, accessibility, or projects you’re working on.",
+  note: "I am open to Summer 2026 internship opportunities, specifically in Software Engineering, Backend Systems, or Geospatial roles. I'm also happy to chat about maps, infrastructure, accessibility, or whatever you are building.",
 };
 
 type ModalLink = {
@@ -504,41 +502,44 @@ const DetailModal = ({
           onClick={onClose}
         >
           <motion.div
-            className="max-w-xl w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-700/80 rounded-2xl p-6 shadow-[0_0_40px_rgba(15,23,42,0.9)]"
+            className="max-w-xl w-full bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-700/80 rounded-2xl p-6 shadow-[0_0_50px_rgba(15,23,42,0.9)] relative overflow-hidden"
             initial={{ scale: 0.9, y: 20, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.9, y: 10, opacity: 0 }}
-            transition={{ duration: 0.18 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 mb-3">
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex items-start justify-between gap-4 mb-3 relative z-10">
               <div className="space-y-1">
                 {modal.eyebrow && (
                   <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-300 uppercase">
                     {modal.eyebrow}
                   </div>
                 )}
-                <h2 className="text-lg font-semibold text-slate-50">
+                <h2 className="text-xl font-bold text-slate-50 tracking-tight">
                   {modal.title}
                 </h2>
                 {modal.subtitle && (
-                  <p className="text-xs text-slate-300">{modal.subtitle}</p>
+                  <p className="text-xs text-slate-400 font-mono">{modal.subtitle}</p>
                 )}
               </div>
               <button
                 onClick={onClose}
-                className="shrink-0 w-8 h-8 rounded-full border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-sky-300 hover:border-sky-400 transition-colors"
+                className="shrink-0 w-8 h-8 rounded-full border border-slate-700/80 flex items-center justify-center text-slate-400 hover:text-sky-300 hover:border-sky-400/50 hover:bg-slate-800 transition-all"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {modal.tags && modal.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
+              <div className="flex flex-wrap gap-1.5 mb-5 relative z-10">
                 {modal.tags.map((t) => (
                   <span
                     key={t}
-                    className="px-2.5 py-1 rounded-full bg-slate-950/80 border border-slate-700 text-[10px] font-mono text-slate-100"
+                    className="px-2.5 py-0.5 rounded-full bg-slate-800/50 border border-slate-700/50 text-[10px] font-medium text-slate-300"
                   >
                     {t}
                   </span>
@@ -546,12 +547,12 @@ const DetailModal = ({
               </div>
             )}
 
-            <div className="mb-4 text-sm text-slate-200 space-y-3">
+            <div className="mb-6 text-sm text-slate-200 space-y-3 relative z-10 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               {modal.body}
             </div>
 
             {modal.links && modal.links.length > 0 && (
-              <div className="flex flex-wrap gap-3 pt-3 border-t border-slate-800/80">
+              <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-800/80 relative z-10">
                 {modal.links.map((l) => {
                   const Icon = l.icon;
                   return (
@@ -560,7 +561,7 @@ const DetailModal = ({
                       href={l.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold text-sky-300 hover:text-sky-100 hover:bg-slate-900/80 border border-slate-700/80"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-300 border border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-400/40 transition-all"
                     >
                       {Icon && <Icon className="w-3.5 h-3.5" />}
                       <span>{l.label}</span>
@@ -595,12 +596,12 @@ const Section = ({
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.45 }}
+      transition={{ duration: 0.5 }}
     >
       <div className="flex items-center gap-3 mb-8">
-        <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-4 py-1 border border-slate-700/80 shadow-[0_0_30px_rgba(56,189,248,0.25)]">
-          {Icon && <Icon className="w-4 h-4 text-sky-300" />}
-          <span className="text-[11px] font-semibold tracking-[0.18em] text-slate-200 uppercase">
+        <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-4 py-1.5 border border-slate-700/80 shadow-[0_0_30px_rgba(56,189,248,0.15)]">
+          {Icon && <Icon className="w-4 h-4 text-sky-400" />}
+          <span className="text-[11px] font-bold tracking-[0.15em] text-slate-200 uppercase">
             {title}
           </span>
         </div>
@@ -626,13 +627,18 @@ const Card = ({
   const clickable = Boolean(onClick);
   return (
     <motion.div
+      // Enhanced Interaction: Glow effect and lift on hover
       whileHover={
         hover
-          ? { y: -3, scale: 1.01, boxShadow: "0 0 40px rgba(56,189,248,0.25)" }
+          ? { 
+              y: -4, 
+              borderColor: "rgba(56,189,248,0.4)", // Sky-400 glow
+              boxShadow: "0 10px 40px -10px rgba(56,189,248,0.15)" 
+            }
           : {}
       }
       whileTap={clickable ? { scale: 0.98, y: 0 } : {}}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
       onClick={onClick}
       className={`bg-gradient-to-br from-slate-950/80 via-slate-900/80 to-slate-950/90 border border-slate-800/80 rounded-2xl p-6 shadow-[0_0_20px_rgba(15,23,42,0.8)] ${
         clickable ? "cursor-pointer" : ""
@@ -668,7 +674,7 @@ function MessageForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.message.trim()) {
-      setError("Please write a message before sending.");
+      setError("Please write a message first.");
       setStatus("error");
       return;
     }
@@ -695,62 +701,61 @@ function MessageForm() {
       }
     } catch {
       setStatus("error");
-      setError("Network error. Please try again later.");
+      setError("Network error. Please try again.");
     }
   };
 
   return (
     <Card className="mt-8 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-slate-700/80">
       <div className="mb-5">
-        <h3 className="text-sm font-semibold text-slate-100 mb-1">
-          Leave a Message
+        <h3 className="text-sm font-bold text-slate-100 mb-1">
+          Send me a message
         </h3>
         <p className="text-xs text-slate-300 leading-relaxed max-w-md">
-          Send me a private note about anything—projects, internships, maps, or
-          just something you want to share.
+          Feel free to reach out about projects, maps, opportunities, or just to say hi.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] text-slate-300 mb-1">
-              Name (optional)
+            <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
+              Name (Optional)
             </label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400"
+              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
               placeholder="How should I address you?"
             />
           </div>
           <div>
-            <label className="block text-[11px] text-slate-300 mb-1">
-              Email (optional, if you&apos;d like a reply)
+            <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
+              Email (Optional)
             </label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400"
+              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
               placeholder="you@example.com"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-[11px] text-slate-300 mb-1">
-            Message <span className="text-sky-300">*</span>
+          <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
+            Message <span className="text-sky-400">*</span>
           </label>
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
-            className="w-full min-h-[120px] rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical"
-            placeholder="Write anything you want to tell me..."
+            className="w-full min-h-[120px] rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical transition-colors"
+            placeholder="What's on your mind?"
           />
         </div>
 
@@ -758,8 +763,8 @@ function MessageForm() {
           <motion.button
             type="submit"
             disabled={status === "submitting"}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-sky-500 text-slate-950 text-[11px] font-semibold hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-colors shadow-[0_0_20px_rgba(56,189,248,0.4)]"
-            whileHover={status !== "submitting" ? { y: -1 } : {}}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-sky-500 text-slate-950 text-[11px] font-bold tracking-wide hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)]"
+            whileHover={status !== "submitting" ? { y: -1, scale: 1.02 } : {}}
             whileTap={status !== "submitting" ? { scale: 0.97 } : {}}
           >
             {status === "submitting" ? "Sending..." : "Send Message"}
@@ -767,17 +772,34 @@ function MessageForm() {
         </div>
 
         {status === "success" && (
-          <div className="text-[11px] text-emerald-300 mt-1">
-            Thanks! Your message has been sent.
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
+            className="text-[11px] text-emerald-400 mt-2 font-medium"
+          >
+            Thanks! I've received your message.
+          </motion.div>
         )}
         {status === "error" && error && (
-          <div className="text-[11px] text-rose-300 mt-1">⚠ {error}</div>
+          <motion.div 
+            initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
+            className="text-[11px] text-rose-400 mt-2 font-medium"
+          >
+            ⚠ {error}
+          </motion.div>
         )}
       </form>
     </Card>
   );
 }
+
+const NAV_ITEMS = [
+  { id: "about", label: "About" },
+  { id: "projects", label: "Projects" },
+  { id: "experience", label: "Experience" },
+  { id: "skills", label: "Skills" },
+  { id: "hobbies", label: "Hobbies" },
+  { id: "contact", label: "Contact" },
+];
 
 export default function Portfolio() {
   const [modal, setModal] = useState<ModalContent | null>(null);
@@ -810,9 +832,9 @@ export default function Portfolio() {
     "contact",
   ];
 
-    useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
-      // ===== 进度条 =====
+      // 1. 处理顶部进度条 (Progress Bar)
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
       const docHeight =
@@ -821,22 +843,29 @@ export default function Portfolio() {
       const progress = docHeight > 0 ? scrollTop / docHeight : 0;
       setScrollProgress(progress);
 
-      // ===== 计算当前所在的 section =====
+      // 2. 处理导航栏高亮 (Active Section Logic)
+      // 获取所有 section 的 DOM 元素
       const sections = SECTION_IDS
         .map((id) => document.getElementById(id))
-        .filter(Boolean) as HTMLElement[];
+        .filter((el): el is HTMLElement => el !== null);
 
-      // 默认给第一个(about)
+      // 默认选中第一个
       let currentId = SECTION_IDS[0];
       let minDelta = Infinity;
 
-      const viewportAnchor = window.innerHeight * 0.25; // 视口上方 1/4 作为参考线
+      // 设定一个“锚点线”，比如视口高度的 25% 处
+      // 哪个 section 的标题离这条线最近，就高亮哪个
+      const viewportAnchor = window.innerHeight * 0.25;
 
       sections.forEach((sec) => {
         const rect = sec.getBoundingClientRect();
-        // 只考虑和视口有交集的 section
+        
+        // 只有当 section 还在视口内（或者刚经过）时才计算
         if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          // 计算 section 顶部距离锚点的绝对距离
           const delta = Math.abs(rect.top - viewportAnchor);
+          
+          // 找到距离最小的那个 section
           if (delta < minDelta) {
             minDelta = delta;
             currentId = sec.id;
@@ -847,19 +876,19 @@ export default function Portfolio() {
       setActiveSection(currentId);
     };
 
-    handleScroll(); // 初始执行一次，保证刷新后高亮正确
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleScroll);
+    // 初始化运行一次，防止刷新后状态不对
+    handleScroll();
 
+    // 添加监听
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll); // 窗口大小改变也重新计算
+
+    // 清理监听
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, []);
-
-
-  
-
+  }, []); // 这里的依赖数组为空，只在组件挂载时运行一次
 
   const filteredProjects = PROJECTS.filter((p) => {
     if (projectFilter === "All") return true;
@@ -898,69 +927,69 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="font-sans antialiased bg-slate-950 min-h-screen text-slate-100">
+    <div className="font-sans antialiased bg-slate-950 min-h-screen text-slate-100 selection:bg-sky-500/30 selection:text-sky-200">
       <motion.header
         initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 relative"
+        className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 relative"
       >
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <motion.a
             href="#home"
-            className="flex items-center gap-2 font-medium text-xs tracking-wide text-slate-100"
-            whileHover={{ scale: 1.03 }}
+            className="flex items-center gap-2 font-bold text-xs tracking-wider text-slate-100 uppercase"
+            whileHover={{ scale: 1.05 }}
           >
-            <span className="hidden sm:inline">Alex Liu - Portfolio</span>
+            <span className="hidden sm:inline">Alex Liu · Portfolio</span>
             <span className="sm:hidden">Alex Liu</span>
           </motion.a>
-          <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-200">
-            {["About", "Projects", "Experience", "Skills", "Hobbies", "Contact"].map(
-              (item) => {
-                const sectionId = item.toLowerCase();
-                const isActive = activeSection === sectionId;
-                return (
-                  <motion.a
-                    key={item}
-                    href={`#${sectionId}`}
-                    className={`relative transition-colors ${
-                      isActive
-                        ? "text-sky-300"
-                        : "text-slate-200 hover:text-sky-300"
-                    }`}
-                    whileHover={{ y: -1 }}
-                  >
-                    {item}
-                    {isActive && (
-                      <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-sky-400 rounded-full" />
-                    )}
-                  </motion.a>
-                );
-              }
-            )}
+          <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-300">
+            {NAV_ITEMS.map(({ id, label }) => {
+              const isActive = activeSection === id;
+              return (
+                <motion.a
+                  key={id}
+                  href={`#${id}`}
+                  className={`relative transition-colors ${
+                    isActive
+                      ? "text-sky-300"
+                      : "text-slate-400 hover:text-sky-200"
+                  }`}
+                  whileHover={{ y: -1 }}
+                >
+                  {label}
+                  {isActive && (
+                    <motion.span 
+                      layoutId="navHighlight"
+                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-sky-400 rounded-full" 
+                    />
+                  )}
+                </motion.a>
+              );
+            })}
           </nav>
           <div className="flex items-center gap-3">
             <motion.a
-              href="/zh"
-              className="inline-flex items-center gap-1.5 text-[11px] text-slate-200 hover:text-sky-300"
+              href="/"
+              className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-sky-300 font-medium"
               whileHover={{ scale: 1.05 }}
-              title="简体中文版"
+              title="Switch Language"
             >
               <Languages className="w-4 h-4" />
               <span className="hidden sm:inline">中文</span>
             </motion.a>
             <motion.a
               href={SITE.links.resume}
-              className="inline-flex items-center gap-2 bg-slate-100 text-slate-900 text-[11px] px-4 py-2 rounded-full hover:bg-white transition-colors shadow-[0_0_20px_rgba(248,250,252,0.3)]"
+              className="inline-flex items-center gap-2 bg-slate-100 text-slate-900 text-[11px] font-bold px-4 py-2 rounded-full hover:bg-white transition-colors shadow-[0_0_20px_rgba(248,250,252,0.3)]"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <FileText className="w-4 h-4" /> Resume
+              <FileText className="w-3.5 h-3.5" /> Resume
             </motion.a>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-slate-900/80 overflow-hidden">
+        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-slate-800/50 overflow-hidden">
           <motion.div
-            className="h-full bg-sky-400"
+            className="h-full bg-sky-500 shadow-[0_0_10px_rgba(56,189,248,0.8)]"
             style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }}
           />
         </div>
@@ -971,14 +1000,14 @@ export default function Portfolio() {
         className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-slate-50"
       >
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-40 -left-40 h-80 w-80 rounded-full bg-sky-500/20 blur-3xl" />
-          <div className="absolute top-32 -right-20 h-72 w-72 rounded-full bg-indigo-500/25 blur-3xl" />
-          <div className="absolute bottom-[-120px] left-1/3 h-72 w-72 rounded-full bg-emerald-400/15 blur-3xl" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.15)_0,_transparent_55%)]" />
-          <div className="absolute inset-0 opacity-30 bg-[linear-gradient(120deg,rgba(148,163,184,0.15)_1px,transparent_1px),linear-gradient(210deg,rgba(30,64,175,0.2)_1px,transparent_1px)] bg-[length:220px_220px]" />
+          <div className="absolute -top-40 -left-40 h-80 w-80 rounded-full bg-sky-500/20 blur-3xl opacity-50" />
+          <div className="absolute top-32 -right-20 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl opacity-50" />
+          <div className="absolute bottom-[-120px] left-1/3 h-72 w-72 rounded-full bg-emerald-400/10 blur-3xl opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.1)_0,_transparent_55%)]" />
+          <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,rgba(148,163,184,0.1)_1px,transparent_1px),linear-gradient(210deg,rgba(30,64,175,0.15)_1px,transparent_1px)] bg-[length:240px_240px]" />
         </div>
 
-        <div className="max-w-6xl mx-auto px-6 py-20 relative z-10">
+        <div className="max-w-6xl mx-auto px-6 py-24 relative z-10">
           <div className="grid md:grid-cols-5 gap-12 items-center">
             <motion.div
               className="md:col-span-3 space-y-6"
@@ -987,7 +1016,7 @@ export default function Portfolio() {
               transition={{ duration: 0.6 }}
             >
               <motion.h1
-                className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight"
+                className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 }}
@@ -995,35 +1024,26 @@ export default function Portfolio() {
                 {SITE.headline}
               </motion.h1>
 
-              <p className="text-sm font-medium text-slate-300">
+              <p className="text-base font-medium text-sky-300/90 tracking-wide uppercase">
                 {SITE.tagline}
               </p>
 
-              <div className="flex items-center gap-2 text-xs text-slate-300 mt-4">
-                <MapPin className="w-4 h-4 text-sky-300" />
-                <a
-                  href="https://www.google.com/maps/place/Gainesville,+FL"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-sky-300 transition-colors"
-                >
+              <div className="flex items-center gap-2 text-xs text-slate-400 mt-2">
+                <MapPin className="w-4 h-4 text-slate-500" />
+                <span className="hover:text-slate-200 transition-colors cursor-default">
                   {SITE.location}
-                </a>
+                </span>
               </div>
 
-              <p className="text-sm md:text-base text-slate-200/90 leading-relaxed max-w-xl">
-                I study Computer Science with a focus on algorithms, data
-                structures, and how to turn data into something you can see and
-                interact with. Recently, that&apos;s meant geospatial
-                dashboards, medical tooling, and accessibility-oriented
-                interfaces.
+              <p className="text-sm md:text-base text-slate-300 leading-relaxed max-w-xl">
+                I study Computer Science, focusing on algorithms, systems, and making data "tangible." My recent work revolves around geospatial visualization, healthcare tools, and accessible interfaces.
               </p>
-              <p className="text-sm md:text-base text-slate-200/90 leading-relaxed max-w-xl">
-                OPEN TO: Summer 2026 · Software / Data / IT / Geospatial
-                Internships
+              
+               <p className="text-sm md:text-base text-slate-300 leading-relaxed max-w-xl">
+                Open to Summer 2026 Internships
               </p>
 
-              <div className="flex flex-wrap gap-3 pt-2">
+              <div className="flex flex-wrap gap-3 pt-4">
                 {[
                   { href: SITE.links.github, icon: Github, label: "GitHub" },
                   { href: SITE.links.linkedin, icon: Linkedin, label: "LinkedIn" },
@@ -1033,8 +1053,10 @@ export default function Portfolio() {
                   <motion.a
                     key={label}
                     href={href}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 bg-slate-950/70 text-[11px] text-slate-100 hover:border-sky-400 hover:text-sky-200 hover:bg-slate-900 transition-colors"
-                    whileHover={{ y: -2 }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 bg-slate-900/50 text-[11px] text-slate-200 hover:border-sky-400 hover:text-sky-300 hover:bg-slate-900 transition-all"
+                    whileHover={{ y: -3 }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <Icon className="w-4 h-4" /> {label}
@@ -1045,21 +1067,21 @@ export default function Portfolio() {
 
             <motion.div
               className="md:col-span-2"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
+              initial={{ opacity: 0, scale: 0.95, rotate: 2 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div className="relative">
+              <div className="relative group">
                 <motion.div
-                  className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-sky-500/70 via-indigo-500/60 to-emerald-400/60 blur-2xl opacity-70"
+                  className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-sky-500/60 via-indigo-500/50 to-emerald-400/50 blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500"
                   aria-hidden="true"
                 />
                 <motion.img
                   src="/me.jpg"
                   alt="Alex Liu"
-                  className="relative w-full object-cover rounded-3xl border border-slate-700 shadow-[0_0_45px_rgba(15,23,42,1)]"
-                  whileHover={{ scale: 1.02, rotate: 0.2 }}
-                  transition={{ duration: 0.3 }}
+                  className="relative w-full object-cover rounded-3xl border border-slate-700/50 shadow-[0_0_40px_rgba(0,0,0,0.5)]"
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.4 }}
                   loading="lazy"
                 />
               </div>
@@ -1068,46 +1090,43 @@ export default function Portfolio() {
         </div>
       </section>
 
-      <Section id="about" title="Profile Overview" icon={Briefcase}>
+      <Section id="about" title="About Me" icon={Briefcase}>
         <div className="grid lg:grid-cols-3 gap-8">
           <Card className="lg:col-span-2">
-            <h3 className="text-sm font-semibold text-slate-100 mb-3 uppercase tracking-wide">
-              About Me
+            <h3 className="text-xs font-bold text-slate-200 mb-4 uppercase tracking-wider flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
+              Introduction
             </h3>
-            <p className="text-sm text-slate-200/90 leading-relaxed mb-5">
+            <p className="text-sm text-slate-300 leading-relaxed mb-6">
               {ABOUT.blurb}
             </p>
             <ul className="space-y-3 mb-4">
               {ABOUT.highlights.map((h, i) => (
                 <motion.li
                   key={i}
-                  className="flex gap-3 text-sm text-slate-100/90"
+                  className="flex gap-3 text-sm text-slate-200"
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: i * 0.1 }}
                 >
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-400" />
+                  <Code2 className="shrink-0 w-4 h-4 text-sky-400 mt-0.5" />
                   <span>{h}</span>
                 </motion.li>
               ))}
             </ul>
 
             <div className="mt-6 border-t border-slate-800 pt-4">
-              <div className="flex items-center gap-2 text-xs text-slate-200 mb-2">
-                <Code2 className="w-4 h-4 text-sky-300" />
-                <span className="font-semibold tracking-wide">Focus Areas</span>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {[
-                  "Algorithms & Data Structures",
-                  "Data Systems & Analytics",
-                  "Geospatial (GIS) Tools",
-                  "Accessibility / HCI",
+                  "Algorithms",
+                  "System Design",
+                  "GIS / Maps",
+                  "HCI & Accessibility",
                 ].map((t) => (
                   <span
                     key={t}
-                    className="px-3 py-1 rounded-full bg-slate-950/80 text-[11px] border border-slate-700 text-slate-100"
+                    className="px-3 py-1 rounded-full bg-slate-900 text-[10px] font-medium border border-slate-800 text-slate-300 hover:border-sky-500/50 hover:text-sky-300 transition-colors"
                   >
                     {t}
                   </span>
@@ -1118,45 +1137,44 @@ export default function Portfolio() {
 
           <Card>
             <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-5 h-5 text-sky-300" />
-              <h3 className="text-xs font-semibold text-slate-100 uppercase tracking-wide">
+              <Calendar className="w-4 h-4 text-sky-400" />
+              <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
                 Education
               </h3>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-5">
               {EDUCATION.map((edu, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-3 rounded-xl bg-slate-950/80 border border-slate-800 px-3 py-3"
+                  className="flex items-start gap-4"
                 >
                   {edu.logo && (
-                    <img
-                      src={edu.logo}
-                      alt={edu.school}
-                      className="w-12 h-12 object-contain rounded-xl"
-                      loading="lazy"
-                    />
+                    <div className="shrink-0 w-10 h-10 rounded-lg bg-white/5 p-1 border border-white/10">
+                        <img
+                        src={edu.logo}
+                        alt={edu.school}
+                        className="w-full h-full object-contain"
+                        loading="lazy"
+                        />
+                    </div>
                   )}
                   <div className="flex-1">
-                    <h4 className="font-semibold text-sm text-slate-50 mb-1">
+                    <h4 className="font-bold text-xs text-slate-100 mb-0.5">
                       {edu.school}
                     </h4>
                     {edu.degree && (
-                      <p className="text-[11px] text-slate-200 mb-0.5">
+                      <p className="text-[11px] text-sky-200/90 mb-1 font-medium">
                         {edu.degree}
                       </p>
                     )}
-                    <p className="text-[11px] text-slate-400 mb-0.5">
-                      {edu.gpa} • {edu.period}
+                    <p className="text-[10px] text-slate-400 mb-1">
+                      {edu.period}
                     </p>
                     {edu.honors && (
-                      <p className="text-[11px] text-sky-300 font-semibold mb-0.5">
+                      <p className="text-[10px] text-emerald-400 font-medium">
                         {edu.honors}
                       </p>
                     )}
-                    <p className="text-[11px] text-slate-300">
-                      {edu.activities}
-                    </p>
                   </div>
                 </div>
               ))}
@@ -1166,13 +1184,11 @@ export default function Portfolio() {
       </Section>
 
       <Section id="projects" title="Featured Projects" icon={Code2}>
-        <p className="text-sm text-slate-300 mb-4 max-w-3xl">
-          A subset of projects that represent how I like to work: combining
-          algorithms and data structures with visualization, spatial reasoning,
-          and real users.
+        <p className="text-sm text-slate-400 mb-6 max-w-3xl">
+          A selection of projects demonstrating my focus on full-stack engineering, geospatial analysis, and accessible technology.
         </p>
 
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-8">
           {PROJECT_FILTERS.map((filter) => {
             const isActive = projectFilter === filter;
             return (
@@ -1180,12 +1196,12 @@ export default function Portfolio() {
                 key={filter}
                 type="button"
                 onClick={() => setProjectFilter(filter)}
-                className={`px-3 py-1.5 rounded-full text-[11px] border transition-colors ${
+                className={`px-4 py-1.5 rounded-full text-[11px] font-medium border transition-all ${
                   isActive
-                    ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.5)]"
-                    : "bg-slate-950/80 border-slate-700 text-slate-100 hover:border-sky-400 hover:text-sky-200"
+                    ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
+                    : "bg-slate-950/50 border-slate-700 text-slate-300 hover:border-sky-400 hover:text-sky-200"
                 }`}
-                whileHover={{ y: -1 }}
+                whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.97 }}
               >
                 {filter}
@@ -1198,36 +1214,46 @@ export default function Portfolio() {
           {visibleProjects.map((p, i) => (
             <motion.div
               key={p.name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
             >
               <Card
-                className="h-full flex flex-col relative overflow-hidden"
+                className="h-full flex flex-col relative overflow-hidden group"
                 onClick={() =>
                   setModal({
                     title: p.name,
                     subtitle: p.tech.join(" · "),
-                    eyebrow: "Project",
+                    eyebrow: "Project Details",
                     tags: p.tech,
                     body: (
-                      <div className="space-y-4">
+                      <div className="space-y-5">
                         <div className="space-y-2">
-                          <p>{p.blurb}</p>
-                          {p.impact && (
-                            <p>
-                              <span className="font-semibold text-slate-100">
-                                Impact:&nbsp;
-                              </span>
-                              {p.impact}
-                            </p>
-                          )}
+                          <p className="text-slate-300 leading-relaxed">{p.blurb}</p>
                         </div>
+                        
+                        {/* Highlights Section based on Resume/XYZ */}
+                        {p.highlights && (
+                            <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
+                                <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <Zap className="w-3.5 h-3.5" /> Key Achievements
+                                </h4>
+                                <ul className="space-y-2.5">
+                                    {p.highlights.map((h, idx) => (
+                                        <li key={idx} className="flex gap-2.5 text-xs text-slate-200 leading-relaxed">
+                                            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-400/80" />
+                                            <span>{h}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
                         {p.screenshots && p.screenshots.length > 0 && (
                           <div className="space-y-2">
-                            <div className="text-[11px] font-semibold text-slate-300">
-                              Screenshots
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                              Preview Gallery
                             </div>
                             <div className="grid grid-cols-2 gap-2">
                               {p.screenshots.map((src) => (
@@ -1235,114 +1261,83 @@ export default function Portfolio() {
                                   key={src}
                                   src={src}
                                   alt={`${p.name} screenshot`}
-                                  className="w-full h-28 object-cover rounded-xl border border-slate-800 bg-slate-900"
+                                  className="w-full h-24 object-cover rounded-lg border border-slate-800 bg-slate-900"
                                   loading="lazy"
                                 />
                               ))}
                             </div>
                           </div>
                         )}
-                        {p.name === "Grade Track" && (
-                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                            <li>
-                              Full-stack analytics dashboard that turns CSV
-                              grade data into visual summaries.
-                            </li>
-                            <li>
-                              Dockerized environment so setup is a single
-                              command instead of a long checklist.
-                            </li>
-                          </ul>
-                        )}
-                        {p.name === "Ability Bridge" && (
-                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                            <li>
-                              Head-pose cursor control, mouth-Morse typing, and
-                              facial gestures mapped to clicks.
-                            </li>
-                            <li>
-                              Tuned smoothing and thresholds to balance
-                              responsiveness with stability.
-                            </li>
-                          </ul>
-                        )}
                       </div>
                     ),
                     links: [
-                      p.links.code
+                      p.links?.code
                         ? { label: "View Code", href: p.links.code, icon: Code2 }
                         : null,
-                      p.links.demo
+                      p.links?.demo
                         ? { label: "Live Demo", href: p.links.demo, icon: ExternalLink }
                         : null,
                     ].filter(Boolean) as ModalLink[],
                   })
                 }
               >
-                <div className="pointer-events-none absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.35)_0,_transparent_55%)]" />
+                <div className="pointer-events-none absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.2)_0,_transparent_50%)] group-hover:opacity-40 transition-opacity duration-500" />
+                
                 <div className="relative flex-1 flex flex-col">
                   {p.screenshots && p.screenshots.length > 0 && (
-                    <div className="mb-3 rounded-xl overflow-hidden border border-slate-800 bg-slate-950/80">
-                      <img
-                        src={p.screenshots[0]}
-                        alt={`${p.name} preview`}
-                        className="w-full h-32 object-cover"
-                        loading="lazy"
-                      />
+                    <div className="mb-4 rounded-xl overflow-hidden border border-slate-800 bg-slate-950 relative">
+                        <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors z-10" />
+                        <motion.img
+                            src={p.screenshots[0]}
+                            alt={`${p.name} preview`}
+                            className="w-full h-36 object-cover"
+                            loading="lazy"
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.6 }}
+                        />
                     </div>
                   )}
-                  <div className="flex items-center justify-between mb-1.5">
-                    <h3 className="text-sm font-semibold text-slate-50">
+                  
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-base font-bold text-white group-hover:text-sky-300 transition-colors">
                       {p.name}
                     </h3>
                     {p.flagship && (
-                      <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-400/60 text-[10px] font-semibold text-amber-200">
-                        Core
+                      <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-bold text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+                        CORE
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-200/90 mb-3 leading-relaxed">
+                  
+                  <p className="text-xs text-slate-400 mb-4 leading-relaxed line-clamp-3">
                     {p.blurb}
                   </p>
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {p.tech.map((t) => (
+                  
+                  <div className="flex flex-wrap gap-1.5 mt-auto">
+                    {p.tech.slice(0, 4).map((t) => (
                       <span
                         key={t}
-                        className="text-[10px] px-2 py-1 bg-slate-950/80 text-slate-100 font-mono rounded-full border border-slate-700/80"
+                        className="text-[10px] px-2 py-1 bg-slate-900 text-slate-300 font-mono rounded border border-slate-800"
                       >
                         {t}
                       </span>
                     ))}
+                    {p.tech.length > 4 && (
+                        <span className="text-[10px] px-1.5 py-1 text-slate-500 font-mono">+{p.tech.length - 4}</span>
+                    )}
                   </div>
-                  {p.impact && (
-                    <p className="text-[11px] text-slate-300 mb-3 leading-relaxed">
-                      <span className="font-semibold text-slate-50">
-                        Impact:{" "}
-                      </span>
-                      {p.impact}
-                    </p>
-                  )}
                 </div>
-                <div className="relative flex gap-4 pt-3 border-t border-slate-800/90">
-                  {p.links.code && (
-                    <motion.a
-                      href={p.links.code}
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-1.5 text-[11px] font-semibold text-sky-300 hover:text-sky-200"
-                      whileHover={{ x: 2 }}
-                    >
-                      <Code2 className="w-3 h-3" /> Code
-                    </motion.a>
+                
+                <div className="relative flex gap-4 pt-4 mt-4 border-t border-slate-800/60">
+                  {p.links?.code && (
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400 group-hover:text-white transition-colors">
+                      <Code2 className="w-3.5 h-3.5" /> Source
+                    </div>
                   )}
-                  {p.links.demo && (
-                    <motion.a
-                      href={p.links.demo}
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-1.5 text-[11px] font-semibold text-sky-300 hover:text-sky-200"
-                      whileHover={{ x: 2 }}
-                    >
-                      <ExternalLink className="w-3 h-3" /> Demo
-                    </motion.a>
+                  {p.links?.demo && (
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-sky-400 group-hover:text-sky-300 transition-colors">
+                      <ExternalLink className="w-3.5 h-3.5" /> Demo
+                    </div>
                   )}
                 </div>
               </Card>
@@ -1351,16 +1346,16 @@ export default function Portfolio() {
         </div>
 
         {filteredProjects.length > 3 && (
-          <div className="mt-8 flex justify-center">
+          <div className="mt-10 flex justify-center">
             <motion.button
               onClick={() => setShowExpandedProjects(!showExpandedProjects)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-700 rounded-full bg-slate-950/80 text-[11px] hover:border-sky-400 hover:text-sky-200 hover:bg-slate-900 transition-colors font-medium"
+              className="inline-flex items-center gap-2 px-6 py-2 border border-slate-700 rounded-full bg-slate-900/50 text-xs font-semibold text-slate-300 hover:border-sky-400 hover:text-white transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.2)]"
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
             >
               {showExpandedProjects ? (
                 <>
-                  <ChevronUp className="w-4 h-4" /> Show Fewer
+                  <ChevronUp className="w-4 h-4" /> Show Less
                 </>
               ) : (
                 <>
@@ -1377,95 +1372,73 @@ export default function Portfolio() {
         title="Experience & Involvement"
         icon={Briefcase}
       >
-        <div className="space-y-10">
+        <div className="space-y-12">
+          {/* Work Experience */}
           <div>
-            <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
-              Experience
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+              Work History
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {EXPERIENCE.map((x, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: -16 }}
+                  initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
+                  transition={{ delay: i * 0.1 }}
                 >
                   <Card
                     onClick={() =>
                       setModal({
                         title: x.role,
                         subtitle: x.org,
-                        eyebrow: `Experience · ${x.period}${
-                          x.location ? " • " + x.location : ""
-                        }`,
+                        eyebrow: `Experience · ${x.period}`,
                         body: (
-                          <div className="space-y-3">
-                            <p>
-                              At{" "}
-                              <span className="font-semibold">{x.org}</span>, I
-                              worked as a{" "}
-                              <span className="font-semibold">{x.role}</span>
-                              {x.location && <> based in {x.location}</>}.
+                          <div className="space-y-4">
+                            <p className="text-slate-300">
+                              At <span className="font-bold text-white">{x.org}</span>, I served as <span className="font-bold text-white">{x.role}</span>.
                             </p>
-                            <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                            <ul className="space-y-2">
                               {x.bullets.map((b) => (
-                                <li key={b}>{b}</li>
+                                <li key={b} className="flex gap-3 text-xs text-slate-300 leading-relaxed">
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-400" />
+                                    <span>{b}</span>
+                                </li>
                               ))}
                             </ul>
                           </div>
                         ),
                         links: x.link
-                          ? [
-                              {
-                                label: "Visit organization",
-                                href: x.link,
-                                icon: ExternalLink,
-                              },
-                            ]
+                          ? [{ label: "Website", href: x.link, icon: ExternalLink }]
                           : undefined,
                       })
                     }
                   >
                     <div className="flex items-start gap-4">
                       {x.logo && (
-                        <img
-                          src={x.logo}
-                          alt={x.org}
-                          className="w-14 h-14 object-contain rounded-xl border border-slate-800/80 bg-slate-950/80"
-                          loading="lazy"
-                        />
+                        <div className="shrink-0 w-12 h-12 bg-white rounded-lg overflow-hidden p-0.5 border border-slate-700">
+                            <img
+                            src={x.logo}
+                            alt={x.org}
+                            className="w-full h-full object-contain rounded-md"
+                            loading="lazy"
+                            />
+                        </div>
                       )}
                       <div className="flex-1">
-                        <div className="text-[11px] text-sky-300 font-semibold mb-1">
-                          {x.link ? (
-                            <a
-                              href={x.link}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="hover:underline"
-                            >
-                              {x.org}
-                            </a>
-                          ) : (
-                            x.org
-                          )}
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
+                            <h4 className="font-bold text-sm text-white group-hover:text-sky-300 transition-colors">
+                            {x.role}
+                            </h4>
+                            <span className="text-[10px] font-mono text-slate-500">{x.period}</span>
                         </div>
-                        <h3 className="text-sm font-semibold mb-1 text-slate-50">
-                          {x.role}
-                        </h3>
-                        <div className="text-[11px] text-slate-400 mb-2">
-                          {x.period} • {x.location}
+                        <div className="text-xs font-medium text-sky-400 mb-2">
+                            {x.org}
                         </div>
-                        <ul className="space-y-1.5 text-xs text-slate-200 leading-relaxed">
-                          {x.bullets.slice(0, 2).map((b) => (
-                            <li key={b} className="flex gap-2">
-                              <span className="mt-1 h-1 w-1 rounded-full bg-sky-400" />
-                              <span>{b}</span>
-                            </li>
-                          ))}
-                        </ul>
+                        <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
+                          {x.bullets[0]}
+                        </p>
                       </div>
                     </div>
                   </Card>
@@ -1474,176 +1447,102 @@ export default function Portfolio() {
             </div>
           </div>
 
+          {/* Volunteer */}
           <div>
-            <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              Volunteer
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              Volunteering
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
               {VOLUNTEER.map((x, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
+                  transition={{ delay: i * 0.1 }}
                 >
                   <Card
                     onClick={() =>
                       setModal({
                         title: x.role,
                         subtitle: x.org,
-                        eyebrow: `Volunteer · ${x.period}`,
+                        eyebrow: "Volunteer",
                         body: (
-                          <div className="space-y-3">
-                            <p>
-                              Volunteer work with{" "}
-                              <span className="font-semibold">{x.org}</span> as
-                              a{" "}
-                              <span className="font-semibold">{x.role}</span>.
-                            </p>
-                            <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                          <div className="space-y-4">
+                            <ul className="space-y-2">
                               {x.bullets.map((b) => (
-                                <li key={b}>{b}</li>
+                                <li key={b} className="flex gap-3 text-xs text-slate-300">
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
+                                    <span>{b}</span>
+                                </li>
                               ))}
                             </ul>
                           </div>
                         ),
                         links: x.link
-                          ? [
-                              {
-                                label: "Learn more",
-                                href: x.link,
-                                icon: ExternalLink,
-                              },
-                            ]
+                          ? [{ label: "Organization", href: x.link, icon: ExternalLink }]
                           : undefined,
                       })
                     }
                   >
-                    <div className="flex items-start gap-3">
-                      {x.logo && (
-                        <img
-                          src={x.logo}
-                          alt={x.org}
-                          className="w-10 h-10 object-contain rounded-xl border border-slate-800/80 bg-slate-950/80"
-                          loading="lazy"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <div className="text-[11px] text-sky-300 font-semibold mb-1">
-                          {x.link ? (
-                            <a
-                              href={x.link}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="hover:underline"
-                            >
-                              {x.org}
-                            </a>
-                          ) : (
-                            x.org
-                          )}
-                        </div>
-                        <h4 className="font-semibold text-xs mb-1 text-slate-50">
-                          {x.role}
-                        </h4>
-                        <div className="text-[10px] text-slate-400 mb-1">
-                          {x.period}
-                        </div>
-                        <p className="text-[11px] text-slate-200 leading-relaxed">
-                          {x.bullets[0]}
-                        </p>
-                      </div>
+                    <div className="flex items-center gap-3 mb-2">
+                        {x.logo && <img src={x.logo} className="w-6 h-6 object-contain" alt="" />}
+                        <h4 className="font-bold text-xs text-white">{x.org}</h4>
                     </div>
+                    <div className="text-[11px] text-emerald-400 font-medium mb-1">{x.role}</div>
+                    <div className="text-[10px] text-slate-500 mb-2">{x.period}</div>
                   </Card>
                 </motion.div>
               ))}
             </div>
           </div>
 
+          {/* Leadership */}
           <div>
-            <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
-              Leadership & Involvement
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+              Leadership
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
               {LEADERSHIPS.map((x, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
+                  transition={{ delay: i * 0.1 }}
                 >
                   <Card
                     onClick={() =>
                       setModal({
                         title: x.role,
                         subtitle: x.org,
-                        eyebrow: `Leadership · ${x.period}`,
+                        eyebrow: "Leadership",
                         body: (
-                          <div className="space-y-3">
-                            <p>
-                              In{" "}
-                              <span className="font-semibold">{x.org}</span>, I
-                              serve as{" "}
-                              <span className="font-semibold">{x.role}</span>.
-                            </p>
-                            <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                          <div className="space-y-4">
+                            <ul className="space-y-2">
                               {x.bullets.map((b) => (
-                                <li key={b}>{b}</li>
+                                <li key={b} className="flex gap-3 text-xs text-slate-300">
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-indigo-400" />
+                                    <span>{b}</span>
+                                </li>
                               ))}
                             </ul>
                           </div>
                         ),
                         links: x.link
-                          ? [
-                              {
-                                label: "Organization site",
-                                href: x.link,
-                                icon: ExternalLink,
-                              },
-                            ]
+                          ? [{ label: "Website", href: x.link, icon: ExternalLink }]
                           : undefined,
                       })
                     }
                   >
-                    <div className="flex items-start gap-3">
-                      {x.logo && (
-                        <img
-                          src={x.logo}
-                          alt={x.org}
-                          className="w-10 h-10 object-contain rounded-xl border border-slate-800/80 bg-slate-950/80"
-                          loading="lazy"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <div className="text-[11px] text-sky-300 font-semibold mb-1">
-                          {x.link ? (
-                            <a
-                              href={x.link}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="hover:underline"
-                            >
-                              {x.org}
-                            </a>
-                          ) : (
-                            x.org
-                          )}
-                        </div>
-                        <h4 className="font-semibold text-xs mb-1 text-slate-50">
-                          {x.role}
-                        </h4>
-                        <div className="text-[10px] text-slate-400 mb-1">
-                          {x.period}
-                        </div>
-                        <p className="text-[11px] text-slate-200 leading-relaxed">
-                          {x.bullets[0]}
-                        </p>
-                      </div>
+                    <div className="flex items-center gap-3 mb-2">
+                        {x.logo && <img src={x.logo} className="w-6 h-6 rounded-md" alt="" />}
+                        <h4 className="font-bold text-xs text-white">{x.org}</h4>
                     </div>
+                    <div className="text-[11px] text-indigo-400 font-medium mb-1">{x.role}</div>
+                    <div className="text-[10px] text-slate-500 mb-2">{x.period}</div>
                   </Card>
                 </motion.div>
               ))}
@@ -1652,25 +1551,25 @@ export default function Portfolio() {
         </div>
       </Section>
 
-      <Section id="skills" title="Skills & Technologies" icon={Cpu}>
+      <Section id="skills" title="Technical Arsenal" icon={Cpu}>
         <div className="grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)] gap-8 items-start">
           <div className="space-y-6">
             {SKILLS.map((g, i) => (
               <motion.div
                 key={g.group}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: -15 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
+                transition={{ delay: i * 0.1 }}
               >
-                <Card className="bg-slate-950/80">
-                  <div className="flex items-center gap-3 mb-3">
-                    <g.icon className="w-5 h-5 text-sky-300" />
-                    <h3 className="font-semibold text-sm text-slate-100">
+                <Card className="bg-slate-900/40 border-slate-800">
+                  <div className="flex items-center gap-3 mb-4">
+                    <g.icon className="w-4 h-4 text-sky-400" />
+                    <h3 className="font-bold text-xs text-slate-200 uppercase tracking-wide">
                       {g.group}
                     </h3>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {g.items.map((s) => {
                       const isActive =
                         activeSkill &&
@@ -1686,13 +1585,13 @@ export default function Portfolio() {
                           onFocus={() =>
                             setActiveSkill({ group: g.group, item: s })
                           }
-                          className={`px-3 py-1.5 rounded-full text-[11px] font-mono border transition-colors ${
+                          className={`px-3 py-1.5 rounded-lg text-[11px] font-mono border transition-all ${
                             isActive
-                              ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.5)]"
-                              : "bg-slate-950/80 border-slate-700 text-slate-100 hover:border-sky-400 hover:text-sky-200"
+                              ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
+                              : "bg-slate-950 border-slate-700 text-slate-400 hover:border-sky-500/50 hover:text-slate-200"
                           }`}
-                          whileHover={{ y: -1 }}
-                          whileTap={{ scale: 0.97 }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                         >
                           {s.name}
                         </motion.button>
@@ -1703,68 +1602,79 @@ export default function Portfolio() {
               </motion.div>
             ))}
           </div>
-          <div className="space-y-3">
-            <Card className="bg-slate-950/90 px-4 py-4 max-w-sm mx-auto">
-              {activeSkill ? (
-                <div className="space-y-2">
-                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-300 uppercase">
-                    {activeSkill.group}
-                  </div>
-                  <h3 className="text-sm font-semibold text-slate-50">
-                    {activeSkill.item.name}
-                  </h3>
-                  <p className="text-[11px] text-slate-200 leading-relaxed">
-                    {activeSkill.item.blurb}
-                  </p>
-                  {activeSkill.item.usedIn && (
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
-                      <span className="font-semibold text-slate-100">
-                        Used in:{" "}
-                      </span>
-                      {activeSkill.item.usedIn}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-slate-50">
-                    Hover a skill to see how I use it
-                  </h3>
-                  <p className="text-[11px] text-slate-200">
-                    Move your cursor over any skill pill to see where it shows
-                    up in my projects or coursework.
-                  </p>
-                </div>
-              )}
-            </Card>
+          
+          <div className="lg:sticky lg:top-24">
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={activeSkill ? activeSkill.item.name : "empty"}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                >
+                    <Card className="bg-gradient-to-br from-slate-900 to-slate-950 border-slate-700 min-h-[180px] flex flex-col justify-center">
+                    {activeSkill ? (
+                        <div className="space-y-3">
+                        <div className="text-[10px] font-bold tracking-widest text-sky-500 uppercase">
+                            {activeSkill.group}
+                        </div>
+                        <h3 className="text-xl font-bold text-white">
+                            {activeSkill.item.name}
+                        </h3>
+                        <p className="text-xs text-slate-300 leading-relaxed">
+                            {activeSkill.item.blurb}
+                        </p>
+                        {activeSkill.item.usedIn && (
+                            <div className="pt-3 mt-3 border-t border-slate-800">
+                                <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
+                                    Used In:
+                                </span>
+                                <p className="text-[11px] text-sky-200">
+                                    {activeSkill.item.usedIn}
+                                </p>
+                            </div>
+                        )}
+                        </div>
+                    ) : (
+                        <div className="text-center space-y-2 opacity-50">
+                        <Cpu className="w-8 h-8 mx-auto text-slate-600" />
+                        <p className="text-xs text-slate-400">
+                            Hover over a skill to see details.
+                        </p>
+                        </div>
+                    )}
+                    </Card>
+                </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </Section>
 
-      <Section id="hobbies" title="Hobbies" icon={Award}>
-        
+      <Section id="hobbies" title="Beyond the Code" icon={Award}>
+        <p className="text-sm text-slate-400 mb-6">
+          When I'm not debugging or optimizing algorithms, here's what keeps me busy.
+        </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {HOBBIES.map((hobby, i) => (
             <motion.div
               key={hobby.name}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
+              transition={{ delay: i * 0.1 }}
             >
               <Card
-                className="h-full flex flex-col items-start gap-3"
+                className="h-full flex flex-col items-center text-center gap-3 hover:bg-slate-900/80"
                 onClick={() =>
                   setModal({
                     title: hobby.name,
                     subtitle: "Hobby",
-                    eyebrow: "Outside of code",
-                    
+                    eyebrow: "Personal",
                     body: (
                       <div className="space-y-3">
-                        <p>{hobby.blurb}</p>
+                        <p className="text-slate-300">{hobby.blurb}</p>
                         {hobby.details && (
-                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
+                          <ul className="list-disc list-inside space-y-1 text-slate-400 text-xs text-left">
                             {hobby.details.map((d) => (
                               <li key={d}>{d}</li>
                             ))}
@@ -1775,17 +1685,14 @@ export default function Portfolio() {
                   })
                 }
               >
-                <div className="text-2xl">{hobby.emoji}</div>
+                <div className="text-4xl mb-2">{hobby.emoji}</div>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-50 mb-1">
+                  <h3 className="text-sm font-bold text-white mb-1">
                     {hobby.name}
                   </h3>
-                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
                     {hobby.blurb}
                   </p>
-                </div>
-                <div className="mt-auto flex flex-wrap gap-1.5">
-                  
                 </div>
               </Card>
             </motion.div>
@@ -1793,134 +1700,95 @@ export default function Portfolio() {
         </div>
       </Section>
 
-      <Section id="photos" title="Photo Gallery" icon={Camera}>
+      <Section id="photos" title="Gallery" icon={Camera}>
         <motion.a
           href="/photos"
           className="block"
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.99 }}
         >
-          <Card className="bg-gradient-to-br from-sky-600 via-indigo-600 to-slate-900 text-white border-sky-400/60">
-            <div className="flex items-center justify-between gap-4">
+          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-sky-600 to-indigo-700 p-8 shadow-2xl border border-sky-400/30 group">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
+            <div className="relative z-10 flex items-center justify-between gap-6">
               <div>
-                <h3 className="text-lg font-semibold mb-1 text-white">
+                <h3 className="text-2xl font-bold text-white mb-2">
                   View My Photo Gallery
                 </h3>
-                <p className="text-xs text-sky-100 mb-3 leading-relaxed max-w-md">
-                  Occasional snapshots from projects, events, and the places I
-                  map.
+                <p className="text-sm text-sky-100 max-w-md">
+                  A collection of snapshots from hackathons, lion dance performances, and interesting places I've mapped.
                 </p>
-                <div className="inline-flex items-center gap-2 text-[11px] font-semibold text-white">
-                  <span>Explore Photos</span>
-                  <ExternalLink className="w-4 h-4" />
-                </div>
               </div>
-              <Camera className="w-20 h-20 text-white/30 hidden sm:block" />
+              <div className="hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-all">
+                <ExternalLink className="w-6 h-6 text-white" />
+              </div>
             </div>
-          </Card>
+          </div>
         </motion.a>
       </Section>
 
       <Section id="contact" title="Get In Touch" icon={Mail}>
-        <Card className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-slate-700/80">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-3 text-white">
-                Let&apos;s Connect
-              </h3>
-              <p className="mb-5 text-sm text-slate-200 leading-relaxed">
-                {CONTACT.note}
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {[
-                  {
-                    href: `mailto:${SITE.links.email}`,
-                    icon: Mail,
-                    label: "Email Me",
-                  },
-                  { href: SITE.links.linkedin, icon: Linkedin, label: "LinkedIn" },
-                  { href: SITE.links.github, icon: Github, label: "GitHub" },
-                  { href: SITE.links.instagram, icon: Instagram, label: "Instagram" },
-                ].map(({ href, icon: Icon, label }) => (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-900 text-[11px] font-semibold hover:bg-white transition-colors rounded-full"
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Icon className="w-4 h-4" /> {label}
-                  </motion.a>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-3 text-xs text-slate-100">
-              <button
-                type="button"
-                onClick={() => handleCopy(SITE.links.email, "email")}
-                className="flex items-center gap-3 group"
-              >
-                <Mail className="w-5 h-5 group-hover:text-sky-300 transition-colors" />
-                <span className="flex items-center gap-2">
-                  {SITE.links.email}
-                  {copiedField === "email" && (
-                    <span className="text-[10px] text-emerald-300">
-                      Copied
-                    </span>
-                  )}
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleCopy(SITE.links.phone, "phone")}
-                className="flex items-center gap-3 group"
-              >
-                <Phone className="w-5 h-5 group-hover:text-sky-300 transition-colors" />
-                <span className="flex items-center gap-2">
-                  {SITE.links.phone}
-                  {copiedField === "phone" && (
-                    <span className="text-[10px] text-emerald-300">
-                      Copied
-                    </span>
-                  )}
-                </span>
-              </button>
-              <div className="flex items-center gap-3">
-                <MapPin className="w-5 h-5" />
-                <a
-                  href="https://www.google.com/maps/place/Gainesville,+FL"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  {SITE.location}
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Globe className="w-5 h-5" />
-                <a
-                  href={SITE.links.website}
-                  className="hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {SITE.links.website}
-                </a>
-              </div>
-            </div>
-          </div>
-        </Card>
+        <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+                <div>
+                    <h3 className="text-2xl font-bold text-white mb-4">
+                    Let's Connect
+                    </h3>
+                    <p className="text-sm text-slate-300 leading-relaxed">
+                    {CONTACT.note}
+                    </p>
+                </div>
+                
+                <div className="flex flex-col gap-4">
+                    <button
+                        type="button"
+                        onClick={() => handleCopy(SITE.links.email, "email")}
+                        className="flex items-center gap-4 p-3 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 transition-all group text-left"
+                    >
+                        <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
+                            <Mail className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Email</div>
+                            <div className="text-sm font-mono text-slate-200">{SITE.links.email}</div>
+                        </div>
+                        {copiedField === "email" && (
+                            <span className="ml-auto text-[10px] text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">COPIED</span>
+                        )}
+                    </button>
 
-        <MessageForm />
+                    <button
+                        type="button"
+                        onClick={() => handleCopy(SITE.links.phone, "phone")}
+                        className="flex items-center gap-4 p-3 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 transition-all group text-left"
+                    >
+                        <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
+                            <Phone className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Phone</div>
+                            <div className="text-sm font-mono text-slate-200">{SITE.links.phone}</div>
+                        </div>
+                        {copiedField === "phone" && (
+                            <span className="ml-auto text-[10px] text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">COPIED</span>
+                        )}
+                    </button>
+                </div>
+            </div>
+            
+            <MessageForm />
+        </div>
       </Section>
 
-      <footer className="py-10 border-t border-slate-800 bg-slate-950">
+      <footer className="py-12 border-t border-slate-900 bg-slate-950 mt-12">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-[11px] text-slate-400">
-              © {new Date().getFullYear()} {SITE.name}.
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="text-center md:text-left">
+                <div className="font-bold text-slate-200 text-sm mb-1">{SITE.name}</div>
+                <div className="text-[11px] text-slate-500">
+                © {new Date().getFullYear()} · Built with React, Tailwind & Framer Motion.
+                </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               {[
                 { href: SITE.links.github, icon: Github },
                 { href: SITE.links.linkedin, icon: Linkedin },
@@ -1930,11 +1798,11 @@ export default function Portfolio() {
                 <motion.a
                   key={i}
                   href={href}
-                  className="w-9 h-9 bg-slate-900 rounded-full flex items-center justify-center text-white border border-slate-700 hover:border-sky-400 hover:bg-slate-800 transition-colors shadow-[0_0_18px_rgba(15,23,42,0.9)]"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-slate-400 border border-slate-800 hover:border-sky-500 hover:text-sky-400 hover:bg-slate-900 transition-all shadow-lg"
+                  whileHover={{ y: -3 }}
+                  whileTap={{ scale: 0.9 }}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-5 h-5" />
                 </motion.a>
               ))}
             </div>
