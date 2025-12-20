@@ -994,7 +994,14 @@ export default function Portfolio() {
     if (projectFilter === "Core") return p.flagship;
     return p.categories?.includes(projectFilter);
   });
-
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (isDark) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [isDark]);
   useEffect(() => {
     setShowExpandedProjects(false);
   }, [projectFilter]);
