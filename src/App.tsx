@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionTemplate,
+  useMotionValue,
+} from "framer-motion";
 import {
   Github,
   Linkedin,
@@ -10,7 +15,6 @@ import {
   Calendar,
   Code2,
   Briefcase,
-  Globe,
   Phone,
   ChevronDown,
   ChevronUp,
@@ -21,15 +25,18 @@ import {
   Languages,
   Camera,
   X,
-  Zap, // Added icon for "Highlights"
+  Zap,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 // --- SITE CONFIGURATION ---
 const SITE = {
+  name: "Alex Liu",
+  headline: "Alex Liu",
   tagline: "CS Major @ UF · Geography Minor",
   location: "Gainesville, FL",
-  headline: "Alex Liu",
-  name: "Alex Liu",
+  latlong: "29.6516° N, 82.3248° W", // Coordinate styling for fun
   links: {
     github: "https://github.com/heimweh17",
     linkedin: "https://www.linkedin.com/in/alex-liu7/",
@@ -37,19 +44,176 @@ const SITE = {
     email: "haozhouliu17@gmail.com",
     resume: "/resume.pdf",
     phone: "+1 (352) 328-4805",
-    website: "https://aliu.me/",
+    map: "https://www.google.com/maps/place/Gainesville,+FL",
   },
 };
 
 const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
+// --- HELPER COMPONENTS ---
+
+// 1. Retro Grid Background (Adjusted for Light Mode)
+const RetroGrid = ({ isDark }: { isDark: boolean }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let w = (canvas.width = window.innerWidth);
+    let h = (canvas.height = window.innerHeight);
+    let mouse = { x: 0, y: 0 };
+
+    const drawGrid = () => {
+      ctx.clearRect(0, 0, w, h);
+
+      // Light Mode: Slate-300 lines (visible but subtle)
+      // Dark Mode: Sky-500 lines (very faint)
+      ctx.strokeStyle = isDark
+        ? "rgba(56, 189, 248, 0.1)"
+        : "rgba(148, 163, 184, 0.15)";
+
+      ctx.lineWidth = 1;
+      const gridSize = 40;
+
+      // Vertical Lines
+      for (let x = 0; x <= w; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+
+      // Horizontal Lines
+      for (let y = 0; y <= h; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Mouse flashlight effect
+      const gradient = ctx.createRadialGradient(
+        mouse.x,
+        mouse.y,
+        0,
+        mouse.x,
+        mouse.y,
+        300
+      );
+
+      if (isDark) {
+        gradient.addColorStop(0, "rgba(56, 189, 248, 0.15)");
+        gradient.addColorStop(1, "transparent");
+      } else {
+        // Light mode flashlight needs to be darker/blue to show up on white
+        gradient.addColorStop(0, "rgba(14, 165, 233, 0.1)");
+        gradient.addColorStop(1, "transparent");
+      }
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, w, h);
+
+      requestAnimationFrame(drawGrid);
+    };
+
+    const handleResize = () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("mousemove", handleMouseMove);
+    drawGrid();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [isDark]);
+
+  return (
+    <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none" />
+  );
+};
+
+// 2. Spotlight Card Component
+interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+
+const SpotlightCard = ({ children, className = "", onClick }: CardProps) => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  function handleMouseMove({
+    currentTarget,
+    clientX,
+    clientY,
+  }: React.MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  const clickable = Boolean(onClick);
+
+  return (
+    <div
+      className={`group relative border overflow-hidden rounded-2xl transition-all duration-300
+        bg-white/80 border-slate-200 
+        dark:bg-slate-900/80 dark:border-slate-800 
+        ${clickable ? "cursor-pointer hover:shadow-lg dark:hover:shadow-[0_0_30px_rgba(56,189,248,0.1)]" : ""} 
+        ${className}`}
+      onMouseMove={handleMouseMove}
+      onClick={onClick}
+    >
+      {/* Spotlight Gradient */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
+        style={{
+          background: useMotionTemplate`
+            radial-gradient(
+              500px circle at ${mouseX}px ${mouseY}px,
+              var(--spotlight-color),
+              transparent 80%
+            )
+          `,
+        }}
+      />
+      <style jsx>{`
+        .group {
+          --spotlight-color: rgba(14, 165, 233, 0.15); /* Sky-500 light */
+        }
+        :global(.dark) .group {
+          --spotlight-color: rgba(56, 189, 248, 0.25); /* Sky-400 dark */
+        }
+      `}</style>
+
+      <div className="relative h-full p-6 z-10">{children}</div>
+    </div>
+  );
+};
+
+// --- DATA ---
+
 const ABOUT = {
-  blurb:
-    "I am a Computer Science student at the University of Florida, passionate about the intersection of code, data, and geography. I enjoy transforming messy real-world information into intuitive tools—whether it's interactive maps, analytics dashboards, or automation scripts. I am authorized to work in the U.S. and do not require visa sponsorship now or in the future.",
+  // Broke this into paragraphs for easier styling/decoding
+  p1: "I am a Computer Science student at the University of Florida, exploring the intersection of code, data, and the physical world. I specialize in building systems that transform messy real-time data into intuitive, actionable tools.",
+  p2: "Whether it's creating interactive maps, optimizing backend algorithms, or designing accessible interfaces, I love solving problems that have a tangible impact. I am currently authorized to work in the U.S. and do not require sponsorship.",
   highlights: [
-    "Core Focus: Data Structures, Algorithms, Systems, & Full Stack Dev",
+    "Core Focus: Data Structures, Algorithms, Systems & Full Stack",
     "Tech Stack: C++, Python, TypeScript, React, Flask, SQL, Docker",
-    "Interests: Geospatial (GIS), Data-Driven Systems, Accessibility & HCI",
+    "Interests: Geospatial (GIS), Data Visualization, HCI & Accessibility",
   ],
 };
 
@@ -149,13 +313,11 @@ const LEADERSHIPS = [
   },
 ];
 
-// --- UPDATED PROJECTS WITH RESUME HIGHLIGHTS ---
 const PROJECTS = [
   {
     name: "GeoDashboard",
     flagship: true,
     blurb: "A full-stack geospatial analytics platform using microservices to separate AI inference from core mapping.",
-    // Highlights appear in the modal when clicked
     highlights: [
       "Engineered a microservices architecture using Docker to decouple high-load AI inference from core spatial analytics.",
       "Systematized the release lifecycle via GitHub Actions (CI/CD), automating deployment to Railway.",
@@ -182,13 +344,7 @@ const PROJECTS = [
       "Reduced simulated administrative documentation time by ~60% with sub-5-second analysis latency.",
       "Architected a secure backend using Supabase to manage patient records and visit history.",
     ],
-    tech: [
-      "Node.js",
-      "Supabase",
-      "Gemini API",
-      "Deepgram API",
-      "HTML/JS",
-    ],
+    tech: ["Node.js", "Supabase", "Gemini API", "Deepgram API", "HTML/JS"],
     links: { demo: "", code: "https://github.com/heimweh17/SmartScribe" },
     screenshots: [
       "/screenshots/smartscribe-1.png",
@@ -495,14 +651,14 @@ const DetailModal = ({
     <AnimatePresence>
       {modal && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md px-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
         >
           <motion.div
-            className="max-w-xl w-full bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-700/80 rounded-2xl p-6 shadow-[0_0_50px_rgba(15,23,42,0.9)] relative overflow-hidden"
+            className="max-w-xl w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-2xl relative overflow-hidden"
             initial={{ scale: 0.9, y: 20, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.9, y: 10, opacity: 0 }}
@@ -515,20 +671,22 @@ const DetailModal = ({
             <div className="flex items-start justify-between gap-4 mb-3 relative z-10">
               <div className="space-y-1">
                 {modal.eyebrow && (
-                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-300 uppercase">
+                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-600 dark:text-sky-400 uppercase">
                     {modal.eyebrow}
                   </div>
                 )}
-                <h2 className="text-xl font-bold text-slate-50 tracking-tight">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">
                   {modal.title}
                 </h2>
                 {modal.subtitle && (
-                  <p className="text-xs text-slate-400 font-mono">{modal.subtitle}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                    {modal.subtitle}
+                  </p>
                 )}
               </div>
               <button
                 onClick={onClose}
-                className="shrink-0 w-8 h-8 rounded-full border border-slate-700/80 flex items-center justify-center text-slate-400 hover:text-sky-300 hover:border-sky-400/50 hover:bg-slate-800 transition-all"
+                className="shrink-0 w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700/80 flex items-center justify-center text-slate-400 hover:text-sky-500 dark:hover:text-sky-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -539,7 +697,7 @@ const DetailModal = ({
                 {modal.tags.map((t) => (
                   <span
                     key={t}
-                    className="px-2.5 py-0.5 rounded-full bg-slate-800/50 border border-slate-700/50 text-[10px] font-medium text-slate-300"
+                    className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 text-[10px] font-medium text-slate-600 dark:text-slate-300"
                   >
                     {t}
                   </span>
@@ -547,12 +705,12 @@ const DetailModal = ({
               </div>
             )}
 
-            <div className="mb-6 text-sm text-slate-200 space-y-3 relative z-10 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="mb-6 text-sm text-slate-600 dark:text-slate-300 space-y-3 relative z-10 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               {modal.body}
             </div>
 
             {modal.links && modal.links.length > 0 && (
-              <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-800/80 relative z-10">
+              <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 relative z-10">
                 {modal.links.map((l) => {
                   const Icon = l.icon;
                   return (
@@ -561,7 +719,7 @@ const DetailModal = ({
                       href={l.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-300 border border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-400/40 transition-all"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-300 border border-sky-100 dark:border-sky-500/20 hover:bg-sky-100 dark:hover:bg-sky-500/20 transition-all"
                     >
                       {Icon && <Icon className="w-3.5 h-3.5" />}
                       <span>{l.label}</span>
@@ -590,7 +748,7 @@ const Section = ({
 }) => (
   <section
     id={id}
-    className="scroll-mt-24 max-w-6xl mx-auto px-6 py-16 text-slate-100"
+    className="scroll-mt-24 max-w-6xl mx-auto px-6 py-16 text-slate-900 dark:text-slate-100 relative z-10"
   >
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -599,9 +757,9 @@ const Section = ({
       transition={{ duration: 0.5 }}
     >
       <div className="flex items-center gap-3 mb-8">
-        <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-4 py-1.5 border border-slate-700/80 shadow-[0_0_30px_rgba(56,189,248,0.15)]">
-          {Icon && <Icon className="w-4 h-4 text-sky-400" />}
-          <span className="text-[11px] font-bold tracking-[0.15em] text-slate-200 uppercase">
+        <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-slate-900/80 px-4 py-1.5 border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-[0_0_30px_rgba(56,189,248,0.15)]">
+          {Icon && <Icon className="w-4 h-4 text-sky-500 dark:text-sky-400" />}
+          <span className="text-[11px] font-bold tracking-[0.15em] text-slate-700 dark:text-slate-200 uppercase">
             {title}
           </span>
         </div>
@@ -610,44 +768,6 @@ const Section = ({
     </motion.div>
   </section>
 );
-
-interface CardProps {
-  children: React.ReactNode;
-  className?: string;
-  hover?: boolean;
-  onClick?: () => void;
-}
-
-const Card = ({
-  children,
-  className = "",
-  hover = true,
-  onClick,
-}: CardProps) => {
-  const clickable = Boolean(onClick);
-  return (
-    <motion.div
-      // Enhanced Interaction: Glow effect and lift on hover
-      whileHover={
-        hover
-          ? { 
-              y: -4, 
-              borderColor: "rgba(56,189,248,0.4)", // Sky-400 glow
-              boxShadow: "0 10px 40px -10px rgba(56,189,248,0.15)" 
-            }
-          : {}
-      }
-      whileTap={clickable ? { scale: 0.98, y: 0 } : {}}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      onClick={onClick}
-      className={`bg-gradient-to-br from-slate-950/80 via-slate-900/80 to-slate-950/90 border border-slate-800/80 rounded-2xl p-6 shadow-[0_0_20px_rgba(15,23,42,0.8)] ${
-        clickable ? "cursor-pointer" : ""
-      } ${className}`}
-    >
-      {children}
-    </motion.div>
-  );
-};
 
 function MessageForm() {
   const [formData, setFormData] = useState({
@@ -706,20 +826,21 @@ function MessageForm() {
   };
 
   return (
-    <Card className="mt-8 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-slate-700/80">
+    <SpotlightCard className="mt-8">
       <div className="mb-5">
-        <h3 className="text-sm font-bold text-slate-100 mb-1">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1">
           Send me a message
         </h3>
-        <p className="text-xs text-slate-300 leading-relaxed max-w-md">
-          Feel free to reach out about projects, maps, opportunities, or just to say hi.
+        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
+          Feel free to reach out about projects, maps, opportunities, or just to
+          say hi.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
+            <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-1.5">
               Name (Optional)
             </label>
             <input
@@ -727,12 +848,12 @@ function MessageForm() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
+              className="w-full rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
               placeholder="How should I address you?"
             />
           </div>
           <div>
-            <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
+            <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-1.5">
               Email (Optional)
             </label>
             <input
@@ -740,21 +861,21 @@ function MessageForm() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
+              className="w-full rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
               placeholder="you@example.com"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
-            Message <span className="text-sky-400">*</span>
+          <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-1.5">
+            Message <span className="text-sky-500 dark:text-sky-400">*</span>
           </label>
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
-            className="w-full min-h-[120px] rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical transition-colors"
+            className="w-full min-h-[120px] rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical transition-colors"
             placeholder="What's on your mind?"
           />
         </div>
@@ -763,7 +884,7 @@ function MessageForm() {
           <motion.button
             type="submit"
             disabled={status === "submitting"}
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-sky-500 text-slate-950 text-[11px] font-bold tracking-wide hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)]"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-sky-500 text-white dark:text-slate-950 text-[11px] font-bold tracking-wide hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)]"
             whileHover={status !== "submitting" ? { y: -1, scale: 1.02 } : {}}
             whileTap={status !== "submitting" ? { scale: 0.97 } : {}}
           >
@@ -772,23 +893,25 @@ function MessageForm() {
         </div>
 
         {status === "success" && (
-          <motion.div 
-            initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
-            className="text-[11px] text-emerald-400 mt-2 font-medium"
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[11px] text-emerald-500 dark:text-emerald-400 mt-2 font-medium"
           >
             Thanks! I've received your message.
           </motion.div>
         )}
         {status === "error" && error && (
-          <motion.div 
-            initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
-            className="text-[11px] text-rose-400 mt-2 font-medium"
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[11px] text-rose-500 dark:text-rose-400 mt-2 font-medium"
           >
             ⚠ {error}
           </motion.div>
         )}
       </form>
-    </Card>
+    </SpotlightCard>
   );
 }
 
@@ -802,6 +925,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Portfolio() {
+  const [isDark, setIsDark] = useState(true);
   const [modal, setModal] = useState<ModalContent | null>(null);
 
   const firstSkillGroup = SKILLS[0];
@@ -832,9 +956,13 @@ export default function Portfolio() {
     "contact",
   ];
 
+  // Handle Theme Toggle
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
-      // 1. 处理顶部进度条 (Progress Bar)
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
       const docHeight =
@@ -843,29 +971,18 @@ export default function Portfolio() {
       const progress = docHeight > 0 ? scrollTop / docHeight : 0;
       setScrollProgress(progress);
 
-      // 2. 处理导航栏高亮 (Active Section Logic)
-      // 获取所有 section 的 DOM 元素
-      const sections = SECTION_IDS
-        .map((id) => document.getElementById(id))
-        .filter((el): el is HTMLElement => el !== null);
+      const sections = SECTION_IDS.map((id) =>
+        document.getElementById(id)
+      ).filter((el): el is HTMLElement => el !== null);
 
-      // 默认选中第一个
       let currentId = SECTION_IDS[0];
       let minDelta = Infinity;
-
-      // 设定一个“锚点线”，比如视口高度的 25% 处
-      // 哪个 section 的标题离这条线最近，就高亮哪个
       const viewportAnchor = window.innerHeight * 0.25;
 
       sections.forEach((sec) => {
         const rect = sec.getBoundingClientRect();
-        
-        // 只有当 section 还在视口内（或者刚经过）时才计算
         if (rect.bottom > 0 && rect.top < window.innerHeight) {
-          // 计算 section 顶部距离锚点的绝对距离
           const delta = Math.abs(rect.top - viewportAnchor);
-          
-          // 找到距离最小的那个 section
           if (delta < minDelta) {
             minDelta = delta;
             currentId = sec.id;
@@ -876,19 +993,15 @@ export default function Portfolio() {
       setActiveSection(currentId);
     };
 
-    // 初始化运行一次，防止刷新后状态不对
     handleScroll();
-
-    // 添加监听
     window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleScroll); // 窗口大小改变也重新计算
+    window.addEventListener("resize", handleScroll);
 
-    // 清理监听
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, []); // 这里的依赖数组为空，只在组件挂载时运行一次
+  }, []);
 
   const filteredProjects = PROJECTS.filter((p) => {
     if (projectFilter === "All") return true;
@@ -927,890 +1040,1043 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="font-sans antialiased bg-slate-950 min-h-screen text-slate-100 selection:bg-sky-500/30 selection:text-sky-200">
-      <motion.header
-        initial={{ y: -16, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 relative"
-      >
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <motion.a
-            href="#home"
-            className="flex items-center gap-2 font-bold text-xs tracking-wider text-slate-100 uppercase"
-            whileHover={{ scale: 1.05 }}
-          >
-            <span className="hidden sm:inline">Alex Liu · Portfolio</span>
-            <span className="sm:hidden">Alex Liu</span>
-          </motion.a>
-          <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-300">
-            {NAV_ITEMS.map(({ id, label }) => {
-              const isActive = activeSection === id;
-              return (
-                <motion.a
-                  key={id}
-                  href={`#${id}`}
-                  className={`relative transition-colors ${
-                    isActive
-                      ? "text-sky-300"
-                      : "text-slate-400 hover:text-sky-200"
-                  }`}
-                  whileHover={{ y: -1 }}
+    // Outer wrapper handles the Theme Class
+    <div className={`${isDark ? "dark" : ""}`}>
+      {/* Main Container: 
+        - Default (Light Mode): bg-slate-50, text-slate-900 
+        - Dark Mode: bg-slate-950, text-slate-100
+      */}
+      <div className="font-sans antialiased min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-sky-500/30 selection:text-sky-800 dark:selection:text-sky-200 transition-colors duration-300 relative">
+        
+        {/* RETRO GRID BACKGROUND */}
+        <RetroGrid isDark={isDark} />
+
+        {/* HEADER */}
+        <motion.header
+          initial={{ y: -16, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/80 relative"
+        >
+          <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <motion.a
+                href="#home"
+                className="flex items-center gap-2 font-bold text-xs tracking-wider text-slate-900 dark:text-slate-100 uppercase"
+                whileHover={{ scale: 1.05 }}
+              >
+                <span className="hidden sm:inline">Alex Liu</span>
+                <span className="sm:hidden">AL</span>
+              </motion.a>
+              
+              {/* Removed System Clock here as requested */}
+            </div>
+
+            <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-600 dark:text-slate-300">
+              {NAV_ITEMS.map(({ id, label }) => {
+                const isActive = activeSection === id;
+                return (
+                  <motion.a
+                    key={id}
+                    href={`#${id}`}
+                    className={`relative transition-colors ${
+                      isActive
+                        ? "text-sky-600 dark:text-sky-300"
+                        : "text-slate-500 dark:text-slate-400 hover:text-sky-500 dark:hover:text-sky-200"
+                    }`}
+                    whileHover={{ y: -1 }}
+                  >
+                    {label}
+                    {isActive && (
+                      <motion.span
+                        layoutId="navHighlight"
+                        className="absolute -bottom-1 left-0 right-0 h-[2px] bg-sky-500 dark:bg-sky-400 rounded-full"
+                      />
+                    )}
+                  </motion.a>
+                );
+              })}
+            </nav>
+            <div className="flex items-center gap-3">
+              <motion.button
+                onClick={toggleTheme}
+                className="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                {isDark ? (
+                  <Sun className="w-4 h-4" />
+                ) : (
+                  <Moon className="w-4 h-4" />
+                )}
+              </motion.button>
+
+              <motion.a
+                href="/zh"
+                className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 font-medium"
+                whileHover={{ scale: 1.05 }}
+                title="Switch Language"
+              >
+                <Languages className="w-4 h-4" />
+                <span className="hidden sm:inline">中文</span>
+              </motion.a>
+              <motion.a
+                href={SITE.links.resume}
+                className="inline-flex items-center gap-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-bold px-4 py-2 rounded-full hover:bg-slate-700 dark:hover:bg-white transition-colors shadow-lg dark:shadow-[0_0_20px_rgba(248,250,252,0.3)]"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FileText className="w-3.5 h-3.5" /> Resume
+              </motion.a>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-slate-200 dark:bg-slate-800/50 overflow-hidden">
+            <motion.div
+              className="h-full bg-sky-500 shadow-[0_0_10px_rgba(56,189,248,0.8)]"
+              style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }}
+            />
+          </div>
+        </motion.header>
+
+        {/* HERO SECTION */}
+        <section
+          id="home"
+          className="relative overflow-hidden pt-24 pb-20 lg:pt-32 lg:pb-28"
+        >
+          <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="grid md:grid-cols-5 gap-12 items-center">
+              <motion.div
+                className="md:col-span-3 space-y-6"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                {/* Status Badge
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider"
                 >
-                  {label}
-                  {isActive && (
-                    <motion.span 
-                      layoutId="navHighlight"
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-sky-400 rounded-full" 
-                    />
-                  )}
-                </motion.a>
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  Open to Summer 2026 Internships
+                </motion.div> */}
+
+                <motion.h1
+                  className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  {SITE.headline}
+                </motion.h1>
+
+                <p className="text-base font-medium text-sky-600 dark:text-sky-300/90 tracking-wide uppercase">
+                  {SITE.tagline}
+                </p>
+
+                {/* Clickable Location */}
+                <a 
+                  href={SITE.links.map}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-2 hover:text-sky-600 dark:hover:text-sky-300 transition-colors group cursor-pointer"
+                >
+                  <MapPin className="w-4 h-4 text-slate-600 dark:text-slate-500 group-hover:text-sky-500 transition-colors" />
+                  <span>{SITE.location}</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-mono text-slate-400 ml-1">
+                    ({SITE.latlong})
+                  </span>
+                </a>
+
+                <div className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
+                
+                  <p>I study Computer Science, focusing on algorithms, systems, and making data 'tangible.' My recent work revolves around geospatial visualization, healthcare tools, and accessible interfaces.</p>
+                  {/* <p>Open for 2026 summer interns</p> */}
+                </div>
+                <div className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
+                
+                  {/* <p>I study Computer Science, focusing on algorithms, systems, and making data 'tangible.' My recent work revolves around geospatial visualization, healthcare tools, and accessible interfaces.</p> */}
+                  <p>Open for 2026 summer interns</p>
+                </div>
+
+                <div className="flex flex-wrap gap-3 pt-4">
+                  {[
+                    { href: SITE.links.github, icon: Github, label: "GitHub" },
+                    {
+                      href: SITE.links.linkedin,
+                      icon: Linkedin,
+                      label: "LinkedIn",
+                    },
+                    {
+                      href: SITE.links.instagram,
+                      icon: Instagram,
+                      label: "Instagram",
+                    },
+                    {
+                      href: `mailto:${SITE.links.email}`,
+                      icon: Mail,
+                      label: "Email",
+                    },
+                  ].map(({ href, icon: Icon, label }) => (
+                    <motion.a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-900/50 text-[11px] text-slate-700 dark:text-slate-200 hover:border-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:bg-white dark:hover:bg-slate-900 transition-all cursor-pointer"
+                      whileHover={{ y: -3 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Icon className="w-4 h-4" /> {label}
+                    </motion.a>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="md:col-span-2 perspective-1000"
+                initial={{ opacity: 0, scale: 0.95, rotate: 2 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+              >
+                {/* Interactive Profile Picture - Slight tilt on hover */}
+                <motion.div 
+                  className="relative group cursor-pointer"
+                  whileHover={{ rotateY: 5, rotateX: -5, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <motion.div
+                    className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-sky-400/60 via-indigo-400/50 to-emerald-400/50 blur-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+                    aria-hidden="true"
+                  />
+                  <img
+                    src="/me.jpg"
+                    alt="Alex Liu"
+                    className="relative w-full object-cover rounded-3xl border border-slate-200 dark:border-slate-700/50 shadow-2xl"
+                    loading="lazy"
+                  />
+                  {/* Glare effect */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        <Section id="about" title="About Me" icon={Briefcase}>
+          <div className="grid lg:grid-cols-3 gap-8">
+            <SpotlightCard className="lg:col-span-2">
+              <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200 mb-4 uppercase tracking-wider flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
+                Introduction
+              </h3>
+              <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6 space-y-4">
+                <p>{ABOUT.p1}</p>
+                <p>{ABOUT.p2}</p>
+              </div>
+              <ul className="space-y-3 mb-4">
+                {ABOUT.highlights.map((h, i) => (
+                  <motion.li
+                    key={i}
+                    className="flex gap-3 text-sm text-slate-700 dark:text-slate-200"
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <Code2 className="shrink-0 w-4 h-4 text-sky-500 dark:text-sky-400 mt-0.5" />
+                    <span>{h}</span>
+                  </motion.li>
+                ))}
+              </ul>
+
+              <div className="mt-6 border-t border-slate-200 dark:border-slate-800 pt-4">
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "Algorithms",
+                    "System Design",
+                    "GIS / Maps",
+                    "HCI & Accessibility",
+                  ].map((t) => (
+                    <motion.span
+                      key={t}
+                      whileHover={{ scale: 1.05 }}
+                      className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-[10px] font-medium border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-sky-500/50 hover:text-sky-600 dark:hover:text-sky-300 transition-colors cursor-default"
+                    >
+                      {t}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+            </SpotlightCard>
+
+            <SpotlightCard>
+              <div className="flex items-center gap-2 mb-4">
+                <Calendar className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+                <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200 uppercase tracking-wider">
+                  Education
+                </h3>
+              </div>
+              <div className="space-y-5">
+                {EDUCATION.map((edu, i) => (
+                  <div key={i} className="flex items-start gap-4 group">
+                    {edu.logo && (
+                      <div className="shrink-0 w-10 h-10 rounded-lg bg-slate-50 dark:bg-white/5 p-1 border border-slate-200 dark:border-white/10 group-hover:scale-110 transition-transform duration-300">
+                        <img
+                          src={edu.logo}
+                          alt={edu.school}
+                          className="w-full h-full object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100 mb-0.5">
+                        {edu.school}
+                      </h4>
+                      {edu.degree && (
+                        <p className="text-[11px] text-sky-600 dark:text-sky-200/90 mb-1 font-medium">
+                          {edu.degree}
+                        </p>
+                      )}
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 mb-1">
+                        {edu.period}
+                      </p>
+                      {edu.honors && (
+                        <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                          {edu.honors}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </SpotlightCard>
+          </div>
+        </Section>
+
+        <Section id="projects" title="Featured Projects" icon={Code2}>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-3xl">
+            A selection of projects demonstrating my focus on full-stack
+            engineering, geospatial analysis, and accessible technology.
+          </p>
+
+          <div className="flex flex-wrap gap-2 mb-8">
+            {PROJECT_FILTERS.map((filter) => {
+              const isActive = projectFilter === filter;
+              return (
+                <motion.button
+                  key={filter}
+                  type="button"
+                  onClick={() => setProjectFilter(filter)}
+                  className={`px-4 py-1.5 rounded-full text-[11px] font-medium border transition-all ${
+                    isActive
+                      ? "bg-sky-500 text-white dark:text-slate-950 border-sky-400 shadow-md"
+                      : "bg-white/50 dark:bg-slate-950/50 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-sky-400 hover:text-sky-600 dark:hover:text-sky-200"
+                  }`}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  {filter}
+                </motion.button>
               );
             })}
-          </nav>
-          <div className="flex items-center gap-3">
-            <motion.a
-              href="/"
-              className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-sky-300 font-medium"
-              whileHover={{ scale: 1.05 }}
-              title="Switch Language"
-            >
-              <Languages className="w-4 h-4" />
-              <span className="hidden sm:inline">中文</span>
-            </motion.a>
-            <motion.a
-              href={SITE.links.resume}
-              className="inline-flex items-center gap-2 bg-slate-100 text-slate-900 text-[11px] font-bold px-4 py-2 rounded-full hover:bg-white transition-colors shadow-[0_0_20px_rgba(248,250,252,0.3)]"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FileText className="w-3.5 h-3.5" /> Resume
-            </motion.a>
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-slate-800/50 overflow-hidden">
-          <motion.div
-            className="h-full bg-sky-500 shadow-[0_0_10px_rgba(56,189,248,0.8)]"
-            style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }}
-          />
-        </div>
-      </motion.header>
-
-      <section
-        id="home"
-        className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-slate-50"
-      >
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-40 -left-40 h-80 w-80 rounded-full bg-sky-500/20 blur-3xl opacity-50" />
-          <div className="absolute top-32 -right-20 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl opacity-50" />
-          <div className="absolute bottom-[-120px] left-1/3 h-72 w-72 rounded-full bg-emerald-400/10 blur-3xl opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.1)_0,_transparent_55%)]" />
-          <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,rgba(148,163,184,0.1)_1px,transparent_1px),linear-gradient(210deg,rgba(30,64,175,0.15)_1px,transparent_1px)] bg-[length:240px_240px]" />
-        </div>
-
-        <div className="max-w-6xl mx-auto px-6 py-24 relative z-10">
-          <div className="grid md:grid-cols-5 gap-12 items-center">
-            <motion.div
-              className="md:col-span-3 space-y-6"
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <motion.h1
-                className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-              >
-                {SITE.headline}
-              </motion.h1>
-
-              <p className="text-base font-medium text-sky-300/90 tracking-wide uppercase">
-                {SITE.tagline}
-              </p>
-
-              <div className="flex items-center gap-2 text-xs text-slate-400 mt-2">
-                <MapPin className="w-4 h-4 text-slate-500" />
-                <span className="hover:text-slate-200 transition-colors cursor-default">
-                  {SITE.location}
-                </span>
-              </div>
-
-              <p className="text-sm md:text-base text-slate-300 leading-relaxed max-w-xl">
-                I study Computer Science, focusing on algorithms, systems, and making data "tangible." My recent work revolves around geospatial visualization, healthcare tools, and accessible interfaces.
-              </p>
-              
-               <p className="text-sm md:text-base text-slate-300 leading-relaxed max-w-xl">
-                Open to Summer 2026 Internships
-              </p>
-
-              <div className="flex flex-wrap gap-3 pt-4">
-                {[
-                  { href: SITE.links.github, icon: Github, label: "GitHub" },
-                  { href: SITE.links.linkedin, icon: Linkedin, label: "LinkedIn" },
-                  { href: SITE.links.instagram, icon: Instagram, label: "Instagram" },
-                  { href: `mailto:${SITE.links.email}`, icon: Mail, label: "Email" },
-                ].map(({ href, icon: Icon, label }) => (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 bg-slate-900/50 text-[11px] text-slate-200 hover:border-sky-400 hover:text-sky-300 hover:bg-slate-900 transition-all"
-                    whileHover={{ y: -3 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Icon className="w-4 h-4" /> {label}
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="md:col-span-2"
-              initial={{ opacity: 0, scale: 0.95, rotate: 2 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-            >
-              <div className="relative group">
-                <motion.div
-                  className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-sky-500/60 via-indigo-500/50 to-emerald-400/50 blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500"
-                  aria-hidden="true"
-                />
-                <motion.img
-                  src="/me.jpg"
-                  alt="Alex Liu"
-                  className="relative w-full object-cover rounded-3xl border border-slate-700/50 shadow-[0_0_40px_rgba(0,0,0,0.5)]"
-                  whileHover={{ scale: 1.01 }}
-                  transition={{ duration: 0.4 }}
-                  loading="lazy"
-                />
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <Section id="about" title="About Me" icon={Briefcase}>
-        <div className="grid lg:grid-cols-3 gap-8">
-          <Card className="lg:col-span-2">
-            <h3 className="text-xs font-bold text-slate-200 mb-4 uppercase tracking-wider flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
-              Introduction
-            </h3>
-            <p className="text-sm text-slate-300 leading-relaxed mb-6">
-              {ABOUT.blurb}
-            </p>
-            <ul className="space-y-3 mb-4">
-              {ABOUT.highlights.map((h, i) => (
-                <motion.li
-                  key={i}
-                  className="flex gap-3 text-sm text-slate-200"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Code2 className="shrink-0 w-4 h-4 text-sky-400 mt-0.5" />
-                  <span>{h}</span>
-                </motion.li>
-              ))}
-            </ul>
-
-            <div className="mt-6 border-t border-slate-800 pt-4">
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "Algorithms",
-                  "System Design",
-                  "GIS / Maps",
-                  "HCI & Accessibility",
-                ].map((t) => (
-                  <span
-                    key={t}
-                    className="px-3 py-1 rounded-full bg-slate-900 text-[10px] font-medium border border-slate-800 text-slate-300 hover:border-sky-500/50 hover:text-sky-300 transition-colors"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </Card>
-
-          <Card>
-            <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-4 h-4 text-sky-400" />
-              <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
-                Education
-              </h3>
-            </div>
-            <div className="space-y-5">
-              {EDUCATION.map((edu, i) => (
-                <div
-                  key={i}
-                  className="flex items-start gap-4"
-                >
-                  {edu.logo && (
-                    <div className="shrink-0 w-10 h-10 rounded-lg bg-white/5 p-1 border border-white/10">
-                        <img
-                        src={edu.logo}
-                        alt={edu.school}
-                        className="w-full h-full object-contain"
-                        loading="lazy"
-                        />
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <h4 className="font-bold text-xs text-slate-100 mb-0.5">
-                      {edu.school}
-                    </h4>
-                    {edu.degree && (
-                      <p className="text-[11px] text-sky-200/90 mb-1 font-medium">
-                        {edu.degree}
-                      </p>
-                    )}
-                    <p className="text-[10px] text-slate-400 mb-1">
-                      {edu.period}
-                    </p>
-                    {edu.honors && (
-                      <p className="text-[10px] text-emerald-400 font-medium">
-                        {edu.honors}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </div>
-      </Section>
-
-      <Section id="projects" title="Featured Projects" icon={Code2}>
-        <p className="text-sm text-slate-400 mb-6 max-w-3xl">
-          A selection of projects demonstrating my focus on full-stack engineering, geospatial analysis, and accessible technology.
-        </p>
-
-        <div className="flex flex-wrap gap-2 mb-8">
-          {PROJECT_FILTERS.map((filter) => {
-            const isActive = projectFilter === filter;
-            return (
-              <motion.button
-                key={filter}
-                type="button"
-                onClick={() => setProjectFilter(filter)}
-                className={`px-4 py-1.5 rounded-full text-[11px] font-medium border transition-all ${
-                  isActive
-                    ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
-                    : "bg-slate-950/50 border-slate-700 text-slate-300 hover:border-sky-400 hover:text-sky-200"
-                }`}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                {filter}
-              </motion.button>
-            );
-          })}
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {visibleProjects.map((p, i) => (
-            <motion.div
-              key={p.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-            >
-              <Card
-                className="h-full flex flex-col relative overflow-hidden group"
-                onClick={() =>
-                  setModal({
-                    title: p.name,
-                    subtitle: p.tech.join(" · "),
-                    eyebrow: "Project Details",
-                    tags: p.tech,
-                    body: (
-                      <div className="space-y-5">
-                        <div className="space-y-2">
-                          <p className="text-slate-300 leading-relaxed">{p.blurb}</p>
-                        </div>
-                        
-                        {/* Highlights Section based on Resume/XYZ */}
-                        {p.highlights && (
-                            <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
-                                <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                                    <Zap className="w-3.5 h-3.5" /> Key Achievements
-                                </h4>
-                                <ul className="space-y-2.5">
-                                    {p.highlights.map((h, idx) => (
-                                        <li key={idx} className="flex gap-2.5 text-xs text-slate-200 leading-relaxed">
-                                            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-400/80" />
-                                            <span>{h}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-
-                        {p.screenshots && p.screenshots.length > 0 && (
-                          <div className="space-y-2">
-                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                              Preview Gallery
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                              {p.screenshots.map((src) => (
-                                <img
-                                  key={src}
-                                  src={src}
-                                  alt={`${p.name} screenshot`}
-                                  className="w-full h-24 object-cover rounded-lg border border-slate-800 bg-slate-900"
-                                  loading="lazy"
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ),
-                    links: [
-                      p.links?.code
-                        ? { label: "View Code", href: p.links.code, icon: Code2 }
-                        : null,
-                      p.links?.demo
-                        ? { label: "Live Demo", href: p.links.demo, icon: ExternalLink }
-                        : null,
-                    ].filter(Boolean) as ModalLink[],
-                  })
-                }
-              >
-                <div className="pointer-events-none absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.2)_0,_transparent_50%)] group-hover:opacity-40 transition-opacity duration-500" />
-                
-                <div className="relative flex-1 flex flex-col">
-                  {p.screenshots && p.screenshots.length > 0 && (
-                    <div className="mb-4 rounded-xl overflow-hidden border border-slate-800 bg-slate-950 relative">
-                        <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors z-10" />
-                        <motion.img
-                            src={p.screenshots[0]}
-                            alt={`${p.name} preview`}
-                            className="w-full h-36 object-cover"
-                            loading="lazy"
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.6 }}
-                        />
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-base font-bold text-white group-hover:text-sky-300 transition-colors">
-                      {p.name}
-                    </h3>
-                    {p.flagship && (
-                      <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-bold text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
-                        CORE
-                      </span>
-                    )}
-                  </div>
-                  
-                  <p className="text-xs text-slate-400 mb-4 leading-relaxed line-clamp-3">
-                    {p.blurb}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-1.5 mt-auto">
-                    {p.tech.slice(0, 4).map((t) => (
-                      <span
-                        key={t}
-                        className="text-[10px] px-2 py-1 bg-slate-900 text-slate-300 font-mono rounded border border-slate-800"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                    {p.tech.length > 4 && (
-                        <span className="text-[10px] px-1.5 py-1 text-slate-500 font-mono">+{p.tech.length - 4}</span>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="relative flex gap-4 pt-4 mt-4 border-t border-slate-800/60">
-                  {p.links?.code && (
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400 group-hover:text-white transition-colors">
-                      <Code2 className="w-3.5 h-3.5" /> Source
-                    </div>
-                  )}
-                  {p.links?.demo && (
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-sky-400 group-hover:text-sky-300 transition-colors">
-                      <ExternalLink className="w-3.5 h-3.5" /> Demo
-                    </div>
-                  )}
-                </div>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-
-        {filteredProjects.length > 3 && (
-          <div className="mt-10 flex justify-center">
-            <motion.button
-              onClick={() => setShowExpandedProjects(!showExpandedProjects)}
-              className="inline-flex items-center gap-2 px-6 py-2 border border-slate-700 rounded-full bg-slate-900/50 text-xs font-semibold text-slate-300 hover:border-sky-400 hover:text-white transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.2)]"
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {showExpandedProjects ? (
-                <>
-                  <ChevronUp className="w-4 h-4" /> Show Less
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4" /> View All Projects
-                </>
-              )}
-            </motion.button>
-          </div>
-        )}
-      </Section>
-
-      <Section
-        id="experience"
-        title="Experience & Involvement"
-        icon={Briefcase}
-      >
-        <div className="space-y-12">
-          {/* Work Experience */}
-          <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
-              Work History
-            </h3>
-            <div className="space-y-6">
-              {EXPERIENCE.map((x, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Card
-                    onClick={() =>
-                      setModal({
-                        title: x.role,
-                        subtitle: x.org,
-                        eyebrow: `Experience · ${x.period}`,
-                        body: (
-                          <div className="space-y-4">
-                            <p className="text-slate-300">
-                              At <span className="font-bold text-white">{x.org}</span>, I served as <span className="font-bold text-white">{x.role}</span>.
-                            </p>
-                            <ul className="space-y-2">
-                              {x.bullets.map((b) => (
-                                <li key={b} className="flex gap-3 text-xs text-slate-300 leading-relaxed">
-                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-400" />
-                                    <span>{b}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ),
-                        links: x.link
-                          ? [{ label: "Website", href: x.link, icon: ExternalLink }]
-                          : undefined,
-                      })
-                    }
-                  >
-                    <div className="flex items-start gap-4">
-                      {x.logo && (
-                        <div className="shrink-0 w-12 h-12 bg-white rounded-lg overflow-hidden p-0.5 border border-slate-700">
-                            <img
-                            src={x.logo}
-                            alt={x.org}
-                            className="w-full h-full object-contain rounded-md"
-                            loading="lazy"
-                            />
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
-                            <h4 className="font-bold text-sm text-white group-hover:text-sky-300 transition-colors">
-                            {x.role}
-                            </h4>
-                            <span className="text-[10px] font-mono text-slate-500">{x.period}</span>
-                        </div>
-                        <div className="text-xs font-medium text-sky-400 mb-2">
-                            {x.org}
-                        </div>
-                        <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
-                          {x.bullets[0]}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
           </div>
 
-          {/* Volunteer */}
-          <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              Volunteering
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {VOLUNTEER.map((x, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Card
-                    onClick={() =>
-                      setModal({
-                        title: x.role,
-                        subtitle: x.org,
-                        eyebrow: "Volunteer",
-                        body: (
-                          <div className="space-y-4">
-                            <ul className="space-y-2">
-                              {x.bullets.map((b) => (
-                                <li key={b} className="flex gap-3 text-xs text-slate-300">
-                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
-                                    <span>{b}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ),
-                        links: x.link
-                          ? [{ label: "Organization", href: x.link, icon: ExternalLink }]
-                          : undefined,
-                      })
-                    }
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                        {x.logo && <img src={x.logo} className="w-6 h-6 object-contain" alt="" />}
-                        <h4 className="font-bold text-xs text-white">{x.org}</h4>
-                    </div>
-                    <div className="text-[11px] text-emerald-400 font-medium mb-1">{x.role}</div>
-                    <div className="text-[10px] text-slate-500 mb-2">{x.period}</div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Leadership */}
-          <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
-              Leadership
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {LEADERSHIPS.map((x, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Card
-                    onClick={() =>
-                      setModal({
-                        title: x.role,
-                        subtitle: x.org,
-                        eyebrow: "Leadership",
-                        body: (
-                          <div className="space-y-4">
-                            <ul className="space-y-2">
-                              {x.bullets.map((b) => (
-                                <li key={b} className="flex gap-3 text-xs text-slate-300">
-                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-indigo-400" />
-                                    <span>{b}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ),
-                        links: x.link
-                          ? [{ label: "Website", href: x.link, icon: ExternalLink }]
-                          : undefined,
-                      })
-                    }
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                        {x.logo && <img src={x.logo} className="w-6 h-6 rounded-md" alt="" />}
-                        <h4 className="font-bold text-xs text-white">{x.org}</h4>
-                    </div>
-                    <div className="text-[11px] text-indigo-400 font-medium mb-1">{x.role}</div>
-                    <div className="text-[10px] text-slate-500 mb-2">{x.period}</div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <Section id="skills" title="Technical Arsenal" icon={Cpu}>
-        <div className="grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)] gap-8 items-start">
-          <div className="space-y-6">
-            {SKILLS.map((g, i) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {visibleProjects.map((p, i) => (
               <motion.div
-                key={g.group}
-                initial={{ opacity: 0, x: -15 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                key={p.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
               >
-                <Card className="bg-slate-900/40 border-slate-800">
-                  <div className="flex items-center gap-3 mb-4">
-                    <g.icon className="w-4 h-4 text-sky-400" />
-                    <h3 className="font-bold text-xs text-slate-200 uppercase tracking-wide">
-                      {g.group}
-                    </h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {g.items.map((s) => {
-                      const isActive =
-                        activeSkill &&
-                        activeSkill.group === g.group &&
-                        activeSkill.item.name === s.name;
-                      return (
-                        <motion.button
-                          key={s.name}
-                          type="button"
-                          onMouseEnter={() =>
-                            setActiveSkill({ group: g.group, item: s })
-                          }
-                          onFocus={() =>
-                            setActiveSkill({ group: g.group, item: s })
-                          }
-                          className={`px-3 py-1.5 rounded-lg text-[11px] font-mono border transition-all ${
-                            isActive
-                              ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
-                              : "bg-slate-950 border-slate-700 text-slate-400 hover:border-sky-500/50 hover:text-slate-200"
-                          }`}
+                <SpotlightCard
+                  className="h-full flex flex-col group"
+                  onClick={() =>
+                    setModal({
+                      title: p.name,
+                      subtitle: p.tech.join(" · "),
+                      eyebrow: "Project Details",
+                      tags: p.tech,
+                      body: (
+                        <div className="space-y-5">
+                          <div className="space-y-2">
+                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                              {p.blurb}
+                            </p>
+                          </div>
+
+                          {p.highlights && (
+                            <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                              <h4 className="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                <Zap className="w-3.5 h-3.5" /> Key Achievements
+                              </h4>
+                              <ul className="space-y-2.5">
+                                {p.highlights.map((h, idx) => (
+                                  <li
+                                    key={idx}
+                                    className="flex gap-2.5 text-xs text-slate-700 dark:text-slate-200 leading-relaxed"
+                                  >
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-400/80" />
+                                    <span>{h}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {p.screenshots && p.screenshots.length > 0 && (
+                            <div className="space-y-2">
+                              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                Preview Gallery
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                {p.screenshots.map((src) => (
+                                  <img
+                                    key={src}
+                                    src={src}
+                                    alt={`${p.name} screenshot`}
+                                    className="w-full h-24 object-cover rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900"
+                                    loading="lazy"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ),
+                      links: [
+                        p.links?.code
+                          ? { label: "View Code", href: p.links.code, icon: Code2 }
+                          : null,
+                        p.links?.demo
+                          ? {
+                              label: "Live Demo",
+                              href: p.links.demo,
+                              icon: ExternalLink,
+                            }
+                          : null,
+                      ].filter(Boolean) as ModalLink[],
+                    })
+                  }
+                >
+                  <div className="relative flex-1 flex flex-col">
+                    {p.screenshots && p.screenshots.length > 0 && (
+                      <div className="mb-4 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 relative">
+                        <div className="absolute inset-0 bg-slate-900/5 dark:bg-slate-900/10 group-hover:bg-transparent transition-colors z-10" />
+                        <motion.img
+                          src={p.screenshots[0]}
+                          alt={`${p.name} preview`}
+                          className="w-full h-36 object-cover"
+                          loading="lazy"
                           whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors">
+                        {p.name}
+                      </h3>
+                      {p.flagship && (
+                        <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 text-[10px] font-bold text-amber-600 dark:text-amber-300">
+                          CORE
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mb-4 leading-relaxed line-clamp-3">
+                      {p.blurb}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 mt-auto">
+                      {p.tech.slice(0, 4).map((t) => (
+                        <span
+                          key={t}
+                          className="text-[10px] px-2 py-1 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 font-mono rounded border border-slate-200 dark:border-slate-800"
                         >
-                          {s.name}
-                        </motion.button>
-                      );
-                    })}
+                          {t}
+                        </span>
+                      ))}
+                      {p.tech.length > 4 && (
+                        <span className="text-[10px] px-1.5 py-1 text-slate-500 font-mono">
+                          +{p.tech.length - 4}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </Card>
+
+                  <div className="relative flex gap-4 pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/60">
+                    {p.links?.code && (
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                        <Code2 className="w-3.5 h-3.5" /> Source
+                      </div>
+                    )}
+                    {p.links?.demo && (
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-sky-600 dark:text-sky-400 group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors">
+                        <ExternalLink className="w-3.5 h-3.5" /> Demo
+                      </div>
+                    )}
+                  </div>
+                </SpotlightCard>
               </motion.div>
             ))}
           </div>
-          
-          <div className="lg:sticky lg:top-24">
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={activeSkill ? activeSkill.item.name : "empty"}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    <Card className="bg-gradient-to-br from-slate-900 to-slate-950 border-slate-700 min-h-[180px] flex flex-col justify-center">
-                    {activeSkill ? (
-                        <div className="space-y-3">
-                        <div className="text-[10px] font-bold tracking-widest text-sky-500 uppercase">
-                            {activeSkill.group}
-                        </div>
-                        <h3 className="text-xl font-bold text-white">
-                            {activeSkill.item.name}
-                        </h3>
-                        <p className="text-xs text-slate-300 leading-relaxed">
-                            {activeSkill.item.blurb}
-                        </p>
-                        {activeSkill.item.usedIn && (
-                            <div className="pt-3 mt-3 border-t border-slate-800">
-                                <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
-                                    Used In:
-                                </span>
-                                <p className="text-[11px] text-sky-200">
-                                    {activeSkill.item.usedIn}
-                                </p>
-                            </div>
-                        )}
-                        </div>
-                    ) : (
-                        <div className="text-center space-y-2 opacity-50">
-                        <Cpu className="w-8 h-8 mx-auto text-slate-600" />
-                        <p className="text-xs text-slate-400">
-                            Hover over a skill to see details.
-                        </p>
-                        </div>
-                    )}
-                    </Card>
-                </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-      </Section>
 
-      <Section id="hobbies" title="Beyond the Code" icon={Award}>
-        <p className="text-sm text-slate-400 mb-6">
-          When I'm not debugging or optimizing algorithms, here's what keeps me busy.
-        </p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {HOBBIES.map((hobby, i) => (
-            <motion.div
-              key={hobby.name}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <Card
-                className="h-full flex flex-col items-center text-center gap-3 hover:bg-slate-900/80"
-                onClick={() =>
-                  setModal({
-                    title: hobby.name,
-                    subtitle: "Hobby",
-                    eyebrow: "Personal",
-                    body: (
-                      <div className="space-y-3">
-                        <p className="text-slate-300">{hobby.blurb}</p>
-                        {hobby.details && (
-                          <ul className="list-disc list-inside space-y-1 text-slate-400 text-xs text-left">
-                            {hobby.details.map((d) => (
-                              <li key={d}>{d}</li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    ),
-                  })
-                }
+          {filteredProjects.length > 3 && (
+            <div className="mt-10 flex justify-center">
+              <motion.button
+                onClick={() => setShowExpandedProjects(!showExpandedProjects)}
+                className="inline-flex items-center gap-2 px-6 py-2 border border-slate-200 dark:border-slate-700 rounded-full bg-white dark:bg-slate-900/50 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:border-sky-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <div className="text-4xl mb-2">{hobby.emoji}</div>
-                <div>
-                  <h3 className="text-sm font-bold text-white mb-1">
-                    {hobby.name}
-                  </h3>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    {hobby.blurb}
-                  </p>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </Section>
+                {showExpandedProjects ? (
+                  <>
+                    <ChevronUp className="w-4 h-4" /> Show Less
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-4 h-4" /> View All Projects
+                  </>
+                )}
+              </motion.button>
+            </div>
+          )}
+        </Section>
 
-      <Section id="photos" title="Gallery" icon={Camera}>
-        <motion.a
-          href="/photos"
-          className="block"
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.99 }}
+        <Section
+          id="experience"
+          title="Experience & Involvement"
+          icon={Briefcase}
         >
-          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-sky-600 to-indigo-700 p-8 shadow-2xl border border-sky-400/30 group">
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
-            <div className="relative z-10 flex items-center justify-between gap-6">
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  View My Photo Gallery
-                </h3>
-                <p className="text-sm text-sky-100 max-w-md">
-                  A collection of snapshots from hackathons, lion dance performances, and interesting places I've mapped.
-                </p>
+          <div className="space-y-12">
+            {/* Work Experience */}
+            <div>
+              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+                Work History
+              </h3>
+              <div className="space-y-6">
+                {EXPERIENCE.map((x, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <SpotlightCard
+                      onClick={() =>
+                        setModal({
+                          title: x.role,
+                          subtitle: x.org,
+                          eyebrow: `Experience · ${x.period}`,
+                          body: (
+                            <div className="space-y-4">
+                              <p className="text-slate-600 dark:text-slate-300">
+                                At{" "}
+                                <span className="font-bold text-slate-900 dark:text-white">
+                                  {x.org}
+                                </span>
+                                , I served as{" "}
+                                <span className="font-bold text-slate-900 dark:text-white">
+                                  {x.role}
+                                </span>
+                                .
+                              </p>
+                              <ul className="space-y-2">
+                                {x.bullets.map((b) => (
+                                  <li
+                                    key={b}
+                                    className="flex gap-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed"
+                                  >
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-400" />
+                                    <span>{b}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ),
+                          links: x.link
+                            ? [
+                                {
+                                  label: "Website",
+                                  href: x.link,
+                                  icon: ExternalLink,
+                                },
+                              ]
+                            : undefined,
+                        })
+                      }
+                    >
+                      <div className="flex items-start gap-4">
+                        {x.logo && (
+                          <div className="shrink-0 w-12 h-12 bg-white rounded-lg overflow-hidden p-0.5 border border-slate-200 dark:border-slate-700">
+                            <img
+                              src={x.logo}
+                              alt={x.org}
+                              className="w-full h-full object-contain rounded-md"
+                              loading="lazy"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
+                            <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors">
+                              {x.role}
+                            </h4>
+                            <span className="text-[10px] font-mono text-slate-500">
+                              {x.period}
+                            </span>
+                          </div>
+                          <div className="text-xs font-medium text-sky-600 dark:text-sky-400 mb-2">
+                            {x.org}
+                          </div>
+                          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
+                            {x.bullets[0]}
+                          </p>
+                        </div>
+                      </div>
+                    </SpotlightCard>
+                  </motion.div>
+                ))}
               </div>
-              <div className="hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-all">
-                <ExternalLink className="w-6 h-6 text-white" />
+            </div>
+
+            {/* Volunteer */}
+            <div>
+              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Volunteering
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {VOLUNTEER.map((x, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <SpotlightCard
+                      onClick={() =>
+                        setModal({
+                          title: x.role,
+                          subtitle: x.org,
+                          eyebrow: "Volunteer",
+                          body: (
+                            <div className="space-y-4">
+                              <ul className="space-y-2">
+                                {x.bullets.map((b) => (
+                                  <li
+                                    key={b}
+                                    className="flex gap-3 text-xs text-slate-600 dark:text-slate-300"
+                                  >
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
+                                    <span>{b}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ),
+                          links: x.link
+                            ? [
+                                {
+                                  label: "Organization",
+                                  href: x.link,
+                                  icon: ExternalLink,
+                                },
+                              ]
+                            : undefined,
+                        })
+                      }
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        {x.logo && (
+                          <img
+                            src={x.logo}
+                            className="w-6 h-6 object-contain"
+                            alt=""
+                          />
+                        )}
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white">
+                          {x.org}
+                        </h4>
+                      </div>
+                      <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mb-1">
+                        {x.role}
+                      </div>
+                      <div className="text-[10px] text-slate-500 mb-2">
+                        {x.period}
+                      </div>
+                    </SpotlightCard>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Leadership */}
+            <div>
+              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                Leadership
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {LEADERSHIPS.map((x, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <SpotlightCard
+                      onClick={() =>
+                        setModal({
+                          title: x.role,
+                          subtitle: x.org,
+                          eyebrow: "Leadership",
+                          body: (
+                            <div className="space-y-4">
+                              <ul className="space-y-2">
+                                {x.bullets.map((b) => (
+                                  <li
+                                    key={b}
+                                    className="flex gap-3 text-xs text-slate-600 dark:text-slate-300"
+                                  >
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-indigo-400" />
+                                    <span>{b}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ),
+                          links: x.link
+                            ? [
+                                {
+                                  label: "Website",
+                                  href: x.link,
+                                  icon: ExternalLink,
+                                },
+                              ]
+                            : undefined,
+                        })
+                      }
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        {x.logo && (
+                          <img
+                            src={x.logo}
+                            className="w-6 h-6 rounded-md"
+                            alt=""
+                          />
+                        )}
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white">
+                          {x.org}
+                        </h4>
+                      </div>
+                      <div className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium mb-1">
+                        {x.role}
+                      </div>
+                      <div className="text-[10px] text-slate-500 mb-2">
+                        {x.period}
+                      </div>
+                    </SpotlightCard>
+                  </motion.div>
+                ))}
               </div>
             </div>
           </div>
-        </motion.a>
-      </Section>
+        </Section>
 
-      <Section id="contact" title="Get In Touch" icon={Mail}>
-        <div className="grid md:grid-cols-2 gap-8">
+        <Section id="skills" title="Technical Arsenal" icon={Cpu}>
+          <div className="grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)] gap-8 items-start">
             <div className="space-y-6">
-                <div>
-                    <h3 className="text-2xl font-bold text-white mb-4">
-                    Let's Connect
-                    </h3>
-                    <p className="text-sm text-slate-300 leading-relaxed">
-                    {CONTACT.note}
-                    </p>
-                </div>
-                
-                <div className="flex flex-col gap-4">
-                    <button
-                        type="button"
-                        onClick={() => handleCopy(SITE.links.email, "email")}
-                        className="flex items-center gap-4 p-3 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 transition-all group text-left"
-                    >
-                        <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
-                            <Mail className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Email</div>
-                            <div className="text-sm font-mono text-slate-200">{SITE.links.email}</div>
-                        </div>
-                        {copiedField === "email" && (
-                            <span className="ml-auto text-[10px] text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">COPIED</span>
-                        )}
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => handleCopy(SITE.links.phone, "phone")}
-                        className="flex items-center gap-4 p-3 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 transition-all group text-left"
-                    >
-                        <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
-                            <Phone className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Phone</div>
-                            <div className="text-sm font-mono text-slate-200">{SITE.links.phone}</div>
-                        </div>
-                        {copiedField === "phone" && (
-                            <span className="ml-auto text-[10px] text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">COPIED</span>
-                        )}
-                    </button>
-                </div>
-            </div>
-            
-            <MessageForm />
-        </div>
-      </Section>
-
-      <footer className="py-12 border-t border-slate-900 bg-slate-950 mt-12">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-center md:text-left">
-                <div className="font-bold text-slate-200 text-sm mb-1">{SITE.name}</div>
-                <div className="text-[11px] text-slate-500">
-                © {new Date().getFullYear()} · Built with React, Tailwind & Framer Motion.
-                </div>
-            </div>
-            <div className="flex gap-4">
-              {[
-                { href: SITE.links.github, icon: Github },
-                { href: SITE.links.linkedin, icon: Linkedin },
-                { href: SITE.links.instagram, icon: Instagram },
-                { href: `mailto:${SITE.links.email}`, icon: Mail },
-              ].map(({ href, icon: Icon }, i) => (
-                <motion.a
-                  key={i}
-                  href={href}
-                  className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-slate-400 border border-slate-800 hover:border-sky-500 hover:text-sky-400 hover:bg-slate-900 transition-all shadow-lg"
-                  whileHover={{ y: -3 }}
-                  whileTap={{ scale: 0.9 }}
+              {SKILLS.map((g, i) => (
+                <motion.div
+                  key={g.group}
+                  initial={{ opacity: 0, x: -15 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
                 >
-                  <Icon className="w-5 h-5" />
-                </motion.a>
+                  <SpotlightCard className="bg-white/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center gap-3 mb-4">
+                      <g.icon className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+                      <h3 className="font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wide">
+                        {g.group}
+                      </h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {g.items.map((s) => {
+                        const isActive =
+                          activeSkill &&
+                          activeSkill.group === g.group &&
+                          activeSkill.item.name === s.name;
+                        return (
+                          <motion.button
+                            key={s.name}
+                            type="button"
+                            onMouseEnter={() =>
+                              setActiveSkill({ group: g.group, item: s })
+                            }
+                            onFocus={() =>
+                              setActiveSkill({ group: g.group, item: s })
+                            }
+                            className={`px-3 py-1.5 rounded-lg text-[11px] font-mono border transition-all ${
+                              isActive
+                                ? "bg-sky-500 text-white dark:text-slate-950 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
+                                : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-sky-500/50 hover:text-slate-900 dark:hover:text-slate-200"
+                            }`}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            {s.name}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </SpotlightCard>
+                </motion.div>
               ))}
             </div>
-          </div>
-        </div>
-      </footer>
 
-      <DetailModal modal={modal} onClose={() => setModal(null)} />
+            <div className="lg:sticky lg:top-24">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeSkill ? activeSkill.item.name : "empty"}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <SpotlightCard className="bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-slate-200 dark:border-slate-700 min-h-[180px] flex flex-col justify-center">
+                    {activeSkill ? (
+                      <div className="space-y-3">
+                        <div className="text-[10px] font-bold tracking-widest text-sky-600 dark:text-sky-500 uppercase">
+                          {activeSkill.group}
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                          {activeSkill.item.name}
+                        </h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                          {activeSkill.item.blurb}
+                        </p>
+                        {activeSkill.item.usedIn && (
+                          <div className="pt-3 mt-3 border-t border-slate-200 dark:border-slate-800">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
+                              Used In:
+                            </span>
+                            <p className="text-[11px] text-sky-700 dark:text-sky-200">
+                              {activeSkill.item.usedIn}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-center space-y-2 opacity-50">
+                        <Cpu className="w-8 h-8 mx-auto text-slate-400 dark:text-slate-600" />
+                        <p className="text-xs text-slate-400">
+                          Hover over a skill to see details.
+                        </p>
+                      </div>
+                    )}
+                  </SpotlightCard>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </Section>
+
+        <Section id="hobbies" title="Beyond the Code" icon={Award}>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+            When I'm not debugging or optimizing algorithms, here's what keeps
+            me busy.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {HOBBIES.map((hobby, i) => (
+              <motion.div
+                key={hobby.name}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <SpotlightCard
+                  className="h-full flex flex-col items-center text-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-900/80"
+                  onClick={() =>
+                    setModal({
+                      title: hobby.name,
+                      subtitle: "Hobby",
+                      eyebrow: "Personal",
+                      body: (
+                        <div className="space-y-3">
+                          <p className="text-slate-600 dark:text-slate-300">
+                            {hobby.blurb}
+                          </p>
+                          {hobby.details && (
+                            <ul className="list-disc list-inside space-y-1 text-slate-500 dark:text-slate-400 text-xs text-left">
+                              {hobby.details.map((d) => (
+                                <li key={d}>{d}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ),
+                    })
+                  }
+                >
+                  <div className="text-4xl mb-2">{hobby.emoji}</div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      {hobby.name}
+                    </h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                      {hobby.blurb}
+                    </p>
+                  </div>
+                </SpotlightCard>
+              </motion.div>
+            ))}
+          </div>
+        </Section>
+
+        <Section id="photos" title="Gallery" icon={Camera}>
+          <motion.a
+            href="/photos"
+            className="block"
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+          >
+            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-sky-600 to-indigo-700 p-8 shadow-2xl border border-sky-400/30 group">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
+              <div className="relative z-10 flex items-center justify-between gap-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    View My Photo Gallery
+                  </h3>
+                  <p className="text-sm text-sky-100 max-w-md">
+                    A collection of snapshots from hackathons, lion dance
+                    performances, and interesting places I've mapped.
+                  </p>
+                </div>
+                <div className="hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-all">
+                  <ExternalLink className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </div>
+          </motion.a>
+        </Section>
+
+        <Section id="contact" title="Get In Touch" icon={Mail}>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+                  Let's Connect
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {CONTACT.note}
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <button
+                  type="button"
+                  onClick={() => handleCopy(SITE.links.email, "email")}
+                  className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-sky-500/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all group text-left shadow-sm"
+                >
+                  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors">
+                    <Mail className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      Email
+                    </div>
+                    <div className="text-sm font-mono text-slate-900 dark:text-slate-200">
+                      {SITE.links.email}
+                    </div>
+                  </div>
+                  {copiedField === "email" && (
+                    <span className="ml-auto text-[10px] text-emerald-500 dark:text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">
+                      COPIED
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleCopy(SITE.links.phone, "phone")}
+                  className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-sky-500/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all group text-left shadow-sm"
+                >
+                  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors">
+                    <Phone className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      Phone
+                    </div>
+                    <div className="text-sm font-mono text-slate-900 dark:text-slate-200">
+                      {SITE.links.phone}
+                    </div>
+                  </div>
+                  {copiedField === "phone" && (
+                    <span className="ml-auto text-[10px] text-emerald-500 dark:text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">
+                      COPIED
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <MessageForm />
+          </div>
+        </Section>
+
+        <footer className="py-12 border-t border-slate-200 dark:border-slate-900 bg-slate-50 dark:bg-slate-950 mt-12 relative z-10">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="text-center md:text-left">
+                <div className="font-bold text-slate-900 dark:text-slate-200 text-sm mb-1">
+                  {SITE.name}
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  © {new Date().getFullYear()} · Built with React, Tailwind &
+                  Framer Motion.
+                </div>
+              </div>
+              <div className="flex gap-4">
+                {[
+                  { href: SITE.links.github, icon: Github },
+                  { href: SITE.links.linkedin, icon: Linkedin },
+                  { href: SITE.links.instagram, icon: Instagram },
+                  { href: `mailto:${SITE.links.email}`, icon: Mail },
+                ].map(({ href, icon: Icon }, i) => (
+                  <motion.a
+                    key={i}
+                    href={href}
+                    className="w-10 h-10 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-sky-500 hover:text-sky-500 dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all shadow-sm"
+                    whileHover={{ y: -3 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </motion.a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </footer>
+
+        <DetailModal modal={modal} onClose={() => setModal(null)} />
+      </div>
     </div>
   );
 }

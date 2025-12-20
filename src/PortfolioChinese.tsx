@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionTemplate,
+  useMotionValue,
+} from "framer-motion";
 import {
   Github,
   Linkedin,
@@ -10,7 +15,6 @@ import {
   Calendar,
   Code2,
   Briefcase,
-  Globe,
   Phone,
   ChevronDown,
   ChevronUp,
@@ -21,13 +25,20 @@ import {
   Languages,
   Camera,
   X,
+  Zap,
+  Sun,
+  Moon,
+  BookOpen, // 新增图标用于博客按钮
+  Globe,
 } from "lucide-react";
 
+// --- 站点配置 (中文版) ---
 const SITE = {
+  name: "刘昊洲",
+  headline: "刘昊洲",
   tagline: "佛罗里达大学计算机科学专业 · 地理学辅修",
   location: "Gainesville, FL",
-  headline: "刘昊洲",
-  name: "刘昊洲",
+  latlong: "29.6516° N, 82.3248° W",
   links: {
     github: "https://github.com/heimweh17",
     linkedin: "https://www.linkedin.com/in/alex-liu7/",
@@ -35,11 +46,168 @@ const SITE = {
     email: "haozhouliu17@gmail.com",
     resume: "/resume.pdf",
     phone: "+1 (352) 328-4805",
+    map: "https://www.google.com/maps/place/Gainesville,+FL",
     website: "https://aliu.me/",
+    blog: "/blog", // 博客链接
   },
 };
 
 const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
+
+// --- 辅助组件 (与英文版保持一致的视觉风格) ---
+
+// 1. 复古网格背景
+const RetroGrid = ({ isDark }: { isDark: boolean }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let w = (canvas.width = window.innerWidth);
+    let h = (canvas.height = window.innerHeight);
+    let mouse = { x: 0, y: 0 };
+
+    const drawGrid = () => {
+      ctx.clearRect(0, 0, w, h);
+
+      // 浅色模式：Slate-300 线条
+      // 深色模式：Sky-500 线条（微弱）
+      ctx.strokeStyle = isDark
+        ? "rgba(56, 189, 248, 0.1)"
+        : "rgba(148, 163, 184, 0.15)";
+
+      ctx.lineWidth = 1;
+      const gridSize = 40;
+
+      // 垂直线
+      for (let x = 0; x <= w; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+
+      // 水平线
+      for (let y = 0; y <= h; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // 鼠标手电筒效果
+      const gradient = ctx.createRadialGradient(
+        mouse.x,
+        mouse.y,
+        0,
+        mouse.x,
+        mouse.y,
+        300
+      );
+
+      if (isDark) {
+        gradient.addColorStop(0, "rgba(56, 189, 248, 0.15)");
+        gradient.addColorStop(1, "transparent");
+      } else {
+        gradient.addColorStop(0, "rgba(14, 165, 233, 0.1)");
+        gradient.addColorStop(1, "transparent");
+      }
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, w, h);
+
+      requestAnimationFrame(drawGrid);
+    };
+
+    const handleResize = () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("mousemove", handleMouseMove);
+    drawGrid();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [isDark]);
+
+  return (
+    <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none" />
+  );
+};
+
+// 2. 聚光灯卡片组件
+interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+
+const SpotlightCard = ({ children, className = "", onClick }: CardProps) => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  function handleMouseMove({
+    currentTarget,
+    clientX,
+    clientY,
+  }: React.MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  const clickable = Boolean(onClick);
+
+  return (
+    <div
+      className={`group relative border overflow-hidden rounded-2xl transition-all duration-300
+        bg-white/80 border-slate-200 
+        dark:bg-slate-900/80 dark:border-slate-800 
+        ${clickable ? "cursor-pointer hover:shadow-lg dark:hover:shadow-[0_0_30px_rgba(56,189,248,0.1)]" : ""} 
+        ${className}`}
+      onMouseMove={handleMouseMove}
+      onClick={onClick}
+    >
+      {/* 聚光灯渐变 */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
+        style={{
+          background: useMotionTemplate`
+            radial-gradient(
+              500px circle at ${mouseX}px ${mouseY}px,
+              var(--spotlight-color),
+              transparent 80%
+            )
+          `,
+        }}
+      />
+      <style jsx>{`
+        .group {
+          --spotlight-color: rgba(14, 165, 233, 0.15);
+        }
+        :global(.dark) .group {
+          --spotlight-color: rgba(56, 189, 248, 0.25);
+        }
+      `}</style>
+
+      <div className="relative h-full p-6 z-10">{children}</div>
+    </div>
+  );
+};
+
+// --- 中文数据 ---
 
 const ABOUT = {
   blurb:
@@ -392,10 +560,6 @@ const SKILLS: SkillGroup[] = [
         usedIn: "SmartScribe、Grade Track、Supabase 项目。",
       },
       {
-        name: "SQLite",
-        blurb: "小型实验或本地数据存储的方便选择。",
-      },
-      {
         name: "Docker",
         blurb: "用来保证开发环境可复现，降低“跑不起来”的摩擦。",
         usedIn: "Grade Track 技术栈与本地开发环境。",
@@ -446,20 +610,7 @@ const CONTACT = {
   note: "开放 2026 年暑期实习机会，特别是与后端系统、数据、IT 或地理信息应用相关的岗位。也很乐意聊地图、基础设施、无障碍设计，或者你正在做的项目。",
 };
 
-type ModalLink = {
-  label: string;
-  href: string;
-  icon?: React.ComponentType<{ className?: string }>;
-};
-
-type ModalContent = {
-  title: string;
-  subtitle?: string;
-  eyebrow?: string;
-  body: React.ReactNode;
-  tags?: string[];
-  links?: ModalLink[];
-};
+// --- 主要组件 ---
 
 const DetailModal = ({
   modal,
@@ -472,48 +623,53 @@ const DetailModal = ({
     <AnimatePresence>
       {modal && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md px-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
         >
           <motion.div
-            className="max-w-xl w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-700/80 rounded-2xl p-6 shadow-[0_0_40px_rgba(15,23,42,0.9)]"
+            className="max-w-xl w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-2xl relative overflow-hidden"
             initial={{ scale: 0.9, y: 20, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.9, y: 10, opacity: 0 }}
-            transition={{ duration: 0.18 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 mb-3">
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex items-start justify-between gap-4 mb-3 relative z-10">
               <div className="space-y-1">
                 {modal.eyebrow && (
-                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-300 uppercase">
+                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-600 dark:text-sky-400 uppercase">
                     {modal.eyebrow}
                   </div>
                 )}
-                <h2 className="text-lg font-semibold text-slate-50">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">
                   {modal.title}
                 </h2>
                 {modal.subtitle && (
-                  <p className="text-xs text-slate-300">{modal.subtitle}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                    {modal.subtitle}
+                  </p>
                 )}
               </div>
               <button
                 onClick={onClose}
-                className="shrink-0 w-8 h-8 rounded-full border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-sky-300 hover:border-sky-400 transition-colors"
+                className="shrink-0 w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700/80 flex items-center justify-center text-slate-400 hover:text-sky-500 dark:hover:text-sky-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {modal.tags && modal.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
+              <div className="flex flex-wrap gap-1.5 mb-5 relative z-10">
                 {modal.tags.map((t) => (
                   <span
                     key={t}
-                    className="px-2.5 py-1 rounded-full bg-slate-950/80 border border-slate-700 text-[10px] font-mono text-slate-100"
+                    className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 text-[10px] font-medium text-slate-600 dark:text-slate-300"
                   >
                     {t}
                   </span>
@@ -521,12 +677,12 @@ const DetailModal = ({
               </div>
             )}
 
-            <div className="mb-4 text-sm text-slate-200 space-y-3">
+            <div className="mb-6 text-sm text-slate-600 dark:text-slate-300 space-y-3 relative z-10 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               {modal.body}
             </div>
 
             {modal.links && modal.links.length > 0 && (
-              <div className="flex flex-wrap gap-3 pt-3 border-t border-slate-800/80">
+              <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 relative z-10">
                 {modal.links.map((l) => {
                   const Icon = l.icon;
                   return (
@@ -535,7 +691,7 @@ const DetailModal = ({
                       href={l.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold text-sky-300 hover:text-sky-100 hover:bg-slate-900/80 border border-slate-700/80"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-300 border border-sky-100 dark:border-sky-500/20 hover:bg-sky-100 dark:hover:bg-sky-500/20 transition-all"
                     >
                       {Icon && <Icon className="w-3.5 h-3.5" />}
                       <span>{l.label}</span>
@@ -564,18 +720,18 @@ const Section = ({
 }) => (
   <section
     id={id}
-    className="scroll-mt-24 max-w-6xl mx-auto px-6 py-16 text-slate-100"
+    className="scroll-mt-24 max-w-6xl mx-auto px-6 py-16 text-slate-900 dark:text-slate-100 relative z-10"
   >
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.45 }}
+      transition={{ duration: 0.5 }}
     >
       <div className="flex items-center gap-3 mb-8">
-        <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-4 py-1 border border-slate-700/80 shadow-[0_0_30px_rgba(56,189,248,0.25)]">
-          {Icon && <Icon className="w-4 h-4 text-sky-300" />}
-          <span className="text-[11px] font-semibold tracking-[0.18em] text-slate-200 uppercase">
+        <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-slate-900/80 px-4 py-1.5 border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-[0_0_30px_rgba(56,189,248,0.15)]">
+          {Icon && <Icon className="w-4 h-4 text-sky-500 dark:text-sky-400" />}
+          <span className="text-[11px] font-bold tracking-[0.15em] text-slate-700 dark:text-slate-200 uppercase">
             {title}
           </span>
         </div>
@@ -584,39 +740,6 @@ const Section = ({
     </motion.div>
   </section>
 );
-
-interface CardProps {
-  children: React.ReactNode;
-  className?: string;
-  hover?: boolean;
-  onClick?: () => void;
-}
-
-const Card = ({
-  children,
-  className = "",
-  hover = true,
-  onClick,
-}: CardProps) => {
-  const clickable = Boolean(onClick);
-  return (
-    <motion.div
-      whileHover={
-        hover
-          ? { y: -3, scale: 1.01, boxShadow: "0 0 40px rgba(56,189,248,0.25)" }
-          : {}
-      }
-      whileTap={clickable ? { scale: 0.98, y: 0 } : {}}
-      transition={{ duration: 0.2 }}
-      onClick={onClick}
-      className={`bg-gradient-to-br from-slate-950/80 via-slate-900/80 to-slate-950/90 border border-slate-800/80 rounded-2xl p-6 shadow-[0_0_20px_rgba(15,23,42,0.8)] ${
-        clickable ? "cursor-pointer" : ""
-      } ${className}`}
-    >
-      {children}
-    </motion.div>
-  );
-};
 
 function MessageForm() {
   const [formData, setFormData] = useState({
@@ -675,12 +798,12 @@ function MessageForm() {
   };
 
   return (
-    <Card className="mt-8 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-slate-700/80">
+    <SpotlightCard className="mt-8">
       <div className="mb-5">
-        <h3 className="text-sm font-semibold text-slate-100 mb-1">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1">
           留言给我
         </h3>
-        <p className="text-xs text-slate-300 leading-relaxed max-w-md">
+        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
           可以随便写：项目、实习、地图、生活碎片，或者你想跟我分享的任何事情。
         </p>
       </div>
@@ -688,7 +811,7 @@ function MessageForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] text-slate-300 mb-1">
+            <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-1.5">
               昵称（可选）
             </label>
             <input
@@ -696,12 +819,12 @@ function MessageForm() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400"
+              className="w-full rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
               placeholder="我应该怎么称呼你？"
             />
           </div>
           <div>
-            <label className="block text-[11px] text-slate-300 mb-1">
+            <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-1.5">
               邮箱（可选，如果希望我回信）
             </label>
             <input
@@ -709,21 +832,21 @@ function MessageForm() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400"
+              className="w-full rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
               placeholder="you@example.com"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-[11px] text-slate-300 mb-1">
-            留言内容 <span className="text-sky-300">*</span>
+          <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-1.5">
+            留言内容 <span className="text-sky-500 dark:text-sky-400">*</span>
           </label>
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
-            className="w-full min-h-[120px] rounded-lg bg-slate-950/80 border border-slate-700 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical"
+            className="w-full min-h-[120px] rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical transition-colors"
             placeholder="想跟我说些什么……"
           />
         </div>
@@ -732,8 +855,8 @@ function MessageForm() {
           <motion.button
             type="submit"
             disabled={status === "submitting"}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-sky-500 text-slate-950 text-[11px] font-semibold hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-colors shadow-[0_0_20px_rgba(56,189,248,0.4)]"
-            whileHover={status !== "submitting" ? { y: -1 } : {}}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-sky-500 text-white dark:text-slate-950 text-[11px] font-bold tracking-wide hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)]"
+            whileHover={status !== "submitting" ? { y: -1, scale: 1.02 } : {}}
             whileTap={status !== "submitting" ? { scale: 0.97 } : {}}
           >
             {status === "submitting" ? "发送中..." : "发送留言"}
@@ -741,15 +864,25 @@ function MessageForm() {
         </div>
 
         {status === "success" && (
-          <div className="text-[11px] text-emerald-300 mt-1">
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[11px] text-emerald-500 dark:text-emerald-400 mt-2 font-medium"
+          >
             谢谢！你的留言已经发送成功。
-          </div>
+          </motion.div>
         )}
         {status === "error" && error && (
-          <div className="text-[11px] text-rose-300 mt-1">⚠ {error}</div>
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[11px] text-rose-500 dark:text-rose-400 mt-2 font-medium"
+          >
+            ⚠ {error}
+          </motion.div>
         )}
       </form>
-    </Card>
+    </SpotlightCard>
   );
 }
 
@@ -763,6 +896,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Portfolio() {
+  const [isDark, setIsDark] = useState(true);
   const [modal, setModal] = useState<ModalContent | null>(null);
 
   const firstSkillGroup = SKILLS[0];
@@ -793,6 +927,11 @@ export default function Portfolio() {
     "contact",
   ];
 
+  // Handle Theme Toggle
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop =
@@ -802,42 +941,37 @@ export default function Portfolio() {
         document.documentElement.clientHeight;
       const progress = docHeight > 0 ? scrollTop / docHeight : 0;
       setScrollProgress(progress);
+
+      const sections = SECTION_IDS.map((id) =>
+        document.getElementById(id)
+      ).filter((el): el is HTMLElement => el !== null);
+
+      let currentId = SECTION_IDS[0];
+      let minDelta = Infinity;
+      const viewportAnchor = window.innerHeight * 0.25;
+
+      sections.forEach((sec) => {
+        const rect = sec.getBoundingClientRect();
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          const delta = Math.abs(rect.top - viewportAnchor);
+          if (delta < minDelta) {
+            minDelta = delta;
+            currentId = sec.id;
+          }
+        }
+      });
+
+      setActiveSection(currentId);
     };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("resize", handleScroll);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort(
-            (a, b) =>
-              (a.target as HTMLElement).offsetTop -
-              (b.target as HTMLElement).offsetTop
-          );
-        if (visible.length > 0) {
-          const id = visible[0].target.id;
-          if (SECTION_IDS.includes(id)) {
-            setActiveSection(id);
-          }
-        }
-      },
-      {
-        threshold: 0.35,
-        rootMargin: "-20% 0px -55% 0px",
-      }
-    );
-
-    SECTION_IDS.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
   const filteredProjects = PROJECTS.filter((p) => {
@@ -877,1041 +1011,1033 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="font-sans antialiased bg-slate-950 min-h-screen text-slate-100">
-      <motion.header
-        initial={{ y: -16, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 relative"
-      >
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <motion.a
-            href="#home"
-            className="flex items-center gap-2 font-medium text-xs tracking-wide text-slate-100"
-            whileHover={{ scale: 1.03 }}
-          >
-            <span className="hidden sm:inline">刘昊洲 · 个人主页</span>
-            <span className="sm:hidden">刘昊洲</span>
-          </motion.a>
-          <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-200">
-            {NAV_ITEMS.map(({ id, label }) => {
-              const isActive = activeSection === id;
-              return (
-                <motion.a
-                  key={id}
-                  href={`#${id}`}
-                  className={`relative transition-colors ${
-                    isActive
-                      ? "text-sky-300"
-                      : "text-slate-200 hover:text-sky-300"
-                  }`}
-                  whileHover={{ y: -1 }}
-                >
-                  {label}
-                  {isActive && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-sky-400 rounded-full" />
-                  )}
-                </motion.a>
-              );
-            })}
-          </nav>
-          <div className="flex items-center gap-3">
-            <motion.a
-              href="/"
-              className="inline-flex items-center gap-1.5 text-[11px] text-slate-200 hover:text-sky-300"
-              whileHover={{ scale: 1.05 }}
-              title="Back to English"
-            >
-              <Languages className="w-4 h-4" />
-              <span className="hidden sm:inline">English</span>
-            </motion.a>
-            <motion.a
-              href={SITE.links.resume}
-              className="inline-flex items-center gap-2 bg-slate-100 text-slate-900 text-[11px] px-4 py-2 rounded-full hover:bg-white transition-colors shadow-[0_0_20px_rgba(248,250,252,0.3)]"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FileText className="w-4 h-4" /> 简历
-            </motion.a>
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-slate-900/80 overflow-hidden">
-          <motion.div
-            className="h-full bg-sky-400"
-            style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }}
-          />
-        </div>
-      </motion.header>
+    // Outer wrapper handles the Theme Class
+    <div className={`${isDark ? "dark" : ""}`}>
+      {/* Main Container */}
+      <div className="font-sans antialiased min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-sky-500/30 selection:text-sky-800 dark:selection:text-sky-200 transition-colors duration-300 relative">
+        
+        {/* RETRO GRID BACKGROUND */}
+        <RetroGrid isDark={isDark} />
 
-      <section
-        id="home"
-        className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-slate-50"
-      >
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-40 -left-40 h-80 w-80 rounded-full bg-sky-500/20 blur-3xl" />
-          <div className="absolute top-32 -right-20 h-72 w-72 rounded-full bg-indigo-500/25 blur-3xl" />
-          <div className="absolute bottom-[-120px] left-1/3 h-72 w-72 rounded-full bg-emerald-400/15 blur-3xl" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.15)_0,_transparent_55%)]" />
-          <div className="absolute inset-0 opacity-30 bg-[linear-gradient(120deg,rgba(148,163,184,0.15)_1px,transparent_1px),linear-gradient(210deg,rgba(30,64,175,0.2)_1px,transparent_1px)] bg-[length:220px_220px]" />
-        </div>
-
-        <div className="max-w-6xl mx-auto px-6 py-20 relative z-10">
-          <div className="grid md:grid-cols-5 gap-12 items-center">
-            <motion.div
-              className="md:col-span-3 space-y-6"
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <motion.h1
-                className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
+        {/* HEADER */}
+        <motion.header
+          initial={{ y: -16, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/80 relative"
+        >
+          <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <motion.a
+                href="#home"
+                className="flex items-center gap-2 font-bold text-xs tracking-wider text-slate-900 dark:text-slate-100 uppercase"
+                whileHover={{ scale: 1.05 }}
               >
-                {SITE.headline}
-              </motion.h1>
+                <span className="hidden sm:inline">刘昊洲</span>
+                <span className="sm:hidden">AL</span>
+              </motion.a>
+            </div>
 
-              <p className="text-sm font-medium text-slate-300">
-                {SITE.tagline}
-              </p>
+            <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-600 dark:text-slate-300">
+              {NAV_ITEMS.map(({ id, label }) => {
+                const isActive = activeSection === id;
+                return (
+                  <motion.a
+                    key={id}
+                    href={`#${id}`}
+                    className={`relative transition-colors ${
+                      isActive
+                        ? "text-sky-600 dark:text-sky-300"
+                        : "text-slate-500 dark:text-slate-400 hover:text-sky-500 dark:hover:text-sky-200"
+                    }`}
+                    whileHover={{ y: -1 }}
+                  >
+                    {label}
+                    {isActive && (
+                      <motion.span
+                        layoutId="navHighlight"
+                        className="absolute -bottom-1 left-0 right-0 h-[2px] bg-sky-500 dark:bg-sky-400 rounded-full"
+                      />
+                    )}
+                  </motion.a>
+                );
+              })}
+            </nav>
+            <div className="flex items-center gap-3">
+              <motion.button
+                onClick={toggleTheme}
+                className="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title={isDark ? "切换到浅色模式" : "切换到深色模式"}
+              >
+                {isDark ? (
+                  <Sun className="w-4 h-4" />
+                ) : (
+                  <Moon className="w-4 h-4" />
+                )}
+              </motion.button>
 
-              <div className="flex items-center gap-2 text-xs text-slate-300 mt-4">
-                <MapPin className="w-4 h-4 text-sky-300" />
-                <a
-                  href="https://www.google.com/maps/place/Gainesville,+FL"
+              <motion.a
+                href="/"
+                className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 font-medium"
+                whileHover={{ scale: 1.05 }}
+                title="Switch Language to English"
+              >
+                <Languages className="w-4 h-4" />
+                <span className="hidden sm:inline">English</span>
+              </motion.a>
+              <motion.a
+                href={SITE.links.resume}
+                className="inline-flex items-center gap-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-bold px-4 py-2 rounded-full hover:bg-slate-700 dark:hover:bg-white transition-colors shadow-lg dark:shadow-[0_0_20px_rgba(248,250,252,0.3)]"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FileText className="w-3.5 h-3.5" /> 简历
+              </motion.a>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-slate-200 dark:bg-slate-800/50 overflow-hidden">
+            <motion.div
+              className="h-full bg-sky-500 shadow-[0_0_10px_rgba(56,189,248,0.8)]"
+              style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }}
+            />
+          </div>
+        </motion.header>
+
+        {/* HERO SECTION */}
+        <section
+          id="home"
+          className="relative overflow-hidden pt-24 pb-20 lg:pt-32 lg:pb-28"
+        >
+          <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="grid md:grid-cols-5 gap-12 items-center">
+              <motion.div
+                className="md:col-span-3 space-y-6"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                {/* Status Badge */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  开放 2026 暑期实习申请
+                </motion.div>
+
+                <motion.h1
+                  className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  {SITE.headline}
+                </motion.h1>
+
+                <p className="text-base font-medium text-sky-600 dark:text-sky-300/90 tracking-wide uppercase">
+                  {SITE.tagline}
+                </p>
+
+                {/* Clickable Location */}
+                <a 
+                  href={SITE.links.map}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-sky-300 transition-colors"
+                  className="inline-flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-2 hover:text-sky-600 dark:hover:text-sky-300 transition-colors group cursor-pointer"
                 >
-                  {SITE.location}
-                </a>
-              </div>
-
-              <p className="text-sm md:text-base text-slate-200/90 leading-relaxed max-w-xl">
-                我在学计算机科学，比较关注算法、数据结构，以及怎样把数据做成“看得见、点得动”的东西。最近做的项目主要围绕地理可视化、医疗工具以及和无障碍相关的交互界面。
-              </p>
-              <p className="text-sm md:text-base text-slate-200/90 leading-relaxed max-w-xl">
-                开放机会：2026 年暑期 · 软件 / 数据 / IT / 地理信息相关实习
-              </p>
-
-              <div className="flex flex-wrap gap-3 pt-2">
-                {[
-                  { href: SITE.links.github, icon: Github, label: "GitHub" },
-                  { href: SITE.links.linkedin, icon: Linkedin, label: "LinkedIn" },
-                  { href: SITE.links.instagram, icon: Instagram, label: "Instagram" },
-                  { href: `mailto:${SITE.links.email}`, icon: Mail, label: "邮件" },
-                ].map(({ href, icon: Icon, label }) => (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 bg-slate-950/70 text-[11px] text-slate-100 hover:border-sky-400 hover:text-sky-200 hover:bg-slate-900 transition-colors"
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Icon className="w-4 h-4" /> {label}
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="md:col-span-2"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-            >
-              <div className="relative">
-                <motion.div
-                  className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-sky-500/70 via-indigo-500/60 to-emerald-400/60 blur-2xl opacity-70"
-                  aria-hidden="true"
-                />
-                <motion.img
-                  src="/me.jpg"
-                  alt="刘昊洲"
-                  className="relative w-full object-cover rounded-3xl border border-slate-700 shadow-[0_0_45px_rgba(15,23,42,1)]"
-                  whileHover={{ scale: 1.02, rotate: 0.2 }}
-                  transition={{ duration: 0.3 }}
-                  loading="lazy"
-                />
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <Section id="about" title="个人简介" icon={Briefcase}>
-        <div className="grid lg:grid-cols-3 gap-8">
-          <Card className="lg:col-span-2">
-            <h3 className="text-sm font-semibold text-slate-100 mb-3 uppercase tracking-wide">
-              关于我
-            </h3>
-            <p className="text-sm text-slate-200/90 leading-relaxed mb-5">
-              {ABOUT.blurb}
-            </p>
-            <ul className="space-y-3 mb-4">
-              {ABOUT.highlights.map((h, i) => (
-                <motion.li
-                  key={i}
-                  className="flex gap-3 text-sm text-slate-100/90"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-sky-400" />
-                  <span>{h}</span>
-                </motion.li>
-              ))}
-            </ul>
-
-            <div className="mt-6 border-t border-slate-800 pt-4">
-              <div className="flex items-center gap-2 text-xs text-slate-200 mb-2">
-                <Code2 className="w-4 h-4 text-sky-300" />
-                <span className="font-semibold tracking-wide">关注方向</span>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  "算法与数据结构",
-                  "数据系统与分析",
-                  "地理信息（GIS）工具",
-                  "无障碍 / 人机交互",
-                ].map((t) => (
-                  <span
-                    key={t}
-                    className="px-3 py-1 rounded-full bg-slate-950/80 text-[11px] border border-slate-700 text-slate-100"
-                  >
-                    {t}
+                  <MapPin className="w-4 h-4 text-slate-600 dark:text-slate-500 group-hover:text-sky-500 transition-colors" />
+                  <span>{SITE.location}</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-mono text-slate-400 ml-1">
+                    ({SITE.latlong})
                   </span>
+                </a>
+
+                <div className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
+                  {/* First Paragraph - Static text, no decode effect */}
+                  <p>我在学计算机科学，比较关注算法、数据结构，以及怎样把数据做成“看得见、点得动”的东西。最近做的项目主要围绕地理可视化、医疗工具以及和无障碍相关的交互界面。</p>
+                </div>
+
+                <div className="flex flex-wrap gap-3 pt-4">
+                  {[
+                    { href: SITE.links.github, icon: Github, label: "GitHub" },
+                    {
+                      href: SITE.links.linkedin,
+                      icon: Linkedin,
+                      label: "LinkedIn",
+                    },
+                    {
+                      href: SITE.links.instagram,
+                      icon: Instagram,
+                      label: "Instagram",
+                    },
+                    {
+                      href: `mailto:${SITE.links.email}`,
+                      icon: Mail,
+                      label: "Email",
+                    },
+                  ].map(({ href, icon: Icon, label }) => (
+                    <motion.a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-900/50 text-[11px] text-slate-700 dark:text-slate-200 hover:border-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:bg-white dark:hover:bg-slate-900 transition-all cursor-pointer"
+                      whileHover={{ y: -3 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Icon className="w-4 h-4" /> {label}
+                    </motion.a>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="md:col-span-2 perspective-1000 flex flex-col gap-6"
+                initial={{ opacity: 0, scale: 0.95, rotate: 2 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+              >
+                {/* Interactive Profile Picture - Slight tilt on hover */}
+                <motion.div 
+                  className="relative group cursor-pointer"
+                  whileHover={{ rotateY: 5, rotateX: -5, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <motion.div
+                    className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-sky-400/60 via-indigo-400/50 to-emerald-400/50 blur-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+                    aria-hidden="true"
+                  />
+                  <img
+                    src="/me.jpg"
+                    alt="Alex Liu"
+                    className="relative w-full object-cover rounded-3xl border border-slate-200 dark:border-slate-700/50 shadow-2xl"
+                    loading="lazy"
+                  />
+                  {/* Glare effect */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                </motion.div>
+
+                {/* NEW BLOG BUTTON */}
+                <motion.a
+                  href={SITE.links.blog}
+                  className="group flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold text-sm shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 transition-all"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <BookOpen className="w-4 h-4 group-hover:rotate-6 transition-transform" />
+                  <span>访问我的博客 (Blog)</span>
+                  <ExternalLink className="w-3 h-3 opacity-70 ml-1" />
+                </motion.a>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        <Section id="about" title="个人简介" icon={Briefcase}>
+          <div className="grid lg:grid-cols-3 gap-8">
+            <SpotlightCard className="lg:col-span-2">
+              <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200 mb-4 uppercase tracking-wider flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
+                关于我
+              </h3>
+              <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6 space-y-4">
+                <p>{ABOUT.blurb}</p>
+              </div>
+              <ul className="space-y-3 mb-4">
+                {ABOUT.highlights.map((h, i) => (
+                  <motion.li
+                    key={i}
+                    className="flex gap-3 text-sm text-slate-700 dark:text-slate-200"
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <Code2 className="shrink-0 w-4 h-4 text-sky-500 dark:text-sky-400 mt-0.5" />
+                    <span>{h}</span>
+                  </motion.li>
+                ))}
+              </ul>
+
+              <div className="mt-6 border-t border-slate-200 dark:border-slate-800 pt-4">
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "算法与数据结构",
+                    "系统设计",
+                    "GIS / 地图",
+                    "无障碍 / 人机交互",
+                  ].map((t) => (
+                    <motion.span
+                      key={t}
+                      whileHover={{ scale: 1.05 }}
+                      className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-[10px] font-medium border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-sky-500/50 hover:text-sky-600 dark:hover:text-sky-300 transition-colors cursor-default"
+                    >
+                      {t}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+            </SpotlightCard>
+
+            <SpotlightCard>
+              <div className="flex items-center gap-2 mb-4">
+                <Calendar className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+                <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200 uppercase tracking-wider">
+                  教育背景
+                </h3>
+              </div>
+              <div className="space-y-5">
+                {EDUCATION.map((edu, i) => (
+                  <div key={i} className="flex items-start gap-4 group">
+                    {edu.logo && (
+                      <div className="shrink-0 w-10 h-10 rounded-lg bg-slate-50 dark:bg-white/5 p-1 border border-slate-200 dark:border-white/10 group-hover:scale-110 transition-transform duration-300">
+                        <img
+                          src={edu.logo}
+                          alt={edu.school}
+                          className="w-full h-full object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100 mb-0.5">
+                        {edu.school}
+                      </h4>
+                      {edu.degree && (
+                        <p className="text-[11px] text-sky-600 dark:text-sky-200/90 mb-1 font-medium">
+                          {edu.degree}
+                        </p>
+                      )}
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 mb-1">
+                        {edu.period}
+                      </p>
+                      {edu.honors && (
+                        <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                          {edu.honors}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 ))}
               </div>
-            </div>
-          </Card>
-
-          <Card>
-            <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-5 h-5 text-sky-300" />
-              <h3 className="text-xs font-semibold text-slate-100 uppercase tracking-wide">
-                教育背景
-              </h3>
-            </div>
-            <div className="space-y-4">
-              {EDUCATION.map((edu, i) => (
-                <div
-                  key={i}
-                  className="flex items-start gap-3 rounded-xl bg-slate-950/80 border border-slate-800 px-3 py-3"
-                >
-                  {edu.logo && (
-                    <img
-                      src={edu.logo}
-                      alt={edu.school}
-                      className="w-12 h-12 object-contain rounded-xl"
-                      loading="lazy"
-                    />
-                  )}
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-sm text-slate-50 mb-1">
-                      {edu.school}
-                    </h4>
-                    {edu.degree && (
-                      <p className="text-[11px] text-slate-200 mb-0.5">
-                        {edu.degree}
-                      </p>
-                    )}
-                    <p className="text-[11px] text-slate-400 mb-0.5">
-                      {edu.gpa} • {edu.period}
-                    </p>
-                    {edu.honors && (
-                      <p className="text-[11px] text-sky-300 font-semibold mb-0.5">
-                        {edu.honors}
-                      </p>
-                    )}
-                    <p className="text-[11px] text-slate-300">
-                      {edu.activities}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </div>
-      </Section>
-
-      <Section id="projects" title="项目精选" icon={Code2}>
-        <p className="text-sm text-slate-300 mb-4 max-w-3xl">
-          这里是几段比较代表性的项目，体现了我喜欢的工作方式：把算法与数据结构和可视化、空间思维，以及真实用户的需求结合在一起。
-        </p>
-
-        <div className="flex flex-wrap gap-2 mb-6">
-          {PROJECT_FILTERS.map((filter) => {
-            const isActive = projectFilter === filter;
-            return (
-              <motion.button
-                key={filter}
-                type="button"
-                onClick={() => setProjectFilter(filter)}
-                className={`px-3 py-1.5 rounded-full text-[11px] border transition-colors ${
-                  isActive
-                    ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.5)]"
-                    : "bg-slate-950/80 border-slate-700 text-slate-100 hover:border-sky-400 hover:text-sky-200"
-                }`}
-                whileHover={{ y: -1 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                {filter}
-              </motion.button>
-            );
-          })}
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {visibleProjects.map((p, i) => (
-            <motion.div
-              key={p.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-            >
-              <Card
-                className="h-full flex flex-col relative overflow-hidden"
-                onClick={() =>
-                  setModal({
-                    title: p.name,
-                    subtitle: p.tech.join(" · "),
-                    eyebrow: "项目",
-                    tags: p.tech,
-                    body: (
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <p>{p.blurb}</p>
-                          {p.impact && (
-                            <p>
-                              <span className="font-semibold text-slate-100">
-                                效果：&nbsp;
-                              </span>
-                              {p.impact}
-                            </p>
-                          )}
-                        </div>
-                        {p.screenshots && p.screenshots.length > 0 && (
-                          <div className="space-y-2">
-                            <div className="text-[11px] font-semibold text-slate-300">
-                              截图预览
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                              {p.screenshots.map((src) => (
-                                <img
-                                  key={src}
-                                  src={src}
-                                  alt={`${p.name} screenshot`}
-                                  className="w-full h-28 object-cover rounded-xl border border-slate-800 bg-slate-900"
-                                  loading="lazy"
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        {p.name === "Grade Track" && (
-                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                            <li>
-                              全栈分析看板，把 CSV 成绩数据转成图表与可视化摘要。
-                            </li>
-                            <li>
-                              利用 Docker 封装环境，从“一长串配置步骤”变成“一个命令起全部服务”。
-                            </li>
-                          </ul>
-                        )}
-                        {p.name === "Ability Bridge" && (
-                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                            <li>
-                              支持头部姿态鼠标、嘴部莫尔斯码输入、面部表情映射为点击等多种交互方式。
-                            </li>
-                            <li>
-                              调整平滑与阈值设置，在“响应速度”和“稳定性”之间取得平衡。
-                            </li>
-                          </ul>
-                        )}
-                      </div>
-                    ),
-                    links: [
-                      p.links.code
-                        ? { label: "查看代码", href: p.links.code, icon: Code2 }
-                        : null,
-                      p.links.demo
-                        ? { label: "在线体验", href: p.links.demo, icon: ExternalLink }
-                        : null,
-                    ].filter(Boolean) as ModalLink[],
-                  })
-                }
-              >
-                <div className="pointer-events-none absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.35)_0,_transparent_55%)]" />
-                <div className="relative flex-1 flex flex-col">
-                  {p.screenshots && p.screenshots.length > 0 && (
-                    <div className="mb-3 rounded-xl overflow-hidden border border-slate-800 bg-slate-950/80">
-                      <img
-                        src={p.screenshots[0]}
-                        alt={`${p.name} preview`}
-                        className="w-full h-32 object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between mb-1.5">
-                    <h3 className="text-sm font-semibold text-slate-50">
-                      {p.name}
-                    </h3>
-                    {p.flagship && (
-                      <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-400/60 text-[10px] font-semibold text-amber-200">
-                        核心
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-slate-200/90 mb-3 leading-relaxed">
-                    {p.blurb}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {p.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="text-[10px] px-2 py-1 bg-slate-950/80 text-slate-100 font-mono rounded-full border border-slate-700/80"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  {p.impact && (
-                    <p className="text-[11px] text-slate-300 mb-3 leading-relaxed">
-                      <span className="font-semibold text-slate-50">
-                        效果：{" "}
-                      </span>
-                      {p.impact}
-                    </p>
-                  )}
-                </div>
-                <div className="relative flex gap-4 pt-3 border-t border-slate-800/90">
-                  {p.links.code && (
-                    <motion.a
-                      href={p.links.code}
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-1.5 text-[11px] font-semibold text-sky-300 hover:text-sky-200"
-                      whileHover={{ x: 2 }}
-                    >
-                      <Code2 className="w-3 h-3" /> 代码
-                    </motion.a>
-                  )}
-                  {p.links.demo && (
-                    <motion.a
-                      href={p.links.demo}
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-1.5 text-[11px] font-semibold text-sky-300 hover:text-sky-200"
-                      whileHover={{ x: 2 }}
-                    >
-                      <ExternalLink className="w-3 h-3" /> Demo
-                    </motion.a>
-                  )}
-                </div>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-
-        {filteredProjects.length > 3 && (
-          <div className="mt-8 flex justify-center">
-            <motion.button
-              onClick={() => setShowExpandedProjects(!showExpandedProjects)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-700 rounded-full bg-slate-950/80 text-[11px] hover:border-sky-400 hover:text-sky-200 hover:bg-slate-900 transition-colors font-medium"
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {showExpandedProjects ? (
-                <>
-                  <ChevronUp className="w-4 h-4" /> 收起项目
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4" /> 查看全部项目
-                </>
-              )}
-            </motion.button>
+            </SpotlightCard>
           </div>
-        )}
-      </Section>
+        </Section>
 
-      <Section
-        id="experience"
-        title="经历与参与"
-        icon={Briefcase}
-      >
-        <div className="space-y-10">
-          <div>
-            <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
-              工作 / 实践经历
-            </h3>
-            <div className="space-y-4">
-              {EXPERIENCE.map((x, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
+        <Section id="projects" title="项目精选" icon={Code2}>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-3xl">
+            这里是几段比较代表性的项目，体现了我喜欢的工作方式：把算法与数据结构和可视化、空间思维，以及真实用户的需求结合在一起。
+          </p>
+
+          <div className="flex flex-wrap gap-2 mb-8">
+            {PROJECT_FILTERS.map((filter) => {
+              const isActive = projectFilter === filter;
+              return (
+                <motion.button
+                  key={filter}
+                  type="button"
+                  onClick={() => setProjectFilter(filter)}
+                  className={`px-4 py-1.5 rounded-full text-[11px] font-medium border transition-all ${
+                    isActive
+                      ? "bg-sky-500 text-white dark:text-slate-950 border-sky-400 shadow-md"
+                      : "bg-white/50 dark:bg-slate-950/50 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-sky-400 hover:text-sky-600 dark:hover:text-sky-200"
+                  }`}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.97 }}
                 >
-                  <Card
-                    onClick={() =>
-                      setModal({
-                        title: x.role,
-                        subtitle: x.org,
-                        eyebrow: `经历 · ${x.period}${
-                          x.location ? " • " + x.location : ""
-                        }`,
-                        body: (
-                          <div className="space-y-3">
-                            <p>
-                              在{" "}
-                              <span className="font-semibold">{x.org}</span>，我担任{" "}
-                              <span className="font-semibold">{x.role}</span>
-                              {x.location && <>（地点：{x.location}）</>}。
-                            </p>
-                            <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                              {x.bullets.map((b) => (
-                                <li key={b}>{b}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        ),
-                        links: x.link
-                          ? [
-                              {
-                                label: "访问官网",
-                                href: x.link,
-                                icon: ExternalLink,
-                              },
-                            ]
-                          : undefined,
-                      })
-                    }
-                  >
-                    <div className="flex items-start gap-4">
-                      {x.logo && (
-                        <img
-                          src={x.logo}
-                          alt={x.org}
-                          className="w-14 h-14 object-contain rounded-xl border border-slate-800/80 bg-slate-950/80"
-                          loading="lazy"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <div className="text-[11px] text-sky-300 font-semibold mb-1">
-                          {x.link ? (
-                            <a
-                              href={x.link}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="hover:underline"
-                            >
-                              {x.org}
-                            </a>
-                          ) : (
-                            x.org
-                          )}
-                        </div>
-                        <h3 className="text-sm font-semibold mb-1 text-slate-50">
-                          {x.role}
-                        </h3>
-                        <div className="text-[11px] text-slate-400 mb-2">
-                          {x.period} • {x.location}
-                        </div>
-                        <ul className="space-y-1.5 text-xs text-slate-200 leading-relaxed">
-                          {x.bullets.slice(0, 2).map((b) => (
-                            <li key={b} className="flex gap-2">
-                              <span className="mt-1 h-1 w-1 rounded-full bg-sky-400" />
-                              <span>{b}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+                  {filter}
+                </motion.button>
+              );
+            })}
           </div>
 
-          <div>
-            <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              志愿服务
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {VOLUNTEER.map((x, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                >
-                  <Card
-                    onClick={() =>
-                      setModal({
-                        title: x.role,
-                        subtitle: x.org,
-                        eyebrow: `志愿服务 · ${x.period}`,
-                        body: (
-                          <div className="space-y-3">
-                            <p>
-                              作为{" "}
-                              <span className="font-semibold">
-                                {x.org}
-                              </span>{" "}
-                              的{" "}
-                              <span className="font-semibold">
-                                {x.role}
-                              </span>
-                              ，我参与了以下工作：
-                            </p>
-                            <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                              {x.bullets.map((b) => (
-                                <li key={b}>{b}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        ),
-                        links: x.link
-                          ? [
-                              {
-                                label: "了解更多",
-                                href: x.link,
-                                icon: ExternalLink,
-                              },
-                            ]
-                          : undefined,
-                      })
-                    }
-                  >
-                    <div className="flex items-start gap-3">
-                      {x.logo && (
-                        <img
-                          src={x.logo}
-                          alt={x.org}
-                          className="w-10 h-10 object-contain rounded-xl border border-slate-800/80 bg-slate-950/80"
-                          loading="lazy"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <div className="text-[11px] text-sky-300 font-semibold mb-1">
-                          {x.link ? (
-                            <a
-                              href={x.link}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="hover:underline"
-                            >
-                              {x.org}
-                            </a>
-                          ) : (
-                            x.org
-                          )}
-                        </div>
-                        <h4 className="font-semibold text-xs mb-1 text-slate-50">
-                          {x.role}
-                        </h4>
-                        <div className="text-[10px] text-slate-400 mb-1">
-                          {x.period}
-                        </div>
-                        <p className="text-[11px] text-slate-200 leading-relaxed">
-                          {x.bullets[0]}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
-              学生组织与领导力
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {LEADERSHIPS.map((x, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                >
-                  <Card
-                    onClick={() =>
-                      setModal({
-                        title: x.role,
-                        subtitle: x.org,
-                        eyebrow: `学生组织 · ${x.period}`,
-                        body: (
-                          <div className="space-y-3">
-                            <p>
-                              在{" "}
-                              <span className="font-semibold">{x.org}</span>{" "}
-                              中，我担任{" "}
-                              <span className="font-semibold">
-                                {x.role}
-                              </span>
-                              ，主要负责：
-                            </p>
-                            <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                              {x.bullets.map((b) => (
-                                <li key={b}>{b}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        ),
-                        links: x.link
-                          ? [
-                              {
-                                label: "组织网站",
-                                href: x.link,
-                                icon: ExternalLink,
-                              },
-                            ]
-                          : undefined,
-                      })
-                    }
-                  >
-                    <div className="flex items-start gap-3">
-                      {x.logo && (
-                        <img
-                          src={x.logo}
-                          alt={x.org}
-                          className="w-10 h-10 object-contain rounded-xl border border-slate-800/80 bg-slate-950/80"
-                          loading="lazy"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <div className="text-[11px] text-sky-300 font-semibold mb-1">
-                          {x.link ? (
-                            <a
-                              href={x.link}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="hover:underline"
-                            >
-                              {x.org}
-                            </a>
-                          ) : (
-                            x.org
-                          )}
-                        </div>
-                        <h4 className="font-semibold text-xs mb-1 text-slate-50">
-                          {x.role}
-                        </h4>
-                        <div className="text-[10px] text-slate-400 mb-1">
-                          {x.period}
-                        </div>
-                        <p className="text-[11px] text-slate-200 leading-relaxed">
-                          {x.bullets[0]}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <Section id="skills" title="技能与技术栈" icon={Cpu}>
-        <div className="grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)] gap-8 items-start">
-          <div className="space-y-6">
-            {SKILLS.map((g, i) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {visibleProjects.map((p, i) => (
               <motion.div
-                key={g.group}
-                initial={{ opacity: 0, y: 12 }}
+                key={p.name}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
               >
-                <Card className="bg-slate-950/80">
-                  <div className="flex items-center gap-3 mb-3">
-                    <g.icon className="w-5 h-5 text-sky-300" />
-                    <h3 className="font-semibold text-sm text-slate-100">
-                      {g.group}
-                    </h3>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {g.items.map((s) => {
-                      const isActive =
-                        activeSkill &&
-                        activeSkill.group === g.group &&
-                        activeSkill.item.name === s.name;
-                      return (
-                        <motion.button
-                          key={s.name}
-                          type="button"
-                          onMouseEnter={() =>
-                            setActiveSkill({ group: g.group, item: s })
-                          }
-                          onFocus={() =>
-                            setActiveSkill({ group: g.group, item: s })
-                          }
-                          className={`px-3 py-1.5 rounded-full text-[11px] font-mono border transition-colors ${
-                            isActive
-                              ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.5)]"
-                              : "bg-slate-950/80 border-slate-700 text-slate-100 hover:border-sky-400 hover:text-sky-200"
-                          }`}
-                          whileHover={{ y: -1 }}
-                          whileTap={{ scale: 0.97 }}
+                <SpotlightCard
+                  className="h-full flex flex-col group"
+                  onClick={() =>
+                    setModal({
+                      title: p.name,
+                      subtitle: p.tech.join(" · "),
+                      eyebrow: "项目详情",
+                      tags: p.tech,
+                      body: (
+                        <div className="space-y-5">
+                          <div className="space-y-2">
+                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                              {p.blurb}
+                            </p>
+                          </div>
+
+                          {/* 渲染中文数据中的 impact 字段 */}
+                          {p.impact && (
+                            <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                              <h4 className="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                <Zap className="w-3.5 h-3.5" /> 项目效果 & 亮点
+                              </h4>
+                              <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                                {p.impact}
+                              </p>
+                            </div>
+                          )}
+
+                          {p.screenshots && p.screenshots.length > 0 && (
+                            <div className="space-y-2">
+                              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                截图预览
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                {p.screenshots.map((src) => (
+                                  <img
+                                    key={src}
+                                    src={src}
+                                    alt={`${p.name} screenshot`}
+                                    className="w-full h-24 object-cover rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900"
+                                    loading="lazy"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ),
+                      links: [
+                        p.links?.code
+                          ? { label: "查看代码", href: p.links.code, icon: Code2 }
+                          : null,
+                        p.links?.demo
+                          ? {
+                              label: "在线体验",
+                              href: p.links.demo,
+                              icon: ExternalLink,
+                            }
+                          : null,
+                      ].filter(Boolean) as ModalLink[],
+                    })
+                  }
+                >
+                  <div className="relative flex-1 flex flex-col">
+                    {p.screenshots && p.screenshots.length > 0 && (
+                      <div className="mb-4 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 relative">
+                        <div className="absolute inset-0 bg-slate-900/5 dark:bg-slate-900/10 group-hover:bg-transparent transition-colors z-10" />
+                        <motion.img
+                          src={p.screenshots[0]}
+                          alt={`${p.name} preview`}
+                          className="w-full h-36 object-cover"
+                          loading="lazy"
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors">
+                        {p.name}
+                      </h3>
+                      {p.flagship && (
+                        <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 text-[10px] font-bold text-amber-600 dark:text-amber-300">
+                          核心
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mb-4 leading-relaxed line-clamp-3">
+                      {p.blurb}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 mt-auto">
+                      {p.tech.slice(0, 4).map((t) => (
+                        <span
+                          key={t}
+                          className="text-[10px] px-2 py-1 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 font-mono rounded border border-slate-200 dark:border-slate-800"
                         >
-                          {s.name}
-                        </motion.button>
-                      );
-                    })}
+                          {t}
+                        </span>
+                      ))}
+                      {p.tech.length > 4 && (
+                        <span className="text-[10px] px-1.5 py-1 text-slate-500 font-mono">
+                          +{p.tech.length - 4}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </Card>
+
+                  <div className="relative flex gap-4 pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/60">
+                    {p.links?.code && (
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                        <Code2 className="w-3.5 h-3.5" /> 源码
+                      </div>
+                    )}
+                    {p.links?.demo && (
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-sky-600 dark:text-sky-400 group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors">
+                        <ExternalLink className="w-3.5 h-3.5" /> 演示
+                      </div>
+                    )}
+                  </div>
+                </SpotlightCard>
               </motion.div>
             ))}
           </div>
-          <div className="space-y-3">
-            <Card className="bg-slate-950/90 px-4 py-4 max-w-sm mx-auto">
-              {activeSkill ? (
-                <div className="space-y-2">
-                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-300 uppercase">
-                    {activeSkill.group}
-                  </div>
-                  <h3 className="text-sm font-semibold text-slate-50">
-                    {activeSkill.item.name}
-                  </h3>
-                  <p className="text-[11px] text-slate-200 leading-relaxed">
-                    {activeSkill.item.blurb}
-                  </p>
-                  {activeSkill.item.usedIn && (
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
-                      <span className="font-semibold text-slate-100">
-                        使用场景：{" "}
-                      </span>
-                      {activeSkill.item.usedIn}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-slate-50">
-                    把鼠标移到技能上看看细节
-                  </h3>
-                  <p className="text-[11px] text-slate-200">
-                    将鼠标移到任意一个技能标签上，可以看到我在哪些项目或课程中主要使用了它。
-                  </p>
-                </div>
-              )}
-            </Card>
-          </div>
-        </div>
-      </Section>
 
-      <Section id="hobbies" title="兴趣爱好" icon={Award}>
-        <p className="text-sm text-slate-300 mb-6 max-w-3xl">
-          不在调 bug、画地图或刷 Canvas 的时候，我大概在做这些事。
-        </p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {HOBBIES.map((hobby, i) => (
-            <motion.div
-              key={hobby.name}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-            >
-              <Card
-                className="h-full flex flex-col items-start gap-3"
-                onClick={() =>
-                  setModal({
-                    title: hobby.name,
-                    subtitle: "兴趣爱好",
-                    eyebrow: "代码之外",
-                    body: (
+          {filteredProjects.length > 3 && (
+            <div className="mt-10 flex justify-center">
+              <motion.button
+                onClick={() => setShowExpandedProjects(!showExpandedProjects)}
+                className="inline-flex items-center gap-2 px-6 py-2 border border-slate-200 dark:border-slate-700 rounded-full bg-white dark:bg-slate-900/50 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:border-sky-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {showExpandedProjects ? (
+                  <>
+                    <ChevronUp className="w-4 h-4" /> 收起
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-4 h-4" /> 查看更多项目
+                  </>
+                )}
+              </motion.button>
+            </div>
+          )}
+        </Section>
+
+        <Section
+          id="experience"
+          title="经历与参与"
+          icon={Briefcase}
+        >
+          <div className="space-y-12">
+            {/* Work Experience */}
+            <div>
+              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+                工作经历
+              </h3>
+              <div className="space-y-6">
+                {EXPERIENCE.map((x, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <SpotlightCard
+                      onClick={() =>
+                        setModal({
+                          title: x.role,
+                          subtitle: x.org,
+                          eyebrow: `经历 · ${x.period}`,
+                          body: (
+                            <div className="space-y-4">
+                              <p className="text-slate-600 dark:text-slate-300">
+                                在{" "}
+                                <span className="font-bold text-slate-900 dark:text-white">
+                                  {x.org}
+                                </span>
+                                ，我担任{" "}
+                                <span className="font-bold text-slate-900 dark:text-white">
+                                  {x.role}
+                                </span>
+                                。
+                              </p>
+                              <ul className="space-y-2">
+                                {x.bullets.map((b) => (
+                                  <li
+                                    key={b}
+                                    className="flex gap-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed"
+                                  >
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-400" />
+                                    <span>{b}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ),
+                          links: x.link
+                            ? [
+                                {
+                                  label: "访问官网",
+                                  href: x.link,
+                                  icon: ExternalLink,
+                                },
+                              ]
+                            : undefined,
+                        })
+                      }
+                    >
+                      <div className="flex items-start gap-4">
+                        {x.logo && (
+                          <div className="shrink-0 w-12 h-12 bg-white rounded-lg overflow-hidden p-0.5 border border-slate-200 dark:border-slate-700">
+                            <img
+                              src={x.logo}
+                              alt={x.org}
+                              className="w-full h-full object-contain rounded-md"
+                              loading="lazy"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
+                            <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors">
+                              {x.role}
+                            </h4>
+                            <span className="text-[10px] font-mono text-slate-500">
+                              {x.period}
+                            </span>
+                          </div>
+                          <div className="text-xs font-medium text-sky-600 dark:text-sky-400 mb-2">
+                            {x.org}
+                          </div>
+                          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
+                            {x.bullets[0]}
+                          </p>
+                        </div>
+                      </div>
+                    </SpotlightCard>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Volunteer */}
+            <div>
+              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                志愿服务
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {VOLUNTEER.map((x, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <SpotlightCard
+                      onClick={() =>
+                        setModal({
+                          title: x.role,
+                          subtitle: x.org,
+                          eyebrow: "志愿服务",
+                          body: (
+                            <div className="space-y-4">
+                              <ul className="space-y-2">
+                                {x.bullets.map((b) => (
+                                  <li
+                                    key={b}
+                                    className="flex gap-3 text-xs text-slate-600 dark:text-slate-300"
+                                  >
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
+                                    <span>{b}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ),
+                          links: x.link
+                            ? [
+                                {
+                                  label: "相关组织",
+                                  href: x.link,
+                                  icon: ExternalLink,
+                                },
+                              ]
+                            : undefined,
+                        })
+                      }
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        {x.logo && (
+                          <img
+                            src={x.logo}
+                            className="w-6 h-6 object-contain"
+                            alt=""
+                          />
+                        )}
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white">
+                          {x.org}
+                        </h4>
+                      </div>
+                      <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mb-1">
+                        {x.role}
+                      </div>
+                      <div className="text-[10px] text-slate-500 mb-2">
+                        {x.period}
+                      </div>
+                    </SpotlightCard>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Leadership */}
+            <div>
+              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                社团与领导力
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {LEADERSHIPS.map((x, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <SpotlightCard
+                      onClick={() =>
+                        setModal({
+                          title: x.role,
+                          subtitle: x.org,
+                          eyebrow: "领导力",
+                          body: (
+                            <div className="space-y-4">
+                              <ul className="space-y-2">
+                                {x.bullets.map((b) => (
+                                  <li
+                                    key={b}
+                                    className="flex gap-3 text-xs text-slate-600 dark:text-slate-300"
+                                  >
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-indigo-400" />
+                                    <span>{b}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ),
+                          links: x.link
+                            ? [
+                                {
+                                  label: "相关链接",
+                                  href: x.link,
+                                  icon: ExternalLink,
+                                },
+                              ]
+                            : undefined,
+                        })
+                      }
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        {x.logo && (
+                          <img
+                            src={x.logo}
+                            className="w-6 h-6 rounded-md"
+                            alt=""
+                          />
+                        )}
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white">
+                          {x.org}
+                        </h4>
+                      </div>
+                      <div className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium mb-1">
+                        {x.role}
+                      </div>
+                      <div className="text-[10px] text-slate-500 mb-2">
+                        {x.period}
+                      </div>
+                    </SpotlightCard>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        <Section id="skills" title="技能树" icon={Cpu}>
+          <div className="grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)] gap-8 items-start">
+            <div className="space-y-6">
+              {SKILLS.map((g, i) => (
+                <motion.div
+                  key={g.group}
+                  initial={{ opacity: 0, x: -15 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <SpotlightCard className="bg-white/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center gap-3 mb-4">
+                      <g.icon className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+                      <h3 className="font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wide">
+                        {g.group}
+                      </h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {g.items.map((s) => {
+                        const isActive =
+                          activeSkill &&
+                          activeSkill.group === g.group &&
+                          activeSkill.item.name === s.name;
+                        return (
+                          <motion.button
+                            key={s.name}
+                            type="button"
+                            onMouseEnter={() =>
+                              setActiveSkill({ group: g.group, item: s })
+                            }
+                            onFocus={() =>
+                              setActiveSkill({ group: g.group, item: s })
+                            }
+                            className={`px-3 py-1.5 rounded-lg text-[11px] font-mono border transition-all ${
+                              isActive
+                                ? "bg-sky-500 text-white dark:text-slate-950 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
+                                : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-sky-500/50 hover:text-slate-900 dark:hover:text-slate-200"
+                            }`}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            {s.name}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </SpotlightCard>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="lg:sticky lg:top-24">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeSkill ? activeSkill.item.name : "empty"}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <SpotlightCard className="bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-slate-200 dark:border-slate-700 min-h-[180px] flex flex-col justify-center">
+                    {activeSkill ? (
                       <div className="space-y-3">
-                        <p>{hobby.blurb}</p>
-                        {hobby.details && (
-                          <ul className="list-disc list-inside space-y-1 text-slate-200/90">
-                            {hobby.details.map((d) => (
-                              <li key={d}>{d}</li>
-                            ))}
-                          </ul>
+                        <div className="text-[10px] font-bold tracking-widest text-sky-600 dark:text-sky-500 uppercase">
+                          {activeSkill.group}
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                          {activeSkill.item.name}
+                        </h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                          {activeSkill.item.blurb}
+                        </p>
+                        {activeSkill.item.usedIn && (
+                          <div className="pt-3 mt-3 border-t border-slate-200 dark:border-slate-800">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
+                              主要应用:
+                            </span>
+                            <p className="text-[11px] text-sky-700 dark:text-sky-200">
+                              {activeSkill.item.usedIn}
+                            </p>
+                          </div>
                         )}
                       </div>
-                    ),
-                  })
-                }
+                    ) : (
+                      <div className="text-center space-y-2 opacity-50">
+                        <Cpu className="w-8 h-8 mx-auto text-slate-400 dark:text-slate-600" />
+                        <p className="text-xs text-slate-400">
+                          把鼠标移到技能上查看详情
+                        </p>
+                      </div>
+                    )}
+                  </SpotlightCard>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </Section>
+
+        <Section id="hobbies" title="代码之外" icon={Award}>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+            不在调 bug 或优化算法的时候，我通常在做这些。
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {HOBBIES.map((hobby, i) => (
+              <motion.div
+                key={hobby.name}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
               >
-                <div className="text-2xl">{hobby.emoji}</div>
+                <SpotlightCard
+                  className="h-full flex flex-col items-center text-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-900/80"
+                  onClick={() =>
+                    setModal({
+                      title: hobby.name,
+                      subtitle: "兴趣爱好",
+                      eyebrow: "个人生活",
+                      body: (
+                        <div className="space-y-3">
+                          <p className="text-slate-600 dark:text-slate-300">
+                            {hobby.blurb}
+                          </p>
+                          {hobby.details && (
+                            <ul className="list-disc list-inside space-y-1 text-slate-500 dark:text-slate-400 text-xs text-left">
+                              {hobby.details.map((d) => (
+                                <li key={d}>{d}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ),
+                    })
+                  }
+                >
+                  <div className="text-4xl mb-2">{hobby.emoji}</div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      {hobby.name}
+                    </h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                      {hobby.blurb}
+                    </p>
+                  </div>
+                </SpotlightCard>
+              </motion.div>
+            ))}
+          </div>
+        </Section>
+
+        <Section id="photos" title="图库" icon={Camera}>
+          <motion.a
+            href="/photos"
+            className="block"
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+          >
+            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-sky-600 to-indigo-700 p-8 shadow-2xl border border-sky-400/30 group">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
+              <div className="relative z-10 flex items-center justify-between gap-6">
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-50 mb-1">
-                    {hobby.name}
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    查看我的照片集
                   </h3>
-                  <p className="text-[11px] text-slate-300 leading-relaxed">
-                    {hobby.blurb}
+                  <p className="text-sm text-sky-100 max-w-md">
+                    这里有一些关于黑客松、舞狮表演以及我在地图上探索过的地方的瞬间记录。
                   </p>
                 </div>
-                <div className="mt-auto flex flex-wrap gap-1.5" />
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="photos" title="照片集" icon={Camera}>
-        <motion.a
-          href="/photos"
-          className="block"
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.99 }}
-        >
-          <Card className="bg-gradient-to-br from-sky-600 via-indigo-600 to-slate-900 text-white border-sky-400/60">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h3 className="text-lg font-semibold mb-1 text-white">
-                  查看我的照片集
-                </h3>
-                <p className="text-xs text-sky-100 mb-3 leading-relaxed max-w-md">
-                  偶尔会记录一些项目现场、活动瞬间，以及我在地图上动过手的地方。
-                </p>
-                <div className="inline-flex items-center gap-2 text-[11px] font-semibold text-white">
-                  <span>进入相册</span>
-                  <ExternalLink className="w-4 h-4" />
+                <div className="hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-all">
+                  <ExternalLink className="w-6 h-6 text-white" />
                 </div>
               </div>
-              <Camera className="w-20 h-20 text-white/30 hidden sm:block" />
             </div>
-          </Card>
-        </motion.a>
-      </Section>
+          </motion.a>
+        </Section>
 
-      <Section id="contact" title="联系我" icon={Mail}>
-        <Card className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-slate-700/80">
+        <Section id="contact" title="联系我" icon={Mail}>
           <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-3 text-white">
-                欢迎来聊
-              </h3>
-              <p className="mb-5 text-sm text-slate-200 leading-relaxed">
-                {CONTACT.note}
-              </p>
-              <div className="flex flex-wrap gap-3">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+                  保持联系
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {CONTACT.note}
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <button
+                  type="button"
+                  onClick={() => handleCopy(SITE.links.email, "email")}
+                  className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-sky-500/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all group text-left shadow-sm"
+                >
+                  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors">
+                    <Mail className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      邮箱
+                    </div>
+                    <div className="text-sm font-mono text-slate-900 dark:text-slate-200">
+                      {SITE.links.email}
+                    </div>
+                  </div>
+                  {copiedField === "email" && (
+                    <span className="ml-auto text-[10px] text-emerald-500 dark:text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">
+                      已复制
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleCopy(SITE.links.phone, "phone")}
+                  className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-sky-500/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all group text-left shadow-sm"
+                >
+                  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors">
+                    <Phone className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      电话
+                    </div>
+                    <div className="text-sm font-mono text-slate-900 dark:text-slate-200">
+                      {SITE.links.phone}
+                    </div>
+                  </div>
+                  {copiedField === "phone" && (
+                    <span className="ml-auto text-[10px] text-emerald-500 dark:text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">
+                      已复制
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <MessageForm />
+          </div>
+        </Section>
+
+        <footer className="py-12 border-t border-slate-200 dark:border-slate-900 bg-slate-50 dark:bg-slate-950 mt-12 relative z-10">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="text-center md:text-left">
+                <div className="font-bold text-slate-900 dark:text-slate-200 text-sm mb-1">
+                  {SITE.name}
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  © {new Date().getFullYear()} · Built with React, Tailwind &
+                  Framer Motion.
+                </div>
+              </div>
+              <div className="flex gap-4">
                 {[
-                  {
-                    href: `mailto:${SITE.links.email}`,
-                    icon: Mail,
-                    label: "发邮件",
-                  },
-                  { href: SITE.links.linkedin, icon: Linkedin, label: "LinkedIn" },
-                  { href: SITE.links.github, icon: Github, label: "GitHub" },
-                  { href: SITE.links.instagram, icon: Instagram, label: "Instagram" },
-                ].map(({ href, icon: Icon, label }) => (
+                  { href: SITE.links.github, icon: Github },
+                  { href: SITE.links.linkedin, icon: Linkedin },
+                  { href: SITE.links.instagram, icon: Instagram },
+                  { href: `mailto:${SITE.links.email}`, icon: Mail },
+                ].map(({ href, icon: Icon }, i) => (
                   <motion.a
-                    key={label}
+                    key={i}
                     href={href}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-900 text-[11px] font-semibold hover:bg-white transition-colors rounded-full"
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="w-10 h-10 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-sky-500 hover:text-sky-500 dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all shadow-sm"
+                    whileHover={{ y: -3 }}
+                    whileTap={{ scale: 0.9 }}
                   >
-                    <Icon className="w-4 h-4" /> {label}
+                    <Icon className="w-5 h-5" />
                   </motion.a>
                 ))}
               </div>
             </div>
-            <div className="space-y-3 text-xs text-slate-100">
-              <button
-                type="button"
-                onClick={() => handleCopy(SITE.links.email, "email")}
-                className="flex items-center gap-3 group"
-              >
-                <Mail className="w-5 h-5 group-hover:text-sky-300 transition-colors" />
-                <span className="flex items-center gap-2">
-                  {SITE.links.email}
-                  {copiedField === "email" && (
-                    <span className="text-[10px] text-emerald-300">
-                      已复制
-                    </span>
-                  )}
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleCopy(SITE.links.phone, "phone")}
-                className="flex items-center gap-3 group"
-              >
-                <Phone className="w-5 h-5 group-hover:text-sky-300 transition-colors" />
-                <span className="flex items-center gap-2">
-                  {SITE.links.phone}
-                  {copiedField === "phone" && (
-                    <span className="text-[10px] text-emerald-300">
-                      已复制
-                    </span>
-                  )}
-                </span>
-              </button>
-              <div className="flex items-center gap-3">
-                <MapPin className="w-5 h-5" />
-                <a
-                  href="https://www.google.com/maps/place/Gainesville,+FL"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  {SITE.location}
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Globe className="w-5 h-5" />
-                <a
-                  href={SITE.links.website}
-                  className="hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {SITE.links.website}
-                </a>
-              </div>
-            </div>
           </div>
-        </Card>
+        </footer>
 
-        <MessageForm />
-      </Section>
-
-      <footer className="py-10 border-t border-slate-800 bg-slate-950">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-[11px] text-slate-400">
-              © {new Date().getFullYear()} {SITE.name} · All rights reserved.
-            </div>
-            <div className="flex gap-3">
-              {[
-                { href: SITE.links.github, icon: Github },
-                { href: SITE.links.linkedin, icon: Linkedin },
-                { href: SITE.links.instagram, icon: Instagram },
-                { href: `mailto:${SITE.links.email}`, icon: Mail },
-              ].map(({ href, icon: Icon }, i) => (
-                <motion.a
-                  key={i}
-                  href={href}
-                  className="w-9 h-9 bg-slate-900 rounded-full flex items-center justify-center text-white border border-slate-700 hover:border-sky-400 hover:bg-slate-800 transition-colors shadow-[0_0_18px_rgba(15,23,42,0.9)]"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Icon className="w-4 h-4" />
-                </motion.a>
-              ))}
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      <DetailModal modal={modal} onClose={() => setModal(null)} />
+        <DetailModal modal={modal} onClose={() => setModal(null)} />
+      </div>
     </div>
   );
 }
