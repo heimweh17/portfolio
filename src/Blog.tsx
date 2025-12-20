@@ -65,7 +65,7 @@ const POSTS: BlogPost[] = [
           hello world!
         </p>
         <p>
-          还在等待。等待什么呢？
+          还在等待。
         </p>
         <p>
           等待戈多。
@@ -282,7 +282,7 @@ export default function Blog() {
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-600 dark:text-pink-400 text-[10px] font-bold mb-4"
             >
               <Coffee className="w-3 h-3" />
-              <span>碎碎念空间</span>
+              <span>个人空间</span>
             </motion.div>
             <motion.h1 
               initial={{ opacity: 0, y: 10 }}
