@@ -26,11 +26,9 @@ import {
   Camera,
   X,
   Zap,
-  Sun,
-  Moon,
 } from "lucide-react";
 
-// --- TYPE DEFINITIONS (Moved to top to fix TS errors) ---
+// --- TYPE DEFINITIONS ---
 type ModalLink = {
   label: string;
   href: string;
@@ -80,8 +78,8 @@ const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
 // --- HELPER COMPONENTS ---
 
-// 1. Retro Grid Background
-const RetroGrid = ({ isDark }: { isDark: boolean }) => {
+// 1. Retro Grid Background (Fixed Dark Mode Style)
+const RetroGrid = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -97,10 +95,8 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
     const drawGrid = () => {
       ctx.clearRect(0, 0, w, h);
 
-      ctx.strokeStyle = isDark
-        ? "rgba(56, 189, 248, 0.1)"
-        : "rgba(148, 163, 184, 0.15)";
-
+      // Dark mode grid color (Sky-500 with low opacity)
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.1)";
       ctx.lineWidth = 1;
       const gridSize = 40;
 
@@ -118,6 +114,7 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
         ctx.stroke();
       }
 
+      // Mouse flashlight effect (Dark mode style)
       const gradient = ctx.createRadialGradient(
         mouse.x,
         mouse.y,
@@ -127,13 +124,8 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
         300
       );
 
-      if (isDark) {
-        gradient.addColorStop(0, "rgba(56, 189, 248, 0.15)");
-        gradient.addColorStop(1, "transparent");
-      } else {
-        gradient.addColorStop(0, "rgba(14, 165, 233, 0.1)");
-        gradient.addColorStop(1, "transparent");
-      }
+      gradient.addColorStop(0, "rgba(56, 189, 248, 0.15)");
+      gradient.addColorStop(1, "transparent");
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, w, h);
@@ -159,14 +151,14 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [isDark]);
+  }, []);
 
   return (
     <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none" />
   );
 };
 
-// 2. Spotlight Card Component (Fixed: Removed style jsx)
+// 2. Spotlight Card Component
 interface CardProps {
   children: React.ReactNode;
   className?: string;
@@ -192,11 +184,9 @@ const SpotlightCard = ({ children, className = "", onClick }: CardProps) => {
   return (
     <div
       className={`group relative border overflow-hidden rounded-2xl transition-all duration-300
-        bg-white/80 border-slate-200 
-        dark:bg-slate-900/80 dark:border-slate-800 
-        [--spotlight-color:rgba(14,165,233,0.15)] 
-        dark:[--spotlight-color:rgba(56,189,248,0.25)]
-        ${clickable ? "cursor-pointer hover:shadow-lg dark:hover:shadow-[0_0_30px_rgba(56,189,248,0.1)]" : ""} 
+        bg-slate-900/80 border-slate-800 
+        [--spotlight-color:rgba(56,189,248,0.25)]
+        ${clickable ? "cursor-pointer hover:shadow-[0_0_30px_rgba(56,189,248,0.1)]" : ""} 
         ${className}`}
       onMouseMove={handleMouseMove}
       onClick={onClick}
@@ -644,7 +634,7 @@ const DetailModal = ({
           onClick={onClose}
         >
           <motion.div
-            className="max-w-xl w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-2xl relative overflow-hidden"
+            className="max-w-xl w-full bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-2xl relative overflow-hidden"
             initial={{ scale: 0.9, y: 20, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.9, y: 10, opacity: 0 }}
@@ -657,22 +647,22 @@ const DetailModal = ({
             <div className="flex items-start justify-between gap-4 mb-3 relative z-10">
               <div className="space-y-1">
                 {modal.eyebrow && (
-                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-600 dark:text-sky-400 uppercase">
+                  <div className="text-[10px] font-semibold tracking-[0.18em] text-sky-400 uppercase">
                     {modal.eyebrow}
                   </div>
                 )}
-                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">
+                <h2 className="text-xl font-bold text-slate-50 tracking-tight">
                   {modal.title}
                 </h2>
                 {modal.subtitle && (
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                  <p className="text-xs text-slate-400 font-mono">
                     {modal.subtitle}
                   </p>
                 )}
               </div>
               <button
                 onClick={onClose}
-                className="shrink-0 w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700/80 flex items-center justify-center text-slate-400 hover:text-sky-500 dark:hover:text-sky-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                className="shrink-0 w-8 h-8 rounded-full border border-slate-700/80 flex items-center justify-center text-slate-400 hover:text-sky-300 hover:bg-slate-800 transition-all"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -683,7 +673,7 @@ const DetailModal = ({
                 {modal.tags.map((t) => (
                   <span
                     key={t}
-                    className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 text-[10px] font-medium text-slate-600 dark:text-slate-300"
+                    className="px-2.5 py-0.5 rounded-full bg-slate-800/50 border border-slate-700/50 text-[10px] font-medium text-slate-300"
                   >
                     {t}
                   </span>
@@ -691,12 +681,12 @@ const DetailModal = ({
               </div>
             )}
 
-            <div className="mb-6 text-sm text-slate-600 dark:text-slate-300 space-y-3 relative z-10 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="mb-6 text-sm text-slate-300 space-y-3 relative z-10 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               {modal.body}
             </div>
 
             {modal.links && modal.links.length > 0 && (
-              <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 relative z-10">
+              <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-800 relative z-10">
                 {modal.links.map((l) => {
                   const Icon = l.icon;
                   return (
@@ -705,7 +695,7 @@ const DetailModal = ({
                       href={l.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-300 border border-sky-100 dark:border-sky-500/20 hover:bg-sky-100 dark:hover:bg-sky-500/20 transition-all"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-300 border border-sky-500/20 hover:bg-sky-500/20 transition-all"
                     >
                       {Icon && <Icon className="w-3.5 h-3.5" />}
                       <span>{l.label}</span>
@@ -734,7 +724,7 @@ const Section = ({
 }) => (
   <section
     id={id}
-    className="scroll-mt-24 max-w-6xl mx-auto px-6 py-16 text-slate-900 dark:text-slate-100 relative z-10"
+    className="scroll-mt-24 max-w-6xl mx-auto px-6 py-16 text-slate-100 relative z-10"
   >
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -743,9 +733,9 @@ const Section = ({
       transition={{ duration: 0.5 }}
     >
       <div className="flex items-center gap-3 mb-8">
-        <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-slate-900/80 px-4 py-1.5 border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-[0_0_30px_rgba(56,189,248,0.15)]">
-          {Icon && <Icon className="w-4 h-4 text-sky-500 dark:text-sky-400" />}
-          <span className="text-[11px] font-bold tracking-[0.15em] text-slate-700 dark:text-slate-200 uppercase">
+        <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-4 py-1.5 border border-slate-700 shadow-sm shadow-[0_0_30px_rgba(56,189,248,0.15)]">
+          {Icon && <Icon className="w-4 h-4 text-sky-400" />}
+          <span className="text-[11px] font-bold tracking-[0.15em] text-slate-200 uppercase">
             {title}
           </span>
         </div>
@@ -814,10 +804,10 @@ function MessageForm() {
   return (
     <SpotlightCard className="mt-8">
       <div className="mb-5">
-        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1">
+        <h3 className="text-sm font-bold text-slate-100 mb-1">
           Send me a message
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
+        <p className="text-xs text-slate-400 leading-relaxed max-w-md">
           Feel free to reach out about projects, maps, opportunities, or just to
           say hi.
         </p>
@@ -826,7 +816,7 @@ function MessageForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-1.5">
+            <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
               Name (Optional)
             </label>
             <input
@@ -834,12 +824,12 @@ function MessageForm() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
+              className="w-full rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
               placeholder="How should I address you?"
             />
           </div>
           <div>
-            <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-1.5">
+            <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
               Email (Optional)
             </label>
             <input
@@ -847,21 +837,21 @@ function MessageForm() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
+              className="w-full rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-colors"
               placeholder="you@example.com"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-1.5">
-            Message <span className="text-sky-500 dark:text-sky-400">*</span>
+          <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
+            Message <span className="text-sky-400">*</span>
           </label>
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
-            className="w-full min-h-[120px] rounded-lg bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical transition-colors"
+            className="w-full min-h-[120px] rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 resize-vertical transition-colors"
             placeholder="What's on your mind?"
           />
         </div>
@@ -870,7 +860,7 @@ function MessageForm() {
           <motion.button
             type="submit"
             disabled={status === "submitting"}
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-sky-500 text-white dark:text-slate-950 text-[11px] font-bold tracking-wide hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)]"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-sky-500 text-slate-950 text-[11px] font-bold tracking-wide hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)]"
             whileHover={status !== "submitting" ? { y: -1, scale: 1.02 } : {}}
             whileTap={status !== "submitting" ? { scale: 0.97 } : {}}
           >
@@ -882,7 +872,7 @@ function MessageForm() {
           <motion.div
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-[11px] text-emerald-500 dark:text-emerald-400 mt-2 font-medium"
+            className="text-[11px] text-emerald-400 mt-2 font-medium"
           >
             Thanks! I've received your message.
           </motion.div>
@@ -891,7 +881,7 @@ function MessageForm() {
           <motion.div
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-[11px] text-rose-500 dark:text-rose-400 mt-2 font-medium"
+            className="text-[11px] text-rose-400 mt-2 font-medium"
           >
             ⚠ {error}
           </motion.div>
@@ -911,7 +901,6 @@ const NAV_ITEMS = [
 ];
 
 export default function Portfolio() {
-  const [isDark, setIsDark] = useState(true);
   const [modal, setModal] = useState<ModalContent | null>(null);
 
   const firstSkillGroup = SKILLS[0];
@@ -942,10 +931,10 @@ export default function Portfolio() {
     "contact",
   ];
 
-  // Handle Theme Toggle
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-  };
+  // FORCE DARK MODE: Add 'dark' class to html on mount
+  useEffect(() => {
+    document.documentElement.classList.add("dark");
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -994,14 +983,7 @@ export default function Portfolio() {
     if (projectFilter === "Core") return p.flagship;
     return p.categories?.includes(projectFilter);
   });
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDark) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  }, [isDark]);
+
   useEffect(() => {
     setShowExpandedProjects(false);
   }, [projectFilter]);
@@ -1033,28 +1015,23 @@ export default function Portfolio() {
   };
 
   return (
-    // Outer wrapper handles the Theme Class
-    <div className={`${isDark ? "dark" : ""}`}>
-      {/* Main Container: 
-        - Default (Light Mode): bg-slate-50, text-slate-900 
-        - Dark Mode: bg-slate-950, text-slate-100
-      */}
-      <div className="font-sans antialiased min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-sky-500/30 selection:text-sky-800 dark:selection:text-sky-200 transition-colors duration-300 relative">
-        
+    // Outer wrapper handles the Theme Class - Always Dark
+    <div className="dark">
+      <div className="font-sans antialiased min-h-screen bg-slate-950 text-slate-100 selection:bg-sky-500/30 selection:text-sky-200 transition-colors duration-300 relative">
         {/* RETRO GRID BACKGROUND */}
-        <RetroGrid isDark={isDark} />
+        <RetroGrid />
 
         {/* HEADER */}
         <motion.header
           initial={{ y: -16, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/80 relative"
+          className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 relative"
         >
           <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <motion.a
                 href="#home"
-                className="flex items-center gap-2 font-bold text-xs tracking-wider text-slate-900 dark:text-slate-100 uppercase"
+                className="flex items-center gap-2 font-bold text-xs tracking-wider text-slate-100 uppercase"
                 whileHover={{ scale: 1.05 }}
               >
                 <span className="hidden sm:inline">Alex Liu</span>
@@ -1062,7 +1039,7 @@ export default function Portfolio() {
               </motion.a>
             </div>
 
-            <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-600 dark:text-slate-300">
+            <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-300">
               {NAV_ITEMS.map(({ id, label }) => {
                 const isActive = activeSection === id;
                 return (
@@ -1071,8 +1048,8 @@ export default function Portfolio() {
                     href={`#${id}`}
                     className={`relative transition-colors ${
                       isActive
-                        ? "text-sky-600 dark:text-sky-300"
-                        : "text-slate-500 dark:text-slate-400 hover:text-sky-500 dark:hover:text-sky-200"
+                        ? "text-sky-300"
+                        : "text-slate-400 hover:text-sky-200"
                     }`}
                     whileHover={{ y: -1 }}
                   >
@@ -1080,7 +1057,7 @@ export default function Portfolio() {
                     {isActive && (
                       <motion.span
                         layoutId="navHighlight"
-                        className="absolute -bottom-1 left-0 right-0 h-[2px] bg-sky-500 dark:bg-sky-400 rounded-full"
+                        className="absolute -bottom-1 left-0 right-0 h-[2px] bg-sky-400 rounded-full"
                       />
                     )}
                   </motion.a>
@@ -1088,23 +1065,9 @@ export default function Portfolio() {
               })}
             </nav>
             <div className="flex items-center gap-3">
-              <motion.button
-                onClick={toggleTheme}
-                className="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              >
-                {isDark ? (
-                  <Sun className="w-4 h-4" />
-                ) : (
-                  <Moon className="w-4 h-4" />
-                )}
-              </motion.button>
-
               <motion.a
                 href="/zh"
-                className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 font-medium"
+                className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-sky-300 font-medium"
                 whileHover={{ scale: 1.05 }}
                 title="Switch Language"
               >
@@ -1113,7 +1076,7 @@ export default function Portfolio() {
               </motion.a>
               <motion.a
                 href={SITE.links.resume}
-                className="inline-flex items-center gap-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-bold px-4 py-2 rounded-full hover:bg-slate-700 dark:hover:bg-white transition-colors shadow-lg dark:shadow-[0_0_20px_rgba(248,250,252,0.3)]"
+                className="inline-flex items-center gap-2 bg-slate-100 text-slate-900 text-[11px] font-bold px-4 py-2 rounded-full hover:bg-white transition-colors shadow-lg shadow-[0_0_20px_rgba(248,250,252,0.3)]"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -1121,7 +1084,7 @@ export default function Portfolio() {
               </motion.a>
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-slate-200 dark:bg-slate-800/50 overflow-hidden">
+          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-slate-800/50 overflow-hidden">
             <motion.div
               className="h-full bg-sky-500 shadow-[0_0_10px_rgba(56,189,248,0.8)]"
               style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }}
@@ -1142,22 +1105,8 @@ export default function Portfolio() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                {/* Status Badge */}
-                {/* <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider"
-                >
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  Open to Summer 2026 Internships
-                </motion.div> */}
-
                 <motion.h1
-                  className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white"
+                  className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15 }}
@@ -1165,31 +1114,33 @@ export default function Portfolio() {
                   {SITE.headline}
                 </motion.h1>
 
-                <p className="text-base font-medium text-sky-600 dark:text-sky-300/90 tracking-wide uppercase">
+                <p className="text-base font-medium text-sky-300/90 tracking-wide uppercase">
                   {SITE.tagline}
                 </p>
 
-                {/* Clickable Location */}
-                <a 
+                <a
                   href={SITE.links.map}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-2 hover:text-sky-600 dark:hover:text-sky-300 transition-colors group cursor-pointer"
+                  className="inline-flex items-center gap-2 text-xs text-slate-400 mt-2 hover:text-sky-300 transition-colors group cursor-pointer"
                 >
-                  <MapPin className="w-4 h-4 text-slate-600 dark:text-slate-500 group-hover:text-sky-500 transition-colors" />
+                  <MapPin className="w-4 h-4 text-slate-500 group-hover:text-sky-500 transition-colors" />
                   <span>{SITE.location}</span>
                   <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-mono text-slate-400 ml-1">
                     ({SITE.latlong})
                   </span>
                 </a>
 
-                <div className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
-                  {/* First Paragraph - Static text */}
-                  <p>I study Computer Science, focusing on algorithms, systems, and making data 'tangible.' My recent work revolves around geospatial visualization, healthcare tools, and accessible interfaces.</p>
+                <div className="text-sm md:text-base text-slate-300 leading-relaxed max-w-xl">
+                  <p>
+                    I study Computer Science, focusing on algorithms, systems,
+                    and making data 'tangible.' My recent work revolves around
+                    geospatial visualization, healthcare tools, and accessible
+                    interfaces.
+                  </p>
                 </div>
 
-                <div className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
-                  {/* First Paragraph - Static text */}
+                <div className="text-sm md:text-base text-slate-300 leading-relaxed max-w-xl">
                   <p>Open for 2026 summer Internships</p>
                 </div>
 
@@ -1217,7 +1168,7 @@ export default function Portfolio() {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-900/50 text-[11px] text-slate-700 dark:text-slate-200 hover:border-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:bg-white dark:hover:bg-slate-900 transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 bg-slate-900/50 text-[11px] text-slate-200 hover:text-sky-300 hover:bg-slate-900 transition-all cursor-pointer"
                       whileHover={{ y: -3 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -1233,8 +1184,7 @@ export default function Portfolio() {
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
               >
-                {/* Interactive Profile Picture - Slight tilt on hover */}
-                <motion.div 
+                <motion.div
                   className="relative group cursor-pointer"
                   whileHover={{ rotateY: 5, rotateX: -5, scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -1246,10 +1196,9 @@ export default function Portfolio() {
                   <img
                     src="/me.jpg"
                     alt="Alex Liu"
-                    className="relative w-full object-cover rounded-3xl border border-slate-200 dark:border-slate-700/50 shadow-2xl"
+                    className="relative w-full object-cover rounded-3xl border border-slate-700/50 shadow-2xl"
                     loading="lazy"
                   />
-                  {/* Glare effect */}
                   <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 </motion.div>
               </motion.div>
@@ -1260,11 +1209,11 @@ export default function Portfolio() {
         <Section id="about" title="About Me" icon={Briefcase}>
           <div className="grid lg:grid-cols-3 gap-8">
             <SpotlightCard className="lg:col-span-2">
-              <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200 mb-4 uppercase tracking-wider flex items-center gap-2">
+              <h3 className="text-xs font-bold text-slate-200 mb-4 uppercase tracking-wider flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
                 Introduction
               </h3>
-              <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6 space-y-4">
+              <div className="text-sm text-slate-300 leading-relaxed mb-6 space-y-4">
                 <p>{ABOUT.p1}</p>
                 <p>{ABOUT.p2}</p>
               </div>
@@ -1272,19 +1221,19 @@ export default function Portfolio() {
                 {ABOUT.highlights.map((h, i) => (
                   <motion.li
                     key={i}
-                    className="flex gap-3 text-sm text-slate-700 dark:text-slate-200"
+                    className="flex gap-3 text-sm text-slate-200"
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                   >
-                    <Code2 className="shrink-0 w-4 h-4 text-sky-500 dark:text-sky-400 mt-0.5" />
+                    <Code2 className="shrink-0 w-4 h-4 text-sky-400 mt-0.5" />
                     <span>{h}</span>
                   </motion.li>
                 ))}
               </ul>
 
-              <div className="mt-6 border-t border-slate-200 dark:border-slate-800 pt-4">
+              <div className="mt-6 border-t border-slate-800 pt-4">
                 <div className="flex flex-wrap gap-2">
                   {[
                     "Algorithms",
@@ -1295,7 +1244,7 @@ export default function Portfolio() {
                     <motion.span
                       key={t}
                       whileHover={{ scale: 1.05 }}
-                      className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-[10px] font-medium border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-sky-500/50 hover:text-sky-600 dark:hover:text-sky-300 transition-colors cursor-default"
+                      className="px-3 py-1 rounded-full bg-slate-900 text-[10px] font-medium border border-slate-800 text-slate-300 hover:border-sky-500/50 hover:text-sky-300 transition-colors cursor-default"
                     >
                       {t}
                     </motion.span>
@@ -1306,8 +1255,8 @@ export default function Portfolio() {
 
             <SpotlightCard>
               <div className="flex items-center gap-2 mb-4">
-                <Calendar className="w-4 h-4 text-sky-500 dark:text-sky-400" />
-                <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200 uppercase tracking-wider">
+                <Calendar className="w-4 h-4 text-sky-400" />
+                <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
                   Education
                 </h3>
               </div>
@@ -1315,7 +1264,7 @@ export default function Portfolio() {
                 {EDUCATION.map((edu, i) => (
                   <div key={i} className="flex items-start gap-4 group">
                     {edu.logo && (
-                      <div className="shrink-0 w-10 h-10 rounded-lg bg-slate-50 dark:bg-white/5 p-1 border border-slate-200 dark:border-white/10 group-hover:scale-110 transition-transform duration-300">
+                      <div className="shrink-0 w-10 h-10 rounded-lg bg-white/5 p-1 border border-white/10 group-hover:scale-110 transition-transform duration-300">
                         <img
                           src={edu.logo}
                           alt={edu.school}
@@ -1325,19 +1274,19 @@ export default function Portfolio() {
                       </div>
                     )}
                     <div className="flex-1">
-                      <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100 mb-0.5">
+                      <h4 className="font-bold text-xs text-slate-100 mb-0.5">
                         {edu.school}
                       </h4>
                       {edu.degree && (
-                        <p className="text-[11px] text-sky-600 dark:text-sky-200/90 mb-1 font-medium">
+                        <p className="text-[11px] text-sky-200/90 mb-1 font-medium">
                           {edu.degree}
                         </p>
                       )}
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 mb-1">
+                      <p className="text-[10px] text-slate-400 mb-1">
                         {edu.period}
                       </p>
                       {edu.honors && (
-                        <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                        <p className="text-[10px] text-emerald-400 font-medium">
                           {edu.honors}
                         </p>
                       )}
@@ -1350,7 +1299,7 @@ export default function Portfolio() {
         </Section>
 
         <Section id="projects" title="Featured Projects" icon={Code2}>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-3xl">
+          <p className="text-sm text-slate-400 mb-6 max-w-3xl">
             A selection of projects demonstrating my focus on full-stack
             engineering, geospatial analysis, and accessible technology.
           </p>
@@ -1365,8 +1314,8 @@ export default function Portfolio() {
                   onClick={() => setProjectFilter(filter)}
                   className={`px-4 py-1.5 rounded-full text-[11px] font-medium border transition-all ${
                     isActive
-                      ? "bg-sky-500 text-white dark:text-slate-950 border-sky-400 shadow-md"
-                      : "bg-white/50 dark:bg-slate-950/50 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-sky-400 hover:text-sky-600 dark:hover:text-sky-200"
+                      ? "bg-slate-950 border-sky-400 shadow-md text-white"
+                      : "bg-slate-950/50 border-slate-700 text-slate-300 hover:border-sky-600 hover:text-sky-200"
                   }`}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.97 }}
@@ -1397,21 +1346,21 @@ export default function Portfolio() {
                       body: (
                         <div className="space-y-5">
                           <div className="space-y-2">
-                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                            <p className="text-slate-300 leading-relaxed">
                               {p.blurb}
                             </p>
                           </div>
 
                           {p.highlights && (
-                            <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
-                              <h4 className="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
+                              <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                                 <Zap className="w-3.5 h-3.5" /> Key Achievements
                               </h4>
                               <ul className="space-y-2.5">
                                 {p.highlights.map((h, idx) => (
                                   <li
                                     key={idx}
-                                    className="flex gap-2.5 text-xs text-slate-700 dark:text-slate-200 leading-relaxed"
+                                    className="flex gap-2.5 text-xs text-slate-200 leading-relaxed"
                                   >
                                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-400/80" />
                                     <span>{h}</span>
@@ -1432,7 +1381,7 @@ export default function Portfolio() {
                                     key={src}
                                     src={src}
                                     alt={`${p.name} screenshot`}
-                                    className="w-full h-24 object-cover rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900"
+                                    className="w-full h-24 object-cover rounded-lg border border-slate-800 bg-slate-900"
                                     loading="lazy"
                                   />
                                 ))}
@@ -1443,7 +1392,11 @@ export default function Portfolio() {
                       ),
                       links: [
                         p.links?.code
-                          ? { label: "View Code", href: p.links.code, icon: Code2 }
+                          ? {
+                              label: "View Code",
+                              href: p.links.code,
+                              icon: Code2,
+                            }
                           : null,
                         p.links?.demo
                           ? {
@@ -1458,8 +1411,8 @@ export default function Portfolio() {
                 >
                   <div className="relative flex-1 flex flex-col">
                     {p.screenshots && p.screenshots.length > 0 && (
-                      <div className="mb-4 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 relative">
-                        <div className="absolute inset-0 bg-slate-900/5 dark:bg-slate-900/10 group-hover:bg-transparent transition-colors z-10" />
+                      <div className="mb-4 rounded-xl overflow-hidden border border-slate-800 bg-slate-950 relative">
+                        <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors z-10" />
                         <motion.img
                           src={p.screenshots[0]}
                           alt={`${p.name} preview`}
@@ -1472,17 +1425,17 @@ export default function Portfolio() {
                     )}
 
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors">
+                      <h3 className="text-base font-bold text-white group-hover:text-sky-300 transition-colors">
                         {p.name}
                       </h3>
                       {p.flagship && (
-                        <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 text-[10px] font-bold text-amber-600 dark:text-amber-300">
+                        <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-bold text-amber-300">
                           CORE
                         </span>
                       )}
                     </div>
 
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mb-4 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-slate-400 mb-4 leading-relaxed line-clamp-3">
                       {p.blurb}
                     </p>
 
@@ -1490,7 +1443,7 @@ export default function Portfolio() {
                       {p.tech.slice(0, 4).map((t) => (
                         <span
                           key={t}
-                          className="text-[10px] px-2 py-1 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 font-mono rounded border border-slate-200 dark:border-slate-800"
+                          className="text-[10px] px-2 py-1 bg-slate-900 text-slate-300 font-mono rounded border border-slate-800"
                         >
                           {t}
                         </span>
@@ -1503,14 +1456,14 @@ export default function Portfolio() {
                     </div>
                   </div>
 
-                  <div className="relative flex gap-4 pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/60">
+                  <div className="relative flex gap-4 pt-4 mt-4 border-t border-slate-800/60">
                     {p.links?.code && (
-                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400 group-hover:text-white transition-colors">
                         <Code2 className="w-3.5 h-3.5" /> Source
                       </div>
                     )}
                     {p.links?.demo && (
-                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-sky-600 dark:text-sky-400 group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors">
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-sky-400 group-hover:text-sky-300 transition-colors">
                         <ExternalLink className="w-3.5 h-3.5" /> Demo
                       </div>
                     )}
@@ -1524,7 +1477,7 @@ export default function Portfolio() {
             <div className="mt-10 flex justify-center">
               <motion.button
                 onClick={() => setShowExpandedProjects(!showExpandedProjects)}
-                className="inline-flex items-center gap-2 px-6 py-2 border border-slate-200 dark:border-slate-700 rounded-full bg-white dark:bg-slate-900/50 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:border-sky-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm"
+                className="inline-flex items-center gap-2 px-6 py-2 border border-slate-700 rounded-full bg-slate-900/50 text-xs font-semibold text-slate-300 hover:border-sky-400 hover:text-white transition-all shadow-sm"
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -1550,7 +1503,7 @@ export default function Portfolio() {
           <div className="space-y-12">
             {/* Work Experience */}
             <div>
-              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
                 Work History
               </h3>
@@ -1571,13 +1524,13 @@ export default function Portfolio() {
                           eyebrow: `Experience · ${x.period}`,
                           body: (
                             <div className="space-y-4">
-                              <p className="text-slate-600 dark:text-slate-300">
+                              <p className="text-slate-300">
                                 At{" "}
-                                <span className="font-bold text-slate-900 dark:text-white">
+                                <span className="font-bold text-white">
                                   {x.org}
                                 </span>
                                 , I served as{" "}
-                                <span className="font-bold text-slate-900 dark:text-white">
+                                <span className="font-bold text-white">
                                   {x.role}
                                 </span>
                                 .
@@ -1586,7 +1539,7 @@ export default function Portfolio() {
                                 {x.bullets.map((b) => (
                                   <li
                                     key={b}
-                                    className="flex gap-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed"
+                                    className="flex gap-3 text-xs text-slate-300 leading-relaxed"
                                   >
                                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-400" />
                                     <span>{b}</span>
@@ -1609,7 +1562,7 @@ export default function Portfolio() {
                     >
                       <div className="flex items-start gap-4">
                         {x.logo && (
-                          <div className="shrink-0 w-12 h-12 bg-white rounded-lg overflow-hidden p-0.5 border border-slate-200 dark:border-slate-700">
+                          <div className="shrink-0 w-12 h-12 bg-white rounded-lg overflow-hidden p-0.5 border border-slate-700">
                             <img
                               src={x.logo}
                               alt={x.org}
@@ -1620,17 +1573,17 @@ export default function Portfolio() {
                         )}
                         <div className="flex-1">
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
-                            <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors">
+                            <h4 className="font-bold text-sm text-white group-hover:text-sky-300 transition-colors">
                               {x.role}
                             </h4>
                             <span className="text-[10px] font-mono text-slate-500">
                               {x.period}
                             </span>
                           </div>
-                          <div className="text-xs font-medium text-sky-600 dark:text-sky-400 mb-2">
+                          <div className="text-xs font-medium text-sky-400 mb-2">
                             {x.org}
                           </div>
-                          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
+                          <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
                             {x.bullets[0]}
                           </p>
                         </div>
@@ -1643,7 +1596,7 @@ export default function Portfolio() {
 
             {/* Volunteer */}
             <div>
-              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 Volunteering
               </h3>
@@ -1668,7 +1621,7 @@ export default function Portfolio() {
                                 {x.bullets.map((b) => (
                                   <li
                                     key={b}
-                                    className="flex gap-3 text-xs text-slate-600 dark:text-slate-300"
+                                    className="flex gap-3 text-xs text-slate-300"
                                   >
                                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
                                     <span>{b}</span>
@@ -1697,11 +1650,11 @@ export default function Portfolio() {
                             alt=""
                           />
                         )}
-                        <h4 className="font-bold text-xs text-slate-900 dark:text-white">
+                        <h4 className="font-bold text-xs text-white">
                           {x.org}
                         </h4>
                       </div>
-                      <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mb-1">
+                      <div className="text-[11px] text-emerald-400 font-medium mb-1">
                         {x.role}
                       </div>
                       <div className="text-[10px] text-slate-500 mb-2">
@@ -1715,7 +1668,7 @@ export default function Portfolio() {
 
             {/* Leadership */}
             <div>
-              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
                 Leadership
               </h3>
@@ -1740,7 +1693,7 @@ export default function Portfolio() {
                                 {x.bullets.map((b) => (
                                   <li
                                     key={b}
-                                    className="flex gap-3 text-xs text-slate-600 dark:text-slate-300"
+                                    className="flex gap-3 text-xs text-slate-300"
                                   >
                                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-indigo-400" />
                                     <span>{b}</span>
@@ -1769,11 +1722,11 @@ export default function Portfolio() {
                             alt=""
                           />
                         )}
-                        <h4 className="font-bold text-xs text-slate-900 dark:text-white">
+                        <h4 className="font-bold text-xs text-white">
                           {x.org}
                         </h4>
                       </div>
-                      <div className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium mb-1">
+                      <div className="text-[11px] text-indigo-400 font-medium mb-1">
                         {x.role}
                       </div>
                       <div className="text-[10px] text-slate-500 mb-2">
@@ -1798,10 +1751,10 @@ export default function Portfolio() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <SpotlightCard className="bg-white/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800">
+                  <SpotlightCard className="bg-slate-900/40 border-slate-800">
                     <div className="flex items-center gap-3 mb-4">
-                      <g.icon className="w-4 h-4 text-sky-500 dark:text-sky-400" />
-                      <h3 className="font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wide">
+                      <g.icon className="w-4 h-4 text-sky-400" />
+                      <h3 className="font-bold text-xs text-slate-200 uppercase tracking-wide">
                         {g.group}
                       </h3>
                     </div>
@@ -1823,8 +1776,8 @@ export default function Portfolio() {
                             }
                             className={`px-3 py-1.5 rounded-lg text-[11px] font-mono border transition-all ${
                               isActive
-                                ? "bg-sky-500 text-white dark:text-slate-950 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
-                                : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-sky-500/50 hover:text-slate-900 dark:hover:text-slate-200"
+                                ? "bg-sky-500 text-slate-950 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
+                                : "bg-slate-950 border-slate-700 text-slate-400 hover:border-sky-500/50 hover:text-slate-200"
                             }`}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -1848,24 +1801,24 @@ export default function Portfolio() {
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <SpotlightCard className="bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-slate-200 dark:border-slate-700 min-h-[180px] flex flex-col justify-center">
+                  <SpotlightCard className="bg-gradient-to-br from-slate-900 to-slate-950 border-slate-700 min-h-[180px] flex flex-col justify-center">
                     {activeSkill ? (
                       <div className="space-y-3">
-                        <div className="text-[10px] font-bold tracking-widest text-sky-600 dark:text-sky-500 uppercase">
+                        <div className="text-[10px] font-bold tracking-widest text-sky-500 uppercase">
                           {activeSkill.group}
                         </div>
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                        <h3 className="text-xl font-bold text-white">
                           {activeSkill.item.name}
                         </h3>
-                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        <p className="text-xs text-slate-300 leading-relaxed">
                           {activeSkill.item.blurb}
                         </p>
                         {activeSkill.item.usedIn && (
-                          <div className="pt-3 mt-3 border-t border-slate-200 dark:border-slate-800">
+                          <div className="pt-3 mt-3 border-t border-slate-800">
                             <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
                               Used In:
                             </span>
-                            <p className="text-[11px] text-sky-700 dark:text-sky-200">
+                            <p className="text-[11px] text-sky-200">
                               {activeSkill.item.usedIn}
                             </p>
                           </div>
@@ -1873,7 +1826,7 @@ export default function Portfolio() {
                       </div>
                     ) : (
                       <div className="text-center space-y-2 opacity-50">
-                        <Cpu className="w-8 h-8 mx-auto text-slate-400 dark:text-slate-600" />
+                        <Cpu className="w-8 h-8 mx-auto text-slate-600" />
                         <p className="text-xs text-slate-400">
                           Hover over a skill to see details.
                         </p>
@@ -1887,7 +1840,7 @@ export default function Portfolio() {
         </Section>
 
         <Section id="hobbies" title="Beyond the Code" icon={Award}>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+          <p className="text-sm text-slate-400 mb-6">
             When I'm not debugging or optimizing algorithms, here's what keeps
             me busy.
           </p>
@@ -1901,7 +1854,7 @@ export default function Portfolio() {
                 transition={{ delay: i * 0.1 }}
               >
                 <SpotlightCard
-                  className="h-full flex flex-col items-center text-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-900/80"
+                  className="h-full flex flex-col items-center text-center gap-3 hover:bg-slate-900/80"
                   onClick={() =>
                     setModal({
                       title: hobby.name,
@@ -1909,11 +1862,9 @@ export default function Portfolio() {
                       eyebrow: "Personal",
                       body: (
                         <div className="space-y-3">
-                          <p className="text-slate-600 dark:text-slate-300">
-                            {hobby.blurb}
-                          </p>
+                          <p className="text-slate-300">{hobby.blurb}</p>
                           {hobby.details && (
-                            <ul className="list-disc list-inside space-y-1 text-slate-500 dark:text-slate-400 text-xs text-left">
+                            <ul className="list-disc list-inside space-y-1 text-slate-400 text-xs text-left">
                               {hobby.details.map((d) => (
                                 <li key={d}>{d}</li>
                               ))}
@@ -1926,10 +1877,10 @@ export default function Portfolio() {
                 >
                   <div className="text-4xl mb-2">{hobby.emoji}</div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                    <h3 className="text-sm font-bold text-white mb-1">
                       {hobby.name}
                     </h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
                       {hobby.blurb}
                     </p>
                   </div>
@@ -1970,10 +1921,10 @@ export default function Portfolio() {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+                <h3 className="text-2xl font-bold text-white mb-4">
                   Let's Connect
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed">
                   {CONTACT.note}
                 </p>
               </div>
@@ -1982,21 +1933,21 @@ export default function Portfolio() {
                 <button
                   type="button"
                   onClick={() => handleCopy(SITE.links.email, "email")}
-                  className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-sky-500/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all group text-left shadow-sm"
+                  className="flex items-center gap-4 p-3 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 transition-all group text-left shadow-sm"
                 >
-                  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors">
-                    <Mail className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
+                    <Mail className="w-5 h-5 text-slate-400" />
                   </div>
                   <div>
                     <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                       Email
                     </div>
-                    <div className="text-sm font-mono text-slate-900 dark:text-slate-200">
+                    <div className="text-sm font-mono text-slate-200">
                       {SITE.links.email}
                     </div>
                   </div>
                   {copiedField === "email" && (
-                    <span className="ml-auto text-[10px] text-emerald-500 dark:text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">
+                    <span className="ml-auto text-[10px] text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">
                       COPIED
                     </span>
                   )}
@@ -2005,21 +1956,21 @@ export default function Portfolio() {
                 <button
                   type="button"
                   onClick={() => handleCopy(SITE.links.phone, "phone")}
-                  className="flex items-center gap-4 p-3 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-sky-500/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all group text-left shadow-sm"
+                  className="flex items-center gap-4 p-3 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 transition-all group text-left shadow-sm"
                 >
-                  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors">
-                    <Phone className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
+                    <Phone className="w-5 h-5 text-slate-400" />
                   </div>
                   <div>
                     <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                       Phone
                     </div>
-                    <div className="text-sm font-mono text-slate-900 dark:text-slate-200">
+                    <div className="text-sm font-mono text-slate-200">
                       {SITE.links.phone}
                     </div>
                   </div>
                   {copiedField === "phone" && (
-                    <span className="ml-auto text-[10px] text-emerald-500 dark:text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">
+                    <span className="ml-auto text-[10px] text-emerald-400 font-bold px-2 py-1 bg-emerald-500/10 rounded">
                       COPIED
                     </span>
                   )}
@@ -2031,16 +1982,15 @@ export default function Portfolio() {
           </div>
         </Section>
 
-        <footer className="py-12 border-t border-slate-200 dark:border-slate-900 bg-slate-50 dark:bg-slate-950 mt-12 relative z-10">
+        <footer className="py-12 border-t border-slate-900 bg-slate-950 mt-12 relative z-10">
           <div className="max-w-6xl mx-auto px-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="text-center md:text-left">
-                <div className="font-bold text-slate-900 dark:text-slate-200 text-sm mb-1">
+                <div className="font-bold text-slate-200 text-sm mb-1">
                   {SITE.name}
                 </div>
                 <div className="text-[11px] text-slate-500">
-                  © {new Date().getFullYear()} · Built with React, Tailwind &
-                  Framer Motion.
+                  © {new Date().getFullYear()} {SITE.name}. All rights reserved.
                 </div>
               </div>
               <div className="flex gap-4">
@@ -2053,7 +2003,7 @@ export default function Portfolio() {
                   <motion.a
                     key={i}
                     href={href}
-                    className="w-10 h-10 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-sky-500 hover:text-sky-500 dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all shadow-sm"
+                    className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-slate-400 border border-slate-800 hover:border-sky-500 hover:text-sky-400 hover:bg-slate-900 transition-all shadow-sm"
                     whileHover={{ y: -3 }}
                     whileTap={{ scale: 0.9 }}
                   >
