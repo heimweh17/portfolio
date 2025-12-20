@@ -30,13 +30,41 @@ import {
   Moon,
 } from "lucide-react";
 
+// --- TYPE DEFINITIONS (Moved to top to fix TS errors) ---
+type ModalLink = {
+  label: string;
+  href: string;
+  icon?: React.ComponentType<{ className?: string }>;
+};
+
+type ModalContent = {
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  body: React.ReactNode;
+  tags?: string[];
+  links?: ModalLink[];
+};
+
+type SkillItem = {
+  name: string;
+  blurb: string;
+  usedIn?: string;
+};
+
+type SkillGroup = {
+  group: string;
+  icon: React.ComponentType<{ className?: string }>;
+  items: SkillItem[];
+};
+
 // --- SITE CONFIGURATION ---
 const SITE = {
   name: "Alex Liu",
   headline: "Alex Liu",
   tagline: "CS Major @ UF · Geography Minor",
   location: "Gainesville, FL",
-  latlong: "29.6516° N, 82.3248° W", // Coordinate styling for fun
+  latlong: "29.6516° N, 82.3248° W",
   links: {
     github: "https://github.com/heimweh17",
     linkedin: "https://www.linkedin.com/in/alex-liu7/",
@@ -52,7 +80,7 @@ const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
 // --- HELPER COMPONENTS ---
 
-// 1. Retro Grid Background (Adjusted for Light Mode)
+// 1. Retro Grid Background
 const RetroGrid = ({ isDark }: { isDark: boolean }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -69,8 +97,6 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
     const drawGrid = () => {
       ctx.clearRect(0, 0, w, h);
 
-      // Light Mode: Slate-300 lines (visible but subtle)
-      // Dark Mode: Sky-500 lines (very faint)
       ctx.strokeStyle = isDark
         ? "rgba(56, 189, 248, 0.1)"
         : "rgba(148, 163, 184, 0.15)";
@@ -78,7 +104,6 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
       ctx.lineWidth = 1;
       const gridSize = 40;
 
-      // Vertical Lines
       for (let x = 0; x <= w; x += gridSize) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -86,7 +111,6 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
         ctx.stroke();
       }
 
-      // Horizontal Lines
       for (let y = 0; y <= h; y += gridSize) {
         ctx.beginPath();
         ctx.moveTo(0, y);
@@ -94,7 +118,6 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
         ctx.stroke();
       }
 
-      // Mouse flashlight effect
       const gradient = ctx.createRadialGradient(
         mouse.x,
         mouse.y,
@@ -108,7 +131,6 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
         gradient.addColorStop(0, "rgba(56, 189, 248, 0.15)");
         gradient.addColorStop(1, "transparent");
       } else {
-        // Light mode flashlight needs to be darker/blue to show up on white
         gradient.addColorStop(0, "rgba(14, 165, 233, 0.1)");
         gradient.addColorStop(1, "transparent");
       }
@@ -144,7 +166,7 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
   );
 };
 
-// 2. Spotlight Card Component
+// 2. Spotlight Card Component (Fixed: Removed style jsx)
 interface CardProps {
   children: React.ReactNode;
   className?: string;
@@ -172,12 +194,13 @@ const SpotlightCard = ({ children, className = "", onClick }: CardProps) => {
       className={`group relative border overflow-hidden rounded-2xl transition-all duration-300
         bg-white/80 border-slate-200 
         dark:bg-slate-900/80 dark:border-slate-800 
+        [--spotlight-color:rgba(14,165,233,0.15)] 
+        dark:[--spotlight-color:rgba(56,189,248,0.25)]
         ${clickable ? "cursor-pointer hover:shadow-lg dark:hover:shadow-[0_0_30px_rgba(56,189,248,0.1)]" : ""} 
         ${className}`}
       onMouseMove={handleMouseMove}
       onClick={onClick}
     >
-      {/* Spotlight Gradient */}
       <motion.div
         className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
         style={{
@@ -190,15 +213,6 @@ const SpotlightCard = ({ children, className = "", onClick }: CardProps) => {
           `,
         }}
       />
-      <style jsx>{`
-        .group {
-          --spotlight-color: rgba(14, 165, 233, 0.15); /* Sky-500 light */
-        }
-        :global(.dark) .group {
-          --spotlight-color: rgba(56, 189, 248, 0.25); /* Sky-400 dark */
-        }
-      `}</style>
-
       <div className="relative h-full p-6 z-10">{children}</div>
     </div>
   );
@@ -207,7 +221,6 @@ const SpotlightCard = ({ children, className = "", onClick }: CardProps) => {
 // --- DATA ---
 
 const ABOUT = {
-  // Broke this into paragraphs for easier styling/decoding
   p1: "I am a Computer Science student at the University of Florida, exploring the intersection of code, data, and the physical world. I specialize in building systems that transform messy real-time data into intuitive, actionable tools.",
   p2: "Whether it's creating interactive maps, optimizing backend algorithms, or designing accessible interfaces, I love solving problems that have a tangible impact. I am currently authorized to work in the U.S. and do not require sponsorship.",
   highlights: [
@@ -481,18 +494,6 @@ const HOBBIES = [
   },
 ];
 
-type SkillItem = {
-  name: string;
-  blurb: string;
-  usedIn?: string;
-};
-
-type SkillGroup = {
-  group: string;
-  icon: React.ComponentType<{ className?: string }>;
-  items: SkillItem[];
-};
-
 const SKILLS: SkillGroup[] = [
   {
     group: "Languages",
@@ -623,21 +624,6 @@ const SKILLS: SkillGroup[] = [
 
 const CONTACT = {
   note: "I am open to Summer 2026 internship opportunities, specifically in Software Engineering, Backend Systems, or Geospatial roles. I'm also happy to chat about maps, infrastructure, accessibility, or whatever you are building.",
-};
-
-type ModalLink = {
-  label: string;
-  href: string;
-  icon?: React.ComponentType<{ className?: string }>;
-};
-
-type ModalContent = {
-  title: string;
-  subtitle?: string;
-  eyebrow?: string;
-  body: React.ReactNode;
-  tags?: string[];
-  links?: ModalLink[];
 };
 
 const DetailModal = ({
@@ -1067,8 +1053,6 @@ export default function Portfolio() {
                 <span className="hidden sm:inline">Alex Liu</span>
                 <span className="sm:hidden">AL</span>
               </motion.a>
-              
-              {/* Removed System Clock here as requested */}
             </div>
 
             <nav className="hidden md:flex items-center gap-6 text-[11px] font-medium text-slate-600 dark:text-slate-300">
@@ -1151,8 +1135,8 @@ export default function Portfolio() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                {/* Status Badge
-                <motion.div 
+                {/* Status Badge */}
+                {/* <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
@@ -1193,14 +1177,13 @@ export default function Portfolio() {
                 </a>
 
                 <div className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
-                
+                  {/* First Paragraph - Static text */}
                   <p>I study Computer Science, focusing on algorithms, systems, and making data 'tangible.' My recent work revolves around geospatial visualization, healthcare tools, and accessible interfaces.</p>
-                  {/* <p>Open for 2026 summer interns</p> */}
                 </div>
+
                 <div className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
-                
-                  {/* <p>I study Computer Science, focusing on algorithms, systems, and making data 'tangible.' My recent work revolves around geospatial visualization, healthcare tools, and accessible interfaces.</p> */}
-                  <p>Open for 2026 summer interns</p>
+                  {/* First Paragraph - Static text */}
+                  <p>Open for 2026 summer Internships</p>
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-4">

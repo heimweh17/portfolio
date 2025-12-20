@@ -28,11 +28,41 @@ import {
   Zap,
   Sun,
   Moon,
-  BookOpen, // 新增图标用于博客按钮
+  BookOpen,
   Globe,
 } from "lucide-react";
 
-// --- 站点配置 (中文版) ---
+// --- 类型定义 (Type Definitions) ---
+// These must be at the top to avoid Reference Errors
+
+type ModalLink = {
+  label: string;
+  href: string;
+  icon?: React.ComponentType<{ className?: string }>;
+};
+
+type ModalContent = {
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  body: React.ReactNode;
+  tags?: string[];
+  links?: ModalLink[];
+};
+
+type SkillItem = {
+  name: string;
+  blurb: string;
+  usedIn?: string;
+};
+
+type SkillGroup = {
+  group: string;
+  icon: React.ComponentType<{ className?: string }>;
+  items: SkillItem[];
+};
+
+// --- 站点配置 ---
 const SITE = {
   name: "刘昊洲",
   headline: "刘昊洲",
@@ -48,13 +78,13 @@ const SITE = {
     phone: "+1 (352) 328-4805",
     map: "https://www.google.com/maps/place/Gainesville,+FL",
     website: "https://aliu.me/",
-    blog: "/blog", // 博客链接
+    blog: "/blog",
   },
 };
 
 const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
-// --- 辅助组件 (与英文版保持一致的视觉风格) ---
+// --- 辅助组件 ---
 
 // 1. 复古网格背景
 const RetroGrid = ({ isDark }: { isDark: boolean }) => {
@@ -73,8 +103,6 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
     const drawGrid = () => {
       ctx.clearRect(0, 0, w, h);
 
-      // 浅色模式：Slate-300 线条
-      // 深色模式：Sky-500 线条（微弱）
       ctx.strokeStyle = isDark
         ? "rgba(56, 189, 248, 0.1)"
         : "rgba(148, 163, 184, 0.15)";
@@ -82,7 +110,6 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
       ctx.lineWidth = 1;
       const gridSize = 40;
 
-      // 垂直线
       for (let x = 0; x <= w; x += gridSize) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -90,7 +117,6 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
         ctx.stroke();
       }
 
-      // 水平线
       for (let y = 0; y <= h; y += gridSize) {
         ctx.beginPath();
         ctx.moveTo(0, y);
@@ -98,7 +124,6 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
         ctx.stroke();
       }
 
-      // 鼠标手电筒效果
       const gradient = ctx.createRadialGradient(
         mouse.x,
         mouse.y,
@@ -147,7 +172,7 @@ const RetroGrid = ({ isDark }: { isDark: boolean }) => {
   );
 };
 
-// 2. 聚光灯卡片组件
+// 2. 聚光灯卡片
 interface CardProps {
   children: React.ReactNode;
   className?: string;
@@ -175,12 +200,13 @@ const SpotlightCard = ({ children, className = "", onClick }: CardProps) => {
       className={`group relative border overflow-hidden rounded-2xl transition-all duration-300
         bg-white/80 border-slate-200 
         dark:bg-slate-900/80 dark:border-slate-800 
+        [--spotlight-color:rgba(14,165,233,0.15)] 
+        dark:[--spotlight-color:rgba(56,189,248,0.25)]
         ${clickable ? "cursor-pointer hover:shadow-lg dark:hover:shadow-[0_0_30px_rgba(56,189,248,0.1)]" : ""} 
         ${className}`}
       onMouseMove={handleMouseMove}
       onClick={onClick}
     >
-      {/* 聚光灯渐变 */}
       <motion.div
         className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
         style={{
@@ -193,15 +219,6 @@ const SpotlightCard = ({ children, className = "", onClick }: CardProps) => {
           `,
         }}
       />
-      <style jsx>{`
-        .group {
-          --spotlight-color: rgba(14, 165, 233, 0.15);
-        }
-        :global(.dark) .group {
-          --spotlight-color: rgba(56, 189, 248, 0.25);
-        }
-      `}</style>
-
       <div className="relative h-full p-6 z-10">{children}</div>
     </div>
   );
@@ -467,18 +484,6 @@ const HOBBIES = [
     tags: ["高速路", "有声书", "顺路小绕路"],
   },
 ];
-
-type SkillItem = {
-  name: string;
-  blurb: string;
-  usedIn?: string;
-};
-
-type SkillGroup = {
-  group: string;
-  icon: React.ComponentType<{ className?: string }>;
-  items: SkillItem[];
-};
 
 const SKILLS: SkillGroup[] = [
   {
@@ -895,7 +900,7 @@ const NAV_ITEMS = [
   { id: "contact", label: "联系" },
 ];
 
-export default function Portfolio() {
+export default function PortfolioChinese() {
   const [isDark, setIsDark] = useState(true);
   const [modal, setModal] = useState<ModalContent | null>(null);
 
@@ -927,7 +932,6 @@ export default function Portfolio() {
     "contact",
   ];
 
-  // Handle Theme Toggle
   const toggleTheme = () => {
     setIsDark(!isDark);
   };
@@ -1011,15 +1015,10 @@ export default function Portfolio() {
   };
 
   return (
-    // Outer wrapper handles the Theme Class
     <div className={`${isDark ? "dark" : ""}`}>
-      {/* Main Container */}
       <div className="font-sans antialiased min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-sky-500/30 selection:text-sky-800 dark:selection:text-sky-200 transition-colors duration-300 relative">
-        
-        {/* RETRO GRID BACKGROUND */}
         <RetroGrid isDark={isDark} />
 
-        {/* HEADER */}
         <motion.header
           initial={{ y: -16, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -1081,7 +1080,7 @@ export default function Portfolio() {
                 href="/"
                 className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 font-medium"
                 whileHover={{ scale: 1.05 }}
-                title="Switch Language to English"
+                title="Switch to English"
               >
                 <Languages className="w-4 h-4" />
                 <span className="hidden sm:inline">English</span>
@@ -1104,7 +1103,6 @@ export default function Portfolio() {
           </div>
         </motion.header>
 
-        {/* HERO SECTION */}
         <section
           id="home"
           className="relative overflow-hidden pt-24 pb-20 lg:pt-32 lg:pb-28"
@@ -1117,7 +1115,6 @@ export default function Portfolio() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                {/* Status Badge */}
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1144,7 +1141,6 @@ export default function Portfolio() {
                   {SITE.tagline}
                 </p>
 
-                {/* Clickable Location */}
                 <a 
                   href={SITE.links.map}
                   target="_blank"
@@ -1159,7 +1155,6 @@ export default function Portfolio() {
                 </a>
 
                 <div className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
-                  {/* First Paragraph - Static text, no decode effect */}
                   <p>我在学计算机科学，比较关注算法、数据结构，以及怎样把数据做成“看得见、点得动”的东西。最近做的项目主要围绕地理可视化、医疗工具以及和无障碍相关的交互界面。</p>
                 </div>
 
@@ -1203,7 +1198,6 @@ export default function Portfolio() {
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
               >
-                {/* Interactive Profile Picture - Slight tilt on hover */}
                 <motion.div 
                   className="relative group cursor-pointer"
                   whileHover={{ rotateY: 5, rotateX: -5, scale: 1.02 }}
@@ -1219,11 +1213,9 @@ export default function Portfolio() {
                     className="relative w-full object-cover rounded-3xl border border-slate-200 dark:border-slate-700/50 shadow-2xl"
                     loading="lazy"
                   />
-                  {/* Glare effect */}
                   <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 </motion.div>
 
-                {/* NEW BLOG BUTTON */}
                 <motion.a
                   href={SITE.links.blog}
                   className="group flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold text-sm shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 transition-all"
@@ -1382,7 +1374,6 @@ export default function Portfolio() {
                             </p>
                           </div>
 
-                          {/* 渲染中文数据中的 impact 字段 */}
                           {p.impact && (
                             <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
                               <h4 className="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-3 flex items-center gap-2">
