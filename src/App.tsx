@@ -7,6 +7,7 @@ import {
   useMotionValue,
   useScroll,
   useSpring,
+  useTransform, // 新增引用
 } from "framer-motion";
 import {
   Github,
@@ -512,7 +513,6 @@ const ViewToggle = ({
 }) => {
   return (
     <motion.div
-      // 适配: top-4 right-4 for mobile, sm:top-6 sm:right-6 for tablet+
       className="fixed top-4 right-4 sm:top-15 sm:right-6 z-50 flex items-center gap-1 p-1.5 rounded-full border border-white/20 bg-white/[0.14] backdrop-blur-3xl shadow-[0_16px_60px_rgba(0,0,0,0.32)]"
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -1280,7 +1280,7 @@ const TraditionalLayout = () => {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 }}
-                className="text-4xl md:text-7xl font-semibold tracking-tight text-white drop-shadow-[0_18px_60px_rgba(0,0,0,0.35)]"
+                className="text-5xl md:text-7xl font-semibold tracking-tight text-white drop-shadow-[0_18px_60px_rgba(0,0,0,0.35)]"
               >
                 {SITE.headline}
               </motion.h1>
@@ -1365,7 +1365,7 @@ const TraditionalLayout = () => {
           </div>
         </section>
 
-        <TraditionalSection id="about" title="About" icon={User} subtitle="The story, quickly — and clearly.">
+        <TraditionalSection id="about" title="About" icon={User} >
           <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-6">
             <TradCard>
               <p className="text-white/90 leading-relaxed">{ABOUT.p1}</p>
@@ -1563,7 +1563,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
 
-        <TraditionalSection id="education" title="Education" icon={GraduationCap}>
+        <TraditionalSection id="education" title="Education" icon={GraduationCap} subtitle="Where I learned the fundamentals — and kept leveling up.">
           <div className="grid lg:grid-cols-2 gap-5">
             {EDUCATION.map((ed) => (
               <TradCard key={ed.school} className="flex gap-5 items-start">
@@ -1571,7 +1571,7 @@ const TraditionalLayout = () => {
                   {ed.logo ? (
                     <img src={ed.logo} alt={ed.school} className="w-full h-full object-cover" />
                   ) : (
-                    <GraduationCap className="w-6 h-6 text-white/80" />
+                    <GraduationCap className="w-6 h-6 text-white/75" />
                   )}
                 </div>
                 <div className="min-w-0">
@@ -1598,7 +1598,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
 
-        <TraditionalSection id="skills" title="Skills" icon={Cpu} subtitle="Hover a skill to see details.">
+        <TraditionalSection id="skills" title="Skills" icon={Cpu} subtitle="Hover a skill → details.">
           <div className="grid gap-6 relative isolate">
             {SKILL_GROUPS.map((grp) => (
               <TradCard key={grp.group}>
@@ -1619,7 +1619,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
         
-        <TraditionalSection id="gallery" title="Gallery" icon={Camera}>
+        <TraditionalSection id="gallery" title="Gallery" icon={Camera} subtitle="Swap these placeholders with your real photos.">
              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {GALLERY.map((g, i) => (
                 <div
@@ -1642,7 +1642,7 @@ const TraditionalLayout = () => {
             </div>
         </TraditionalSection>
 
-         <TraditionalSection id="hobbies" title="Hobbies" icon={Heart} >
+         <TraditionalSection id="hobbies" title="Hobbies" icon={Heart} subtitle="Small things that keep me sharp.">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {HOBBIES.map((h) => (
               <TradCard key={h.name} className="p-5">
@@ -1656,7 +1656,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
 
-        <TraditionalSection id="contact" title="Contact" icon={Mail} >
+        <TraditionalSection id="contact" title="Contact" icon={Mail} subtitle="Let’s build something clean and useful.">
           <div className="grid lg:grid-cols-[1fr_0.9fr] gap-6 items-start">
             <div>
                  <TradCard className="p-7">
@@ -1762,10 +1762,9 @@ const APPS = [
   { id: "contact", label: "Contact", icon: Mail, accent: { hue: 0, sat: 75, light: 60 } },
 ] as const;
 
-// ... (VisionIcon, VisionWindow, ImmersiveContent, DockButton, ImmersiveLayout, Main Entry remain exactly as you had them) ...
-// (为了节省篇幅，这里省略了未改动的底部 Immersive 部分代码，它们与你上一版完全一致)
-// 请保留你代码中第 10 部分及之后的所有内容。
-
+// -----------------------------
+// VisionIcon: 3D Parallax & Breathing
+// -----------------------------
 const VisionIcon = ({
   app,
   index,
@@ -1775,38 +1774,125 @@ const VisionIcon = ({
   index: number;
   onOpen: () => void;
 }) => {
-  const mx = useMotionValue(44);
-  const my = useMotionValue(44);
-  const highlight = useMotionTemplate`radial-gradient(160px 160px at ${mx}px ${my}px, rgba(255,255,255,0.88), rgba(255,255,255,0.00) 60%)`;
+  // Use springs for smooth following
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
-  const handleMove = (e: React.PointerEvent) => {
+  const rotateX = useTransform(y, [-0.5, 0.5], [15, -15]);
+  const rotateY = useTransform(x, [-0.5, 0.5], [-15, 15]);
+
+  // Sheen effect position
+  const sheenX = useTransform(x, [-0.5, 0.5], ["0%", "200%"]);
+  const sheenY = useTransform(y, [-0.5, 0.5], ["0%", "200%"]);
+
+  // Inner icon parallax
+  const iconX = useTransform(x, [-0.5, 0.5], [-8, 8]);
+  const iconY = useTransform(y, [-0.5, 0.5], [-8, 8]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    mx.set(e.clientX - rect.left);
-    my.set(e.clientY - rect.top);
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
   };
 
   return (
     <motion.button
       onClick={onOpen}
-      onPointerMove={handleMove}
-      initial={{ opacity: 0, scale: 0.86, y: 16 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ delay: index * 0.045, type: "spring", stiffness: 320, damping: 22 }}
-      whileHover={{ scale: 1.08, y: -7 }}
-      whileTap={{ scale: 0.96 }}
-      className="flex flex-col items-center gap-3 group select-none"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial="initial"
+      animate="animate"
+      whileHover="hover"
+      whileTap={{ scale: 0.95 }}
+      variants={{
+        initial: { opacity: 0, scale: 0.8, y: 20 },
+        animate: { 
+            opacity: 1, 
+            scale: 1, 
+            y: 0,
+            transition: { 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 20,
+                // Staggered entrance delay
+                delay: index * 0.05 
+            }
+        },
+      }}
+      className="flex flex-col items-center gap-3 group select-none relative"
+      style={{ perspective: 1000 }} // Enable 3D space
     >
-      <div
-        className="relative w-[96px] h-[96px] rounded-[28px] overflow-hidden border border-white/22 bg-white/[0.18] backdrop-blur-3xl shadow-[0_18px_70px_rgba(0,0,0,0.28)]"
-        style={{ boxShadow: `0 0 0 1px rgba(255,255,255,0.16), 0 26px 90px ${hsl(app.accent, 0.18)}` }}
+      {/* BREATHING CONTAINER 
+          This wraps the 3D card so the card rotates while the whole thing floats
+      */}
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+          // Random delay so they don't breathe in unison
+          delay: Math.random() * 2, 
+        }}
+        // Stop breathing on hover
+        whileHover={{ y: 0, transition: { duration: 0.2 } }}
+        className="relative"
       >
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.22),rgba(255,255,255,0.10)_45%,rgba(0,0,0,0.18))]" />
-        <motion.div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: highlight }} />
-        <div className="absolute inset-0 grid place-items-center">
-          <app.icon className="w-10 h-10 drop-shadow-[0_10px_28px_rgba(0,0,0,0.40)]" style={{ color: hsl(app.accent) }} />
-        </div>
-      </div>
-      <span className="text-sm font-medium text-white drop-shadow-md">{app.label}</span>
+        <motion.div
+            className="relative w-[80px] h-[80px] sm:w-[96px] sm:h-[96px] rounded-[24px] sm:rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.15] backdrop-blur-3xl shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
+            style={{ 
+                rotateX, 
+                rotateY,
+                transformStyle: "preserve-3d", // Crucial for inner layers
+                boxShadow: `0 20px 40px -10px ${hsl(app.accent, 0.4)}` // Colored glow
+            }}
+        >
+            {/* Background Gradient Layer */}
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.2),rgba(255,255,255,0.05)_50%,rgba(0,0,0,0.1))]" />
+
+            {/* Dynamic Sheen/Highlight */}
+            <motion.div 
+                className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.6)_0%,transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{ 
+                    x: sheenX, // Moves opposite to mouse to simulate light reflection
+                    y: sheenY,
+                    mixBlendMode: "overlay"
+                }}
+            />
+
+            {/* Parallax Icon Layer */}
+            <motion.div 
+                className="absolute inset-0 grid place-items-center z-10"
+                style={{ x: iconX, y: iconY, z: 20 }}
+            >
+                <app.icon 
+                    className="w-9 h-9 sm:w-10 sm:h-10 drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]" 
+                    style={{ color: hsl(app.accent) }} 
+                />
+            </motion.div>
+            
+            {/* Border Highlight on Hover */}
+            <div className="absolute inset-0 rounded-[28px] border border-white/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+        </motion.div>
+      </motion.div>
+      
+      <span className="text-[11px] sm:text-sm font-medium text-white drop-shadow-md tracking-wide">
+          {app.label}
+      </span>
     </motion.button>
   );
 };
@@ -2273,7 +2359,7 @@ const ImmersiveLayout = () => {
       <div className="relative">
         <div className="absolute -inset-6 rounded-[40px] bg-white/[0.10] border border-white/12 backdrop-blur-3xl shadow-[0_30px_110px_rgba(0,0,0,0.32)]" />
         <div className="relative px-6 py-6">
-          <div className="grid grid-cols-4 gap-x-10 gap-y-10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-10 gap-y-10">
             {APPS.map((app, index) => (
               <VisionIcon key={app.id} app={app} index={index} onOpen={() => setActiveAppId(app.id)} />
             ))}
