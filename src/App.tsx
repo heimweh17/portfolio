@@ -85,7 +85,7 @@ const ABOUT = {
     { k: "Status", v: "UF CS (Class of 2028)" },
     { k: "Location", v: "Gainesville, FL" },
     { k: "Open to", v: "Summer 2026 internships" },
-    { k: "Fun", v: "Road trips + photo walks" },
+    { k: "Fun", v: "Road trips + photo walks + audiobooks" },
   ],
 };
 
@@ -459,7 +459,6 @@ const GALLERY = [
   { src: "/photos/photo1.jpg", alt: "Photo 1" },
   { src: "/photos/photo2.jpg", alt: "Photo 2" },
   { src: "/photos/photo3.jpg", alt: "Photo 3" },
-  
 ];
 
 // -----------------------------
@@ -513,7 +512,8 @@ const ViewToggle = ({
 }) => {
   return (
     <motion.div
-      className="fixed top-15 right-6 z-50 flex items-center gap-1 p-1.5 rounded-full border border-white/20 bg-white/[0.14] backdrop-blur-3xl shadow-[0_16px_60px_rgba(0,0,0,0.32)]"
+      // 适配: top-4 right-4 for mobile, sm:top-6 sm:right-6 for tablet+
+      className="fixed top-4 right-4 sm:top-15 sm:right-6 z-50 flex items-center gap-1 p-1.5 rounded-full border border-white/20 bg-white/[0.14] backdrop-blur-3xl shadow-[0_16px_60px_rgba(0,0,0,0.32)]"
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.35 }}
@@ -521,25 +521,25 @@ const ViewToggle = ({
       <button
         onClick={() => setMode("traditional")}
         className={cn(
-          "flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold transition-all duration-300",
+          "flex items-center gap-2 px-3 py-2 sm:px-4 rounded-full text-[10px] sm:text-[12px] font-semibold transition-all duration-300",
           mode === "traditional"
             ? "bg-white/30 text-white shadow-inner"
             : "text-white/75 hover:text-white hover:bg-white/12"
         )}
       >
-        <LayoutTemplate className="w-4 h-4" />
+        <LayoutTemplate className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         <span className="hidden sm:inline">Scroll</span>
       </button>
       <button
         onClick={() => setMode("immersive")}
         className={cn(
-          "flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold transition-all duration-300",
+          "flex items-center gap-2 px-3 py-2 sm:px-4 rounded-full text-[10px] sm:text-[12px] font-semibold transition-all duration-300",
           mode === "immersive"
             ? "bg-white/30 text-white shadow-inner"
             : "text-white/75 hover:text-white hover:bg-white/12"
         )}
       >
-        <Grid className="w-4 h-4" />
+        <Grid className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         <span className="hidden sm:inline">Spatial</span>
       </button>
     </motion.div>
@@ -857,7 +857,6 @@ const SharedModal = ({
           boxShadow: `0 0 0 1px rgba(255,255,255,0.14), 0 24px 90px ${hsl(item.accent, 0.22)}`,
         }}
       >
-        {/* 关键修复：同样在 Modal 里加上这个遮罩 */}
         <motion.div
           className="absolute inset-0 z-[9999]"
           initial={{ pointerEvents: "none" }}
@@ -1158,9 +1157,7 @@ const ScrollHeader = ({
             className="flex items-center gap-3 group"
             aria-label="Go to top"
           >
-            {/* <div className="w-9 h-9 rounded-2xl border border-white/16 bg-white/[0.14] grid place-items-center shadow-sm group-hover:bg-white/[0.20] transition">
-              <Sparkles className="w-4 h-4 text-white/80" />
-            </div> */}
+            
             <div className="min-w-0 text-left">
               <div className="font-semibold text-white leading-tight">{SITE.name}</div>
               <div className="text-xs text-white/75 leading-tight">{SITE.availability}</div>
@@ -1283,7 +1280,7 @@ const TraditionalLayout = () => {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 }}
-                className="text-5xl md:text-7xl font-semibold tracking-tight text-white drop-shadow-[0_18px_60px_rgba(0,0,0,0.35)]"
+                className="text-4xl md:text-7xl font-semibold tracking-tight text-white drop-shadow-[0_18px_60px_rgba(0,0,0,0.35)]"
               >
                 {SITE.headline}
               </motion.h1>
@@ -1566,7 +1563,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
 
-        <TraditionalSection id="education" title="Education" icon={GraduationCap} subtitle="Where I learned the fundamentals — and kept leveling up.">
+        <TraditionalSection id="education" title="Education" icon={GraduationCap}>
           <div className="grid lg:grid-cols-2 gap-5">
             {EDUCATION.map((ed) => (
               <TradCard key={ed.school} className="flex gap-5 items-start">
@@ -1601,7 +1598,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
 
-        <TraditionalSection id="skills" title="Skills" icon={Cpu} subtitle="Hover a skill → details.">
+        <TraditionalSection id="skills" title="Skills" icon={Cpu} subtitle="Hover a skill to see details.">
           <div className="grid gap-6 relative isolate">
             {SKILL_GROUPS.map((grp) => (
               <TradCard key={grp.group}>
@@ -1622,7 +1619,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
         
-        <TraditionalSection id="gallery" title="Gallery" icon={Camera} subtitle="Swap these placeholders with your real photos.">
+        <TraditionalSection id="gallery" title="Gallery" icon={Camera}>
              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {GALLERY.map((g, i) => (
                 <div
@@ -1645,7 +1642,7 @@ const TraditionalLayout = () => {
             </div>
         </TraditionalSection>
 
-         <TraditionalSection id="hobbies" title="Hobbies" icon={Heart} subtitle="Small things that keep me sharp.">
+         <TraditionalSection id="hobbies" title="Hobbies" icon={Heart} >
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {HOBBIES.map((h) => (
               <TradCard key={h.name} className="p-5">
@@ -1659,7 +1656,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
 
-        <TraditionalSection id="contact" title="Contact" icon={Mail} subtitle="Let’s build something clean and useful.">
+        <TraditionalSection id="contact" title="Contact" icon={Mail} >
           <div className="grid lg:grid-cols-[1fr_0.9fr] gap-6 items-start">
             <div>
                  <TradCard className="p-7">
