@@ -7,7 +7,7 @@ import {
   useMotionValue,
   useScroll,
   useSpring,
-  useTransform, // 新增引用
+  useTransform,
 } from "framer-motion";
 import {
   Github,
@@ -42,12 +42,16 @@ import {
   Globe,
   ChevronDown,
   ChevronUp,
+  Film,
+  Coffee,
+  Download,
+  Instagram, // Added Instagram Icon
 } from "lucide-react";
 
 // -----------------------------
 // 0) CONFIG
 // -----------------------------
-const FORM_ENDPOINT = "https://public.herotofu.com/v1/YOUR-FORM-ID"; 
+const FORM_ENDPOINT = "https://public.herotofu.com/v1/YOUR-FORM-ID";
 
 // -----------------------------
 // 1) DATA
@@ -62,7 +66,8 @@ const SITE = {
   links: {
     github: "https://github.com/heimweh17",
     linkedin: "https://www.linkedin.com/in/alex-liu7/",
-    instagram: "https://www.instagram.com/heimweh17/",
+    // Updated Instagram Link
+    instagram: "https://www.instagram.com/alexliu1700/",
     email: "haozhouliu17@gmail.com",
     resume: "/resume.pdf",
     phone: "+1 (352) 328-4805",
@@ -90,6 +95,49 @@ const ABOUT = {
   ],
 };
 
+const UPDATES = [
+  {
+    category: "Tech",
+    title: "GIS",
+    date: "12-24-2025",
+    icon: Cpu,
+    desc: "Trying to learn more about GIS concepts and tools beyond just OpenStreetMap. Currently trying to learn them from online courses.",
+    accent: { hue: 30, sat: 90, light: 60 }
+  },
+  {
+    category: "Tech",
+    title: "Refining GeoDashboard",
+    date: "12-20-2025",
+    icon: Terminal,
+    desc: "Currently optimizing the DBSCAN clustering algorithm to handle larger datasets in real-time. Also experimenting with WebGPU for smoother client-side map rendering.",
+    accent: { hue: 210, sat: 90, light: 60 }
+  },
+  {
+    category: "Tech",
+    title: "Rust & Systems",
+    date: "12-15-2025",
+    icon: Cpu,
+    desc: "Dipping my toes into Rust to understand memory safety without garbage collection. Rewriting some of my C++ bin-packing algorithms to compare performance.",
+    accent: { hue: 30, sat: 90, light: 60 }
+  },
+  {
+    category: "Life",
+    title: "ZOOTOPIA",
+    date: "12-01-2025",
+    icon: Film,
+    desc: "I really want to watch thsi movie. I heared its good.",
+    accent: { hue: 340, sat: 80, light: 60 }
+  },
+  {
+    category: "Life",
+    title: "Interstellar",
+    date: "10-30-2025",
+    icon: Film,
+    desc: "Rewatched Interstellar. Such a good movie!",
+    accent: { hue: 340, sat: 80, light: 60 }
+  }
+];
+
 type ItemContent = {
   type: "project" | "experience";
   name: string;
@@ -102,7 +150,7 @@ type ItemContent = {
   longDescription?: React.ReactNode;
   accent?: { hue: number; sat: number; light: number };
   screenshots?: string[];
-  logo?: string;
+  logo?: string; // Used for Experience/Org logos
   flagship?: boolean;
   categories?: string[];
 };
@@ -220,6 +268,8 @@ const PROJECTS: ItemContent[] = [
     links: { code: "https://github.com/heimweh17/Ability-Bridge" },
     accent: { hue: 260, sat: 85, light: 62 },
     categories: ["Health & Accessibility", "C++ / Algorithms"],
+    // Added a placeholder screenshot to demonstrate the WeChat style layout
+    //screenshots: ["/screenshots/ability-bridge.png"], 
   },
   {
     type: "project",
@@ -291,6 +341,8 @@ const WORK_EXPERIENCE: ItemContent[] = [
     tags: ["Communication", "Education", "Leadership"],
     links: { website: "http://www.logiclabgainesville.com/" },
     accent: { hue: 25, sat: 90, light: 60 },
+    // You can add your logo paths here
+    //logo: "/logos/logiclab.png", 
   },
   {
     type: "experience",
@@ -306,6 +358,7 @@ const WORK_EXPERIENCE: ItemContent[] = [
     tags: ["Teamwork", "Performance", "Culture"],
     links: { website: "https://jiatingliondragon.com/" },
     accent: { hue: 0, sat: 80, light: 60 },
+    logo: "/logos/jiating_logo.jpg",
   },
 ];
 
@@ -324,6 +377,7 @@ const LEADERSHIP_EXPERIENCE: ItemContent[] = [
     tags: ["Event Planning", "Logistics", "Networking"],
     links: { website: "https://www.saseconnect.org/" },
     accent: { hue: 210, sat: 80, light: 60 },
+    logo: "/logos/sase_logo.jpg",
   },
   {
     type: "experience",
@@ -339,6 +393,7 @@ const LEADERSHIP_EXPERIENCE: ItemContent[] = [
     tags: ["Culture", "Management", "Community"],
     links: { website: "https://ufcasa.com/" },
     accent: { hue: 340, sat: 80, light: 60 },
+    logo: "/logos/casa_logo.jpg",
   },
 ];
 
@@ -357,6 +412,7 @@ const VOLUNTEER_EXPERIENCE: ItemContent[] = [
     tags: ["GIS", "Open Source", "Data"],
     links: { website: "https://www.openstreetmap.org/" },
     accent: { hue: 120, sat: 70, light: 40 },
+    logo: "/logos/osm_logo.svg",
   },
   {
     type: "experience",
@@ -371,6 +427,7 @@ const VOLUNTEER_EXPERIENCE: ItemContent[] = [
     tags: ["Mentorship", "Math", "Education"],
     links: { website: "https://buchholzmathteam.org/" },
     accent: { hue: 45, sat: 90, light: 50 },
+    logo: "/logos/bhs_logo.png",
   },
 ];
 
@@ -459,7 +516,6 @@ const HOBBIES = [
 const GALLERY = [
   { src: "/photos/photo1.jpg", alt: "Photo 1" },
   { src: "/photos/photo2.jpg", alt: "Photo 2" },
-  { src: "/photos/photo3.jpg", alt: "Photo 3" },
 ];
 
 // -----------------------------
@@ -473,7 +529,7 @@ function hsl(a: { hue: number; sat: number; light: number } | undefined, alpha =
   return `hsl(${a.hue} ${a.sat}% ${a.light}% / ${alpha})`;
 }
 
-const sectionIds = ["top", "about", "projects", "experience", "education", "skills", "gallery", "hobbies", "contact"] as const;
+const sectionIds = ["top", "about", "projects", "experience", "education", "skills", "gallery", "hobbies", "updates", "contact"] as const;
 type SectionId = typeof sectionIds[number];
 
 // -----------------------------
@@ -584,7 +640,7 @@ const Pill = ({ children, className }: { children: React.ReactNode; className?: 
 );
 
 // -----------------------------
-// 6) SKILL PILL (Portal Fixed)
+// 6) SKILL PILL
 // -----------------------------
 const SkillPill = ({ item }: { item: SkillItem }) => {
   const [open, setOpen] = useState(false);
@@ -794,7 +850,7 @@ function MessageForm() {
               "Send Message"
             )}
           </motion.button>
-          
+            
           <div className="flex-1 text-right">
              {status === "success" && (
             <motion.div
@@ -1100,7 +1156,8 @@ const useActiveSection = (containerRef: React.RefObject<HTMLElement>) => {
             else if (id === 'experience' || id === 'education') setActive('experience');
             // Gallery often visually grouped with Skills or just separate
             else if (id === 'skills' || id === 'gallery') setActive('skills');
-            // Hobbies leads into Contact
+            // Updates has its own nav now, so no mapping needed
+            // Hobbies has no nav item, mapping to Updates or Contact based on preference, let's map to Contact
             else if (id === 'hobbies' || id === 'contact') setActive('contact');
             else setActive(id as SectionId);
         }
@@ -1139,6 +1196,8 @@ const ScrollHeader = ({
       { id: "projects" as const, label: "Projects" },
       { id: "experience" as const, label: "Experience" },
       { id: "skills" as const, label: "Skills" },
+      // Added Updates to navigation
+      { id: "updates" as const, label: "Updates" },
       { id: "contact" as const, label: "Contact" },
     ],
     []
@@ -1199,6 +1258,14 @@ const ScrollHeader = ({
               <Github className="w-4.5 h-4.5" />
             </a>
             <a
+              href={SITE.links.instagram}
+              target="_blank"
+              rel="noreferrer"
+              className="p-2.5 rounded-full bg-white/[0.12] border border-white/12 hover:bg-white/[0.18] transition"
+            >
+              <Instagram className="w-4.5 h-4.5" />
+            </a>
+            <a
               href={SITE.links.linkedin}
               target="_blank"
               rel="noreferrer"
@@ -1223,7 +1290,12 @@ const ScrollHeader = ({
 const TraditionalLayout = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const active = useActiveSection(containerRef);
+  const [updateFilter, setUpdateFilter] = useState<"All" | "Tech" | "Life">("All");
 
+  const filteredUpdates = useMemo(() => {
+    if (updateFilter === "All") return UPDATES;
+    return UPDATES.filter((u) => u.category === updateFilter);
+  }, [updateFilter]);
   const { scrollYProgress } = useScroll({ container: containerRef });
   const smooth = useSpring(scrollYProgress, { stiffness: 280, damping: 30, mass: 0.6 });
   const [progress, setProgress] = useState(0);
@@ -1280,7 +1352,7 @@ const TraditionalLayout = () => {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 }}
-                className="text-5xl md:text-7xl font-semibold tracking-tight text-white drop-shadow-[0_18px_60px_rgba(0,0,0,0.35)]"
+                className="text-4xl md:text-7xl font-semibold tracking-tight text-white drop-shadow-[0_18px_60px_rgba(0,0,0,0.35)]"
               >
                 {SITE.headline}
               </motion.h1>
@@ -1353,6 +1425,15 @@ const TraditionalLayout = () => {
                   <span className="text-sm font-semibold text-white">LinkedIn</span>
                   <Linkedin className="w-4 h-4 text-white/80" />
                 </a>
+                 <a
+                  href={SITE.links.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-3 rounded-2xl bg-white/[0.12] border border-white/12 hover:bg-white/[0.18] transition flex items-center justify-between col-span-2"
+                >
+                  <span className="text-sm font-semibold text-white">Instagram</span>
+                  <Instagram className="w-4 h-4 text-white/80" />
+                </a>
                 <a
                   href={SITE.links.resume}
                   className="px-4 py-3 rounded-2xl bg-white text-black hover:opacity-95 transition flex items-center justify-between col-span-2"
@@ -1404,7 +1485,7 @@ const TraditionalLayout = () => {
                   key={c}
                   onClick={() => {
                       setProjectFilter(c);
-                      setShowAllProjects(false); // Reset expansion on filter change
+                      setShowAllProjects(false); 
                   }}
                   className={cn(
                     "px-3 py-1.5 rounded-full text-xs font-semibold border transition",
@@ -1421,40 +1502,64 @@ const TraditionalLayout = () => {
 
           <div className="grid md:grid-cols-2 gap-5">
             {visibleProjects.map((p) => (
-              <button key={p.name} onClick={() => setActiveItem(p)} className="text-left group">
-                <TradCard className="relative overflow-hidden hover:bg-white/[0.16] transition duration-300">
-                  <div
-                    className="absolute -top-24 -right-24 w-56 h-56 rounded-full blur-3xl opacity-45"
-                    style={{ background: hsl(p.accent, 0.35) }}
-                  />
-                  <div className="relative">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <div className="text-xl font-semibold text-white truncate">{p.name}</div>
-                          {p.flagship ? (
-                            <Pill className="bg-yellow-400/18 border-yellow-300/30 text-yellow-100">
-                              FLAGSHIP
-                            </Pill>
-                          ) : null}
-                        </div>
-                        <div className="text-sm text-white/85 mt-1 leading-relaxed line-clamp-2">{p.blurb}</div>
-                      </div>
-                      <div className="shrink-0 text-white/70 group-hover:text-white transition">
-                        <ChevronRight className="w-5 h-5" />
-                      </div>
+              <button key={p.name} onClick={() => setActiveItem(p)} className="text-left group w-full">
+                <TradCard className="relative overflow-hidden hover:bg-white/[0.16] transition duration-300 !p-0">
+                    {/* WeChat Style: Top Banner Image */}
+                    <div className="h-32 relative overflow-hidden bg-black/20">
+                         {p.screenshots?.[0] ? (
+                            <img 
+                                src={p.screenshots[0]} 
+                                alt={p.name} 
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                            />
+                         ) : (
+                             // Fallback gradient if no screenshot
+                             <div 
+                                className="w-full h-full"
+                                style={{ background: `linear-gradient(135deg, ${hsl(p.accent, 0.4)}, rgba(0,0,0,0.5))` }} 
+                             />
+                         )}
+                         {p.flagship && (
+                            <div className="absolute top-3 right-3">
+                                <Pill className="bg-yellow-400/20 border-yellow-300/40 text-yellow-100 backdrop-blur-md">
+                                FLAGSHIP
+                                </Pill>
+                            </div>
+                        )}
                     </div>
+                  
+                  {/* Bottom Text Content */}
+                  <div className="p-5 relative">
+                    {/* Optional: subtle blur blob behind text */}
+                    <div
+                      className="absolute -top-10 -right-10 w-40 h-40 rounded-full blur-3xl opacity-20 pointer-events-none"
+                      style={{ background: hsl(p.accent, 0.35) }}
+                    />
+                    
+                    <div className="relative">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <div className="text-xl font-semibold text-white truncate">{p.name}</div>
+                          </div>
+                          <div className="text-sm text-white/85 mt-1 leading-relaxed line-clamp-2">{p.blurb}</div>
+                        </div>
+                        <div className="shrink-0 text-white/70 group-hover:text-white transition mt-1">
+                          <ChevronRight className="w-5 h-5" />
+                        </div>
+                      </div>
 
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {p.tags.slice(0, 5).map((t) => (
-                        <span
-                          key={t}
-                          className="px-2.5 py-1 rounded-full bg-white/[0.12] border border-white/12 text-xs font-mono text-white/80"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                      {p.tags.length > 5 ? <Pill>+{p.tags.length - 5}</Pill> : null}
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {p.tags.slice(0, 5).map((t) => (
+                          <span
+                            key={t}
+                            className="px-2.5 py-1 rounded-full bg-white/[0.12] border border-white/12 text-xs font-mono text-white/80"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                        {p.tags.length > 5 ? <Pill>+{p.tags.length - 5}</Pill> : null}
+                      </div>
                     </div>
                   </div>
                 </TradCard>
@@ -1462,7 +1567,6 @@ const TraditionalLayout = () => {
             ))}
           </div>
 
-          {/* Show More / Show Less Button */}
           {filteredProjects.length > 4 && (
             <div className="mt-8 flex justify-center">
                 <button
@@ -1485,85 +1589,61 @@ const TraditionalLayout = () => {
 
          <TraditionalSection id="experience" title="Experience" icon={Briefcase} subtitle="Work, Leadership & Volunteering.">
           <div className="space-y-12">
-              
-              {/* Work Section */}
-              <div>
-                  <h3 className="text-sm font-bold text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-2">Work History</h3>
+              {[
+                { title: "Work History", data: WORK_EXPERIENCE },
+                { title: "Leadership & Involvement", data: LEADERSHIP_EXPERIENCE },
+                { title: "Volunteering", data: VOLUNTEER_EXPERIENCE }
+              ].map((section) => (
+                 <div key={section.title}>
+                  <h3 className="text-sm font-bold text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-2">{section.title}</h3>
                   <div className="grid lg:grid-cols-2 gap-5">
-                    {WORK_EXPERIENCE.map((e) => (
+                    {section.data.map((e) => (
                     <button key={e.name} onClick={() => setActiveItem(e)} className="text-left w-full group">
                         <TradCard className="hover:bg-white/[0.16] transition duration-300">
-                            <div className="flex items-start justify-between gap-4">
-                            <div>
-                                <div className="text-lg font-semibold text-white">{e.name}</div>
-                                <div className="text-sm text-emerald-200/90 font-semibold mt-1">{e.subtitle}</div>
-                            </div>
-                            <Pill>
-                                <Calendar className="w-3.5 h-3.5 inline-block mr-1" />
-                                {e.date}
-                            </Pill>
-                            </div>
-                            <div className="text-sm text-white/85 mt-2 line-clamp-2">{e.blurb}</div>
-                            <div className="mt-4 flex items-center text-xs text-white/50 font-medium group-hover:text-white transition-colors">
-                                View Details <ArrowUpRight className="w-3 h-3 ml-1" />
-                            </div>
-                        </TradCard>
-                    </button>
-                    ))}
-                  </div>
-              </div>
+                            <div className="flex gap-4">
+                                {/* LOGO LOGIC: Show image if present, else fallback icon */}
+                                {e.logo ? (
+                                    <div className="shrink-0 w-12 h-12 rounded-xl bg-white/10 overflow-hidden border border-white/10">
+                                        <img src={e.logo} alt={e.name} className="w-full h-full object-cover" />
+                                    </div>
+                                ) : (
+                                     <div className="shrink-0 w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                                        <Briefcase className="w-6 h-6 text-white/40" />
+                                     </div>
+                                )}
 
-              {/* Leadership Section */}
-              <div>
-                  <h3 className="text-sm font-bold text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-2">Leadership & Involvement</h3>
-                  <div className="grid lg:grid-cols-2 gap-5">
-                    {LEADERSHIP_EXPERIENCE.map((e) => (
-                    <button key={e.name} onClick={() => setActiveItem(e)} className="text-left w-full group">
-                        <TradCard className="hover:bg-white/[0.16] transition duration-300">
-                            <div className="flex items-start justify-between gap-4">
-                            <div>
-                                <div className="text-lg font-semibold text-white">{e.name}</div>
-                                <div className="text-sm text-indigo-200/90 font-semibold mt-1">{e.subtitle}</div>
-                            </div>
-                            <Pill>{e.date}</Pill>
-                            </div>
-                            <div className="text-sm text-white/85 mt-2 line-clamp-2">{e.blurb}</div>
-                            <div className="mt-4 flex items-center text-xs text-white/50 font-medium group-hover:text-white transition-colors">
-                                View Details <ArrowUpRight className="w-3 h-3 ml-1" />
-                            </div>
-                        </TradCard>
-                    </button>
-                    ))}
-                  </div>
-              </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-start justify-between gap-2">
+                                        <div>
+                                            <div className="text-lg font-semibold text-white">{e.name}</div>
+                                            <div className="text-sm text-emerald-200/90 font-semibold mt-0.5">{e.subtitle}</div>
+                                        </div>
+                                        {/* Date Pill moved here or kept on right */}
+                                    </div>
+                                    
+                                    <div className="mt-2 flex items-center gap-2">
+                                         <Pill className="py-0.5 px-2 text-[10px]">
+                                            <Calendar className="w-3 h-3 inline-block mr-1" />
+                                            {e.date}
+                                        </Pill>
+                                    </div>
 
-              {/* Volunteer Section */}
-              <div>
-                  <h3 className="text-sm font-bold text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-2">Volunteering</h3>
-                  <div className="grid lg:grid-cols-2 gap-5">
-                    {VOLUNTEER_EXPERIENCE.map((e) => (
-                    <button key={e.name} onClick={() => setActiveItem(e)} className="text-left w-full group">
-                        <TradCard className="hover:bg-white/[0.16] transition duration-300">
-                            <div className="flex items-start justify-between gap-4">
-                            <div>
-                                <div className="text-lg font-semibold text-white">{e.name}</div>
-                                <div className="text-sm text-white/80 mt-1">{e.subtitle}</div>
-                            </div>
-                            <Pill>{e.date}</Pill>
-                            </div>
-                            <div className="text-sm text-white/85 mt-2 line-clamp-2">{e.blurb}</div>
-                            <div className="mt-4 flex items-center text-xs text-white/50 font-medium group-hover:text-white transition-colors">
-                                View Details <ArrowUpRight className="w-3 h-3 ml-1" />
+                                    <div className="text-sm text-white/85 mt-3 line-clamp-2">{e.blurb}</div>
+                                    <div className="mt-3 flex items-center text-xs text-white/50 font-medium group-hover:text-white transition-colors">
+                                        View Details <ArrowUpRight className="w-3 h-3 ml-1" />
+                                    </div>
+                                </div>
                             </div>
                         </TradCard>
                     </button>
                     ))}
                   </div>
               </div>
+              ))}
           </div>
         </TraditionalSection>
 
-        <TraditionalSection id="education" title="Education" icon={GraduationCap} subtitle="Where I learned the fundamentals — and kept leveling up.">
+        <TraditionalSection id="education" title="Education" icon={GraduationCap}>
           <div className="grid lg:grid-cols-2 gap-5">
             {EDUCATION.map((ed) => (
               <TradCard key={ed.school} className="flex gap-5 items-start">
@@ -1571,7 +1651,7 @@ const TraditionalLayout = () => {
                   {ed.logo ? (
                     <img src={ed.logo} alt={ed.school} className="w-full h-full object-cover" />
                   ) : (
-                    <GraduationCap className="w-6 h-6 text-white/75" />
+                    <GraduationCap className="w-6 h-6 text-white/80" />
                   )}
                 </div>
                 <div className="min-w-0">
@@ -1598,7 +1678,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
 
-        <TraditionalSection id="skills" title="Skills" icon={Cpu} subtitle="Hover a skill → details.">
+        <TraditionalSection id="skills" title="Skills" icon={Cpu} subtitle="Hover a skill to see details.">
           <div className="grid gap-6 relative isolate">
             {SKILL_GROUPS.map((grp) => (
               <TradCard key={grp.group}>
@@ -1619,7 +1699,7 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
         
-        <TraditionalSection id="gallery" title="Gallery" icon={Camera} subtitle="Swap these placeholders with your real photos.">
+        <TraditionalSection id="gallery" title="Gallery" icon={Camera} >
              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {GALLERY.map((g, i) => (
                 <div
@@ -1642,7 +1722,7 @@ const TraditionalLayout = () => {
             </div>
         </TraditionalSection>
 
-         <TraditionalSection id="hobbies" title="Hobbies" icon={Heart} subtitle="Small things that keep me sharp.">
+         <TraditionalSection id="hobbies" title="Hobbies" icon={Heart} >
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {HOBBIES.map((h) => (
               <TradCard key={h.name} className="p-5">
@@ -1656,7 +1736,78 @@ const TraditionalLayout = () => {
           </div>
         </TraditionalSection>
 
-        <TraditionalSection id="contact" title="Contact" icon={Mail} subtitle="Let’s build something clean and useful.">
+        {/* UPDATES SECTION */}
+        <TraditionalSection id="updates" title="Latest Updates" icon={Zap} subtitle="Scroll inside to view details.">
+           <Glass className="overflow-hidden">
+              <div className="px-6 py-4 border-b border-white/10 bg-white/[0.05] flex flex-wrap items-center justify-between gap-4 sticky top-0 z-20 backdrop-blur-xl">
+                 <div className="flex items-center bg-black/40 rounded-full p-1 border border-white/10">
+                    {(["All", "Tech", "Life"] as const).map((tab) => {
+                        const isActive = updateFilter === tab;
+                        return (
+                            <button
+                                key={tab}
+                                onClick={() => setUpdateFilter(tab)}
+                                className={cn(
+                                    "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
+                                    isActive && tab === "All" && "bg-white text-black shadow-sm",
+                                    isActive && tab === "Tech" && "bg-sky-500/80 text-white shadow-[0_0_15px_rgba(14,165,233,0.4)]",
+                                    isActive && tab === "Life" && "bg-rose-500/80 text-white shadow-[0_0_15px_rgba(244,63,94,0.4)]",
+                                    !isActive && "text-white/60 hover:text-white"
+                                )}
+                            >
+                                {tab}
+                            </button>
+                        );
+                    })}
+                 </div>
+              </div>
+
+              <div className="h-[500px] overflow-y-auto custom-scrollbar p-6 bg-black/20">
+                 <motion.div layout className="grid md:grid-cols-2 gap-5">
+                    <AnimatePresence mode="popLayout">
+                        {filteredUpdates.map((update) => (
+                            <motion.div
+                                layout
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                                transition={{ duration: 0.3 }}
+                                key={update.title} 
+                                className="p-5 rounded-[22px] bg-white/[0.08] border border-white/10 relative overflow-hidden group hover:bg-white/[0.12] transition shrink-0"
+                            >
+                                 <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-20 pointer-events-none" style={{ background: hsl(update.accent, 0.5) }} />
+                                 <div className="relative z-10">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className={cn(
+                                            "flex items-center gap-2 px-2.5 py-1 rounded-full w-fit",
+                                            update.category === "Life" ? "bg-rose-500/20 border border-rose-500/30" : "bg-sky-500/20 border border-sky-500/30"
+                                        )}>
+                                            <update.icon className="w-3.5 h-3.5 text-white/90" />
+                                            <span className="text-xs font-semibold text-white/90">{update.category}</span>
+                                        </div>
+                                        <div className="text-xs text-white/60 font-mono">{update.date}</div>
+                                    </div>
+                                    <h3 className="text-base font-bold text-white mb-2">{update.title}</h3>
+                                    <p className="text-sm text-white/80 leading-relaxed">{update.desc}</p>
+                                 </div>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                 </motion.div>
+                 
+                 {filteredUpdates.length === 0 && (
+                     <div className="h-full flex flex-col items-center justify-center text-white/40 pb-20">
+                         <div className="text-4xl mb-2">📭</div>
+                         <div className="text-sm">No updates in this category yet.</div>
+                     </div>
+                 )}
+
+                 <div className="h-8" />
+              </div>
+           </Glass>
+        </TraditionalSection>
+
+        <TraditionalSection id="contact" title="Contact" icon={Mail}>
           <div className="grid lg:grid-cols-[1fr_0.9fr] gap-6 items-start">
             <div>
                  <TradCard className="p-7">
@@ -1689,9 +1840,17 @@ const TraditionalLayout = () => {
                     >
                     GitHub <Github className="w-4 h-4" />
                     </a>
+                     <a
+                    href={SITE.links.instagram}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-5 py-3 rounded-2xl bg-white/[0.14] border border-white/14 text-white font-semibold flex items-center justify-between hover:bg-white/[0.20] transition"
+                    >
+                    Instagram <Instagram className="w-4 h-4" />
+                    </a>
                     <a
                     href={SITE.links.resume}
-                    className="px-5 py-3 rounded-2xl bg-white/[0.14] border border-white/14 text-white font-semibold flex items-center justify-between hover:bg-white/[0.20] transition"
+                    className="px-5 py-3 rounded-2xl bg-white/[0.14] border border-white/14 text-white font-semibold flex items-center justify-between hover:bg-white/[0.20] transition col-span-2"
                     >
                     Resume <FileText className="w-4 h-4" />
                     </a>
@@ -1749,7 +1908,7 @@ const TraditionalLayout = () => {
 };
 
 // -----------------------------
-// 10) IMMERSIVE MODE & ENTRY (NO CHANGES NEEDED BELOW)
+// 10) IMMERSIVE MODE - UPDATED APPS
 // -----------------------------
 const APPS = [
   { id: "about", label: "About", icon: User, accent: { hue: 210, sat: 90, light: 60 } },
@@ -1759,6 +1918,8 @@ const APPS = [
   { id: "skills", label: "Skills", icon: Cpu, accent: { hue: 190, sat: 75, light: 58 } },
   { id: "photos", label: "Gallery", icon: Camera, accent: { hue: 55, sat: 90, light: 60 } },
   { id: "hobbies", label: "Hobbies", icon: Heart, accent: { hue: 330, sat: 75, light: 62 } },
+  { id: "updates", label: "Updates", icon: Zap, accent: { hue: 45, sat: 90, light: 60 } }, 
+  { id: "resume", label: "Resume", icon: FileText, accent: { hue: 0, sat: 0, light: 80 } }, 
   { id: "contact", label: "Contact", icon: Mail, accent: { hue: 0, sat: 75, light: 60 } },
 ] as const;
 
@@ -1915,8 +2076,10 @@ const VisionWindow = ({
       className="fixed inset-0 z-40 flex items-center justify-center p-4 md:p-8"
       onClick={onClose}
     >
+      {/* dim + blur behind */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-md" />
 
+      {/* window: NOT transparent, more “material” */}
       <motion.div
         className="relative w-full max-w-5xl h-[85vh] rounded-[36px] border border-white/18 shadow-[0_70px_140px_rgba(0,0,0,0.55)] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
@@ -1980,7 +2143,12 @@ const ImmersiveContent = ({
   id: string;
   onOpenProject: (item: ItemContent) => void;
 }) => {
+  // Projects Filter Logic
   const [projectFilter, setProjectFilter] = useState<string>("All");
+  
+  // Updates Filter Logic (NEW)
+  const [updateFilter, setUpdateFilter] = useState<"All" | "Tech" | "Life">("All");
+
   const categories = useMemo(() => {
     const set = new Set<string>();
     PROJECTS.forEach((p) => (p.categories ?? []).forEach((c) => set.add(c)));
@@ -1991,6 +2159,12 @@ const ImmersiveContent = ({
     if (projectFilter === "All") return PROJECTS;
     return PROJECTS.filter((p) => (p.categories ?? []).includes(projectFilter));
   }, [projectFilter]);
+
+  // Filter Updates Logic
+  const filteredUpdates = useMemo(() => {
+    if (updateFilter === "All") return UPDATES;
+    return UPDATES.filter((u) => u.category === updateFilter);
+  }, [updateFilter]);
 
   switch (id) {
     case "about":
@@ -2060,20 +2234,36 @@ const ImmersiveContent = ({
                 transition={{ delay: i * 0.06 }}
                 className="group relative rounded-[30px] bg-white/[0.12] border border-white/14 overflow-hidden hover:bg-white/[0.18] transition-colors text-left w-full"
                 >
-                <div className="absolute -top-24 -right-24 w-56 h-56 rounded-full blur-3xl opacity-40" style={{ background: hsl(p.accent, 0.35) }} />
-                <div className="h-40 relative p-6 flex flex-col justify-end">
-                    <div className="absolute top-4 right-4">
-                    {p.flagship ? (
-                        <span className="px-3 py-1 rounded-full bg-yellow-400/20 text-yellow-100 text-xs font-bold border border-yellow-300/30">
-                        FLAGSHIP
-                        </span>
-                    ) : null}
-                    </div>
-                    <h3 className="text-2xl font-semibold text-white">{p.name}</h3>
-                    <div className="text-white/85 text-sm line-clamp-1">{p.blurb}</div>
+                {/* WeChat Style Banner */}
+                <div className="h-32 relative overflow-hidden bg-black/20">
+                     {p.screenshots?.[0] ? (
+                        <img 
+                            src={p.screenshots[0]} 
+                            alt={p.name} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                        />
+                     ) : (
+                         // Fallback gradient
+                         <div 
+                            className="w-full h-full"
+                            style={{ background: `linear-gradient(135deg, ${hsl(p.accent, 0.4)}, rgba(0,0,0,0.5))` }} 
+                         />
+                     )}
+                     
+                     {p.flagship && (
+                        <div className="absolute top-3 right-3">
+                            <span className="px-3 py-1 rounded-full bg-yellow-400/20 text-yellow-100 text-xs font-bold border border-yellow-300/30 backdrop-blur-md">
+                            FLAGSHIP
+                            </span>
+                        </div>
+                    )}
                 </div>
+
                 <div className="p-6">
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <h3 className="text-2xl font-semibold text-white">{p.name}</h3>
+                    <div className="text-white/85 text-sm line-clamp-1 mt-1">{p.blurb}</div>
+                    
+                    <div className="flex flex-wrap gap-2 mt-4">
                     {p.tags.slice(0, 4).map((t) => (
                         <span key={t} className="px-2.5 py-1 bg-white/14 border border-white/12 rounded-full text-xs text-white/85">
                         {t}
@@ -2136,22 +2326,35 @@ const ImmersiveContent = ({
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            <div className="p-6 rounded-[26px] bg-white/[0.12] border border-white/14 h-full relative overflow-hidden">
+                            <div className="p-6 rounded-[26px] bg-white/[0.12] border border-white/14 h-full relative overflow-hidden flex flex-col md:flex-row gap-4">
                                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ background: hsl(e.accent, 0.4) }} />
                                 
-                                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 relative z-10">
-                                    <div>
-                                    <div className="text-xl font-semibold text-white">{e.name}</div>
-                                    <div className="text-white/80 text-sm font-semibold mt-1">{e.subtitle}</div>
+                                {/* Logo Logic */}
+                                {e.logo ? (
+                                    <div className="shrink-0 w-12 h-12 rounded-xl bg-white/10 overflow-hidden border border-white/10 z-10">
+                                        <img src={e.logo} alt={e.name} className="w-full h-full object-cover" />
                                     </div>
-                                    <span className="text-xs px-2.5 py-1 rounded-full bg-white/14 border border-white/12 w-fit text-white/90 whitespace-nowrap">
-                                    {e.date}
-                                    </span>
-                                </div>
-                                <div className="text-sm text-white/80 mt-3 line-clamp-2 relative z-10">{e.blurb}</div>
-                                
-                                <div className="mt-4 flex items-center text-xs text-white/50 font-medium group-hover:text-white transition-colors relative z-10">
-                                    View Details <ArrowUpRight className="w-3 h-3 ml-1" />
+                                ) : (
+                                     <div className="shrink-0 w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center z-10">
+                                        <Briefcase className="w-6 h-6 text-white/40" />
+                                     </div>
+                                )}
+
+                                <div className="relative z-10 flex-1">
+                                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-1">
+                                        <div>
+                                            <div className="text-lg font-semibold text-white">{e.name}</div>
+                                            <div className="text-white/80 text-sm font-semibold mt-0.5">{e.subtitle}</div>
+                                        </div>
+                                        <span className="text-xs px-2.5 py-1 rounded-full bg-white/14 border border-white/12 w-fit text-white/90 whitespace-nowrap mt-2 md:mt-0">
+                                            {e.date}
+                                        </span>
+                                    </div>
+                                    <div className="text-sm text-white/80 mt-3 line-clamp-2">{e.blurb}</div>
+                                    
+                                    <div className="mt-4 flex items-center text-xs text-white/50 font-medium group-hover:text-white transition-colors">
+                                        View Details <ArrowUpRight className="w-3 h-3 ml-1" />
+                                    </div>
                                 </div>
                             </div>
                         </motion.button>
@@ -2249,6 +2452,103 @@ const ImmersiveContent = ({
           ))}
         </div>
       );
+    
+    // NEW: UPDATES APP WITH FILTER
+    case "updates":
+      return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-white">Latest Updates</h2>
+                
+                {/* Filter Capsule */}
+                <div className="flex items-center bg-black/40 rounded-full p-1 border border-white/10">
+                    {(["All", "Tech", "Life"] as const).map((tab) => {
+                        const isActive = updateFilter === tab;
+                        return (
+                            <button
+                                key={tab}
+                                onClick={() => setUpdateFilter(tab)}
+                                className={cn(
+                                    "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
+                                    isActive && tab === "All" && "bg-white text-black shadow-sm",
+                                    isActive && tab === "Tech" && "bg-sky-500/80 text-white shadow-[0_0_15px_rgba(14,165,233,0.4)]",
+                                    isActive && tab === "Life" && "bg-rose-500/80 text-white shadow-[0_0_15px_rgba(244,63,94,0.4)]",
+                                    !isActive && "text-white/60 hover:text-white"
+                                )}
+                            >
+                                {tab}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            <motion.div layout className="grid md:grid-cols-2 gap-5">
+                <AnimatePresence mode="popLayout">
+                    {filteredUpdates.map((update) => (
+                        <motion.div
+                            layout
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                            transition={{ duration: 0.3 }}
+                            key={update.title}
+                            className="p-6 rounded-[26px] bg-white/[0.12] border border-white/14 relative overflow-hidden group hover:bg-white/[0.16] transition"
+                        >
+                             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-25 pointer-events-none" style={{ background: hsl(update.accent, 0.5) }} />
+                             <div className="relative z-10">
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className={cn(
+                                        "flex items-center gap-2 px-2.5 py-1 rounded-full w-fit",
+                                        update.category === "Life" ? "bg-rose-500/20 border border-rose-500/30" : "bg-sky-500/20 border border-sky-500/30"
+                                    )}>
+                                        <update.icon className="w-3.5 h-3.5 text-white/90" />
+                                        <span className="text-xs font-semibold text-white/90">{update.category}</span>
+                                    </div>
+                                    <div className="text-xs text-white/60 font-mono">{update.date}</div>
+                                </div>
+                                <h3 className="text-lg font-bold text-white mb-2">{update.title}</h3>
+                                <p className="text-sm text-white/80 leading-relaxed">{update.desc}</p>
+                             </div>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+            </motion.div>
+
+            {filteredUpdates.length === 0 && (
+                 <div className="h-40 flex flex-col items-center justify-center text-white/40">
+                     <div className="text-4xl mb-2">📭</div>
+                     <div className="text-sm">No updates here yet.</div>
+                 </div>
+            )}
+        </div>
+      );
+    
+    case "resume":
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-6">
+             <div className="w-20 h-20 rounded-3xl bg-white/[0.1] border border-white/14 flex items-center justify-center mb-2">
+                 <FileText className="w-10 h-10 text-white/80" />
+             </div>
+             <div>
+                <h2 className="text-2xl font-semibold text-white">Resume.pdf</h2>
+                <p className="text-white/60 text-sm mt-2 max-w-xs mx-auto">
+                    A concise overview of my experience, skills, and education. Always up to date.
+                </p>
+             </div>
+             
+             <div className="flex gap-4 mt-4">
+                 <a 
+                   href={SITE.links.resume} 
+                   target="_blank" 
+                   rel="noreferrer"
+                   className="flex items-center gap-2 px-8 py-3 rounded-full bg-white text-black font-bold hover:opacity-90 transition shadow-[0_0_30px_rgba(255,255,255,0.3)]"
+                 >
+                     <ExternalLink className="w-4 h-4" /> View PDF
+                 </a>
+             </div>
+        </div>
+      );
 
     case "contact":
       return (
@@ -2257,7 +2557,7 @@ const ImmersiveContent = ({
           <p className="max-w-md text-white/90">
             Open to {SITE.availability}. If you think we’d build well together, I’d love to talk.
           </p>
-          
+            
           <div className="w-full max-w-md">
              <MessageForm />
           </div>
@@ -2284,6 +2584,14 @@ const ImmersiveContent = ({
               className="flex items-center gap-2 px-6 py-3 rounded-full bg-white/[0.14] border border-white/14 text-white font-semibold hover:bg-white/[0.20] transition"
             >
               <Github className="w-5 h-5" /> GitHub
+            </a>
+            <a
+              href={SITE.links.instagram}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 px-6 py-3 rounded-full bg-white/[0.14] border border-white/14 text-white font-semibold hover:bg-white/[0.20] transition"
+            >
+              <Instagram className="w-5 h-5" /> Instagram
             </a>
             <a
               href={SITE.links.zh}
@@ -2359,7 +2667,8 @@ const ImmersiveLayout = () => {
       <div className="relative">
         <div className="absolute -inset-6 rounded-[40px] bg-white/[0.10] border border-white/12 backdrop-blur-3xl shadow-[0_30px_110px_rgba(0,0,0,0.32)]" />
         <div className="relative px-6 py-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-10 gap-y-10">
+          {/* UPDATED GRID LAYOUT: sm:grid-cols-5 to achieve "5 on top, 5 on bottom" */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-x-8 gap-y-10">
             {APPS.map((app, index) => (
               <VisionIcon key={app.id} app={app} index={index} onOpen={() => setActiveAppId(app.id)} />
             ))}
@@ -2378,7 +2687,7 @@ const ImmersiveLayout = () => {
           <DockButton icon={Mail} label="Email" href={`mailto:${SITE.links.email}`} />
           <DockButton icon={Linkedin} label="LinkedIn" href={SITE.links.linkedin} />
           <DockButton icon={Github} label="GitHub" href={SITE.links.github} />
-          <DockButton icon={FileText} label="Resume" href={SITE.links.resume} />
+          <DockButton icon={Instagram} label="Instagram" href={SITE.links.instagram} />
           <DockButton icon={Globe} label="中文" href={SITE.links.zh} />
         </div>
       </motion.div>
