@@ -1158,9 +1158,9 @@ const ScrollHeader = ({
             className="flex items-center gap-3 group"
             aria-label="Go to top"
           >
-            <div className="w-9 h-9 rounded-2xl border border-white/16 bg-white/[0.14] grid place-items-center shadow-sm group-hover:bg-white/[0.20] transition">
+            {/* <div className="w-9 h-9 rounded-2xl border border-white/16 bg-white/[0.14] grid place-items-center shadow-sm group-hover:bg-white/[0.20] transition">
               <Sparkles className="w-4 h-4 text-white/80" />
-            </div>
+            </div> */}
             <div className="min-w-0 text-left">
               <div className="font-semibold text-white leading-tight">{SITE.name}</div>
               <div className="text-xs text-white/75 leading-tight">{SITE.availability}</div>
