@@ -491,13 +491,13 @@ const SKILL_GROUPS: Array<{
         name: "Python", 
         blurb: "Core language for asynchronous backend systems, AI inference pipelines, and data science.", 
         usedIn: ["Ability Bridge", "GeoDashboard"], 
-        level: "Native" 
+        level: "Daily" // 原 Native -> 映射为 Daily
       },
       { 
         name: "C++", 
         blurb: "Systems programming focusing on memory management and algorithmic optimization.", 
         usedIn: ["Minesweeper", "Bin Packing"], 
-        level: "Advanced" 
+        level: "Daily" // 原 Advanced -> 映射为 Daily
       },
       { 
         name: "TypeScript", 
@@ -509,17 +509,17 @@ const SKILL_GROUPS: Array<{
         name: "SQL", 
         blurb: "Complex relational modeling, indexing strategies, and performance tuning.", 
         usedIn: ["PostgreSQL"], 
-        level: "Proficient" 
+        level: "Often" // 原 Proficient -> 映射为 Often
       },
       { 
         name: "Go", 
         blurb: "Building high-concurrency microservices and distributed systems.", 
-        level: "Competent" 
+        level: "Comfortable" // 原 Competent -> 映射为 Comfortable
       },
       { 
         name: "RISC-V", 
         blurb: "Low-level computer architecture and assembly instruction sets.", 
-        level: "Academic" 
+        level: "Learning" // 原 Academic -> 映射为 Learning
       },
     ],
   },
@@ -537,41 +537,41 @@ const SKILL_GROUPS: Array<{
         name: "FastAPI", 
         blurb: "High-performance, async Python REST APIs with Pydantic validation.", 
         usedIn: ["GeoDashboard"], 
-        level: "Production" 
+        level: "Daily" // 原 Production -> 映射为 Daily (核心后端，配得上Daily)
       },
       { 
         name: "OpenCV", 
         blurb: "Real-time computer vision pipelines and image manipulation.", 
         usedIn: ["Ability Bridge"], 
-        level: "Advanced" 
+        level: "Often" // 原 Advanced -> 映射为 Often
       },
       { 
         name: "MediaPipe", 
         blurb: "ML solutions for high-fidelity face tracking and pose estimation.", 
         usedIn: ["Ability Bridge"], 
-        level: "Advanced" 
+        level: "Often" // 原 Advanced -> 映射为 Often
       },
       { 
         name: "SQLAlchemy", 
         blurb: "Enterprise-grade ORM for managing complex database transactions.", 
         usedIn: ["GeoDashboard", "Grade Track"], 
-        level: "Proficient" 
+        level: "Often" // 原 Proficient -> 映射为 Often
       },
       { 
         name: "Node.js", 
         blurb: "Server-side runtime for scalable network applications.", 
         usedIn: ["SmartScribe"], 
-        level: "Proficient" 
+        level: "Often" // 原 Proficient -> 映射为 Often
       },
       { 
         name: "Pandas", 
         blurb: "High-performance data manipulation for structured datasets.", 
-        level: "Proficient" 
+        level: "Often" // 原 Proficient -> 映射为 Often
       },
       { 
         name: "NumPy", 
         blurb: "High-dimensional array computing and linear algebra operations.", 
-        level: "Proficient" 
+        level: "Often" // 原 Proficient -> 映射为 Often
       },
     ],
   },
@@ -583,7 +583,7 @@ const SKILL_GROUPS: Array<{
         name: "AWS", 
         blurb: "Cloud-native architecture utilizing Lambda, ECS, S3, and RDS.", 
         usedIn: ["GeoDashboard"], 
-        level: "Production" 
+        level: "Often" // 原 Production -> 映射为 Often (Daily对于云架构可能太夸张，Often很合适)
       },
       { 
         name: "Docker", 
@@ -595,19 +595,19 @@ const SKILL_GROUPS: Array<{
         name: "PostgreSQL", 
         blurb: "Advanced relational database modeling and ACID transaction management.", 
         usedIn: ["GeoDashboard", "Grade Track"], 
-        level: "Advanced" 
+        level: "Often" // 原 Advanced -> 映射为 Often
       },
       { 
         name: "PostGIS", 
         blurb: "Geospatial database extension for spatial indexing and geographic queries.", 
         usedIn: ["GeoDashboard"], 
-        level: "Advanced" 
+        level: "Often" // 原 Advanced -> 映射为 Often
       },
       { 
         name: "GitHub Actions", 
         blurb: "Automating testing, build, and deployment workflows (CI/CD).", 
         usedIn: ["GeoDashboard"], 
-        level: "Proficient" 
+        level: "Often" // 原 Proficient -> 映射为 Often
       },
       { 
         name: "Linux", 
@@ -623,12 +623,11 @@ const SKILL_GROUPS: Array<{
         name: "Supabase", 
         blurb: "Backend-as-a-Service for rapid real-time application prototyping.", 
         usedIn: ["SmartScribe"], 
-        level: "Proficient" 
+        level: "Often" // 原 Proficient -> 映射为 Often
       },
     ],
   },
 ];
-
 const HOBBIES = [
   { name: "Badminton", emoji: "🏸", blurb: "Doubles strategy + footwork" },
   { name: "Pickleball", emoji: "🥒", blurb: "Kitchen line battles & social games" },
