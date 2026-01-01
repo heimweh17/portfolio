@@ -97,6 +97,15 @@ const ABOUT = {
 
 const UPDATES = [
   {
+    category: "Life",
+    title: "Happy New Year",
+    date: "01-01-2026",
+    icon: Cpu,
+    desc: "Happy New Year everyone!",
+    accent: { hue: 30, sat: 90, light: 60 }
+  },
+
+  {
     category: "Tech",
     title: "GIS",
     date: "12-24-2025",
