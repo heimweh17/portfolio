@@ -170,35 +170,40 @@ const PROJECTS: ItemContent[] = [
     name: "GeoDashboard",
     flagship: true,
     subtitle: "Distributed Geospatial Analytics Platform",
-    blurb: "Cloud-native geospatial platform utilizing microservices to decouple deterministic GIS processing from cost-aware AI inference engines.",
+    blurb: "Cloud-native geospatial platform utilizing distributed microservices to couple deterministic GIS processing with cost-aware AI inference, featuring end-to-end system observability.",
     highlights: [
-      "Architected a distributed microservices system on AWS, ensuring fault isolation between core mapping and AI services.",
-      "Systematized automated deployment via GitHub Actions (CI/CD) for consistent cross-cloud configuration.",
-      "Engineered a high-performance spatial engine (DBSCAN) augmented by rate-limited Generative AI for city-scale insights.",
+
+        "Architected a decoupled microservices system on AWS with end-to-end distributed tracing (X-Request-ID) for cross-service observability.",
+
+        "Systematized automated deployment via GitHub Actions (CI/CD) and Docker to ensure consistent configuration across hybrid cloud environments.",
+
+        "Engineered a high-performance spatial engine (DBSCAN) augmented by rate-limited Generative AI to transform raw data into city-scale insights.",
     ],
     longDescription: (
         <div className="space-y-4 text-sm text-white/80 leading-relaxed">
             <p>
-                GeoDashboard is a production-grade analytics platform designed to ingest and process high-density spatial datasets (CSV/GeoJSON). It combines deterministic spatial statistics with generative AI to transform raw coordinates into actionable city-scale insights.
+               
+                GeoDashboard is an interactive analytics platform designed to bridge the gap between raw data and actionable insights. It enables users to easily ingest high-density spatial datasets (CSV/GeoJSON) to visualize spatial distributions, perform rigorous DBSCAN clustering, and receive <strong>plain-language AI summaries</strong> that explain complex urban patterns instantly.
             </p>
             <p>
-                <strong>Distributed Architecture:</strong> The system employs a decoupled microservices design. The <em>Core Spatial Engine</em> (FastAPI/PostGIS) handles rigorous computation like DBSCAN clustering and density mapping, while the <em>AI Inference Service</em> operates as an isolated, cloud-native function on AWS. This ensures that high-load AI tasks never compromise the latency of the interactive map.
+              
+                <strong>Distributed Architecture:</strong> The system utilizes a decoupled microservices design to ensure scalability. The <em>Core Spatial Engine</em> (FastAPI/PostGIS on Railway) handles low-latency deterministic computation, while the <em>AI Inference Service</em> operates as an isolated microservice on <strong>AWS ECS</strong>. Crucially, the platform implements <strong>end-to-end request tracing</strong> (via X-Request-ID propagation), enabling precise debugging and observability across distributed service boundaries without compromising the interactive map experience.
             </p>
             <p>
-                <strong>Engineering Philosophy:</strong> Built with a focus on reliability and commercial viability, the platform implements database-backed rate limiting and automated CI/CD pipelines to simulate a scalable, real-world enterprise environment.
+                
+                <strong>Engineering Philosophy:</strong> Built with a "production-first" mindset, GeoDashboard integrates automated <strong>CI/CD pipelines</strong> via GitHub Actions for reliable containerized deployment. It features strict database-backed rate limiting to manage AI costs, simulating a robust, commercially viable enterprise environment.
             </p>
         </div>
     ),
-    // 升级后的 Tags：涵盖全栈语言、云平台、专业数据库和 AI
-    tags: ["React", "TypeScript", "FastAPI", "AWS", "PostGIS", "Docker", "Gemini AI"],
+    tags: ["React", "TypeScript", "FastAPI", "AWS ECS", "PostGIS", "Docker", "CI/CD"],
     links: {
-      demo: "https://thegeodashboard.vercel.app/",
-      code: "https://github.com/heimweh17/Geo-Dashboard",
+        demo: "https://thegeodashboard.vercel.app/",
+        code: "https://github.com/heimweh17/Geo-Dashboard",
     },
     accent: { hue: 205, sat: 95, light: 60 },
     screenshots: ["/screenshots/gdb1.png", "/screenshots/geodashboard-2.png","/screenshots/gdb2.png","/screenshots/gdb3.png"],
     categories: ["Geospatial & Maps", "Web & Data"],
-  },
+},
   {
     type: "project",
     name: "UF Health SmartScribe",
