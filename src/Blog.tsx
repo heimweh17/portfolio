@@ -31,6 +31,20 @@ type BlogPost = {
 // --- 博客数据 ---
 const POSTS: BlogPost[] = [
   {
+    id: "6",
+    title: "看清",
+    date: "2026-01-04",
+    tags: ["存档"],
+    mood: "sad",
+    excerpt: "反反复复",
+    content: (
+      <div className="space-y-4">
+        <p>我劝自己看清现状。不要抱希望</p>
+        <p>写于Estero, FL</p>
+      </div>
+    ),
+  },
+  {
     id: "5",
     title: "一次机会",
     date: "2026-01-01",
