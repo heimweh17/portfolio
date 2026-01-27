@@ -236,6 +236,71 @@ const PROJECTS: ItemContent[] = [
     screenshots: ["/screenshots/smartscribe-1.png", "/screenshots/smartscribe-2.png"],
     categories: ["Health & Accessibility", "Web & Data"],
   },
+  
+{
+  type: "project",
+  name: "SwampGuard",
+  flagship: true,
+  subtitle: "Policy-Aware AI Claims Intelligence Platform",
+  blurb:
+    "Hackathon-built claims assistant that turns damage photos + uploaded policy docs into structured claim insights, itemized estimates, and statute-grounded guidance.",
+  highlights: [
+    "Designed a multimodal claim workflow that combines damage photo analysis with user-uploaded policy data to generate policy-adjusted cost projections.",
+    "Engineered multi-image upload and result aggregation pipelines to improve cross-view assessment consistency and user feedback responsiveness.",
+    "Integrated receipt/policy extraction + statute-grounded legal Q&A (RAG) to deliver explainable claim guidance and deductible interpretation.",
+  ],
+  longDescription: (
+    <div className="space-y-4 text-sm text-white/80 leading-relaxed">
+      <p>
+        SwampGuard is a full-stack prototype built to reduce information asymmetry in property insurance claims.
+        Users upload multiple damage photos and (optionally) an insurance policy document; the system returns
+        structured damage outputs, itemized estimates, and explainable claim guidance.
+      </p>
+
+      <p>
+        <strong>Backend services:</strong> FastAPI endpoints handle async image analysis and structured document extraction
+        (policy + receipt parsing) with strict JSON-shaped responses validated by <strong>Pydantic</strong>. Policy uploads
+        feed into deductible/coverage-aware calculations for more personalized estimates.
+      </p>
+
+      <p>
+        <strong>Claim estimation:</strong> Generates an <em>Xactimate-style</em> line-item breakdown and computes net claim
+        projections using deductible and depreciation logic. A statute-grounded legal assistant provides explainable
+        next steps and compliance guidance.
+      </p>
+
+      <p className="text-xs text-white/60">
+        Note: A local CLIP pre-classification path exists in the codebase but was disabled for faster startup in the
+        hackathon build.
+      </p>
+    </div>
+  ),
+  tags: [
+    "React",
+    "FastAPI",
+    "Python",
+    "Gemini Vision",
+    "Pydantic",
+    "RAG",
+    "TailwindCSS",
+    "jsPDF",
+  ],
+  links: {
+    // demo: "https://...", // optional
+    code: "https://github.com/heimweh17/SwampGuard", // adjust if different
+  },
+  accent: { hue: 120, sat: 80, light: 55 },
+  screenshots: [
+    "/screenshots/swampguard-1.jpg",
+    "/screenshots/swampguard-2.jpg",
+    "/screenshots/swampguard-3.jpg",
+    "/screenshots/swampguard-4.jpg",
+    "/screenshots/swampguard-5.jpg",
+  ],
+  categories: ["Web & Data", "AI Systems"],
+},
+
+
   {
     type: "project",
     name: "Grade Track",
