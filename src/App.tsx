@@ -97,6 +97,14 @@ const ABOUT = {
 
 const UPDATES = [
   {
+    category: "Tech",
+    title: "New project!",
+    date: "01-27-2026",
+    icon: Cpu,
+    desc: "I made a new project called SwampGuard! It's an AI-powered insurance claims assistant that analyzes damage photos and policy documents to generate itemized estimates and statute-grounded guidance. Check it out in my Projects section! Come and check it out!",
+    accent: { hue: 30, sat: 90, light: 60 }
+  },
+  {
     category: "Life",
     title: "Happy New Year",
     date: "01-01-2026",
