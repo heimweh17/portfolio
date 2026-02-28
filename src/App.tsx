@@ -59,7 +59,7 @@ const FORM_ENDPOINT = "https://public.herotofu.com/v1/YOUR-FORM-ID";
 const SITE = {
   name: "Alex Liu",
   headline: "Alex Liu",
-  tagline: "CS @ University of Florida · Geography Minor · Full-Stack + GIS",
+  tagline: "CS @ University of Florida · GIS Certificate · Full-Stack + GIS",
   location: "Gainesville, FL",
   latlong: "29.6516° N, 82.3248° W",
   availability: "Summer 2026 Internship",
@@ -540,7 +540,7 @@ const EDUCATION = [
   {
     school: "University of Florida",
     period: "2024 – 2028",
-    degree: "B.S. Computer Science · Minor in Geography",
+    degree: "B.S. Computer Science · GIS Certificate",
     gpa: "GPA: 3.80 / 4.00",
     honors: "Dean’s List",
     activities: "SASE · CASA",
