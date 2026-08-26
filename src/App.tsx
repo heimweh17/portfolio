@@ -161,9 +161,9 @@ const projects: Project[] = [
 ];
 
 const skillGroups = [
-  ["Systems & Infrastructure", "Data Center Operations", "Server Hardware", "IPMI / BMC", "BIOS / UEFI", "FreeDOS", "TCP/IP"],
   ["Languages", "Python", "C++", "Java", "JavaScript / TypeScript", "SQL", "Bash"],
   ["Software & Web", "React", "FastAPI", "Flask", "Node.js", "PostgreSQL", "REST APIs", "SQLAlchemy"],
+  ["Systems & Infrastructure", "Data Center Operations", "Server Hardware", "IPMI / BMC", "BIOS / UEFI", "FreeDOS", "TCP/IP"],
   ["Cloud & DevOps", "AWS", "Docker", "Git", "GitHub Actions", "Linux / Unix"],
   ["Data, CV & GIS", "Pandas", "NumPy", "OpenCV", "MediaPipe", "Leaflet", "GIS"],
 ];
@@ -251,10 +251,10 @@ export default function App() {
         <section className="hero" aria-labelledby="intro-title">
           <div className="hero-meta"><span>Computer Science</span><span>University of Florida</span><span>Gainesville, FL</span></div>
           <div className="hero-grid">
-            <div><h1 id="intro-title">Alex Liu</h1><p className="hero-title">Hardware, infrastructure, and reliable systems</p></div>
+            <div><h1 id="intro-title">Alex Liu</h1><p className="hero-title">Full-stack software, hardware, and infrastructure</p></div>
             <div className="hero-profile">
               <img src="/me.jpg" alt="Alex Liu" />
-              <div><p>I am a Computer Science student working across server hardware, data-center infrastructure, backend services, and technical products.</p><div className="hero-actions"><a className="text-link" href="#work">Experience <ArrowUpRight aria-hidden="true" size={15} /></a><button type="button" className="text-link" onClick={() => setOverlay({ type: "resume" })}>View resume <ArrowUpRight aria-hidden="true" size={15} /></button></div></div>
+              <div><p>I am a Computer Science student building full-stack software while working hands-on with server hardware, data-center infrastructure, backend services, and technical products.</p><div className="hero-actions"><a className="text-link" href="#work">Experience <ArrowUpRight aria-hidden="true" size={15} /></a><button type="button" className="text-link" onClick={() => setOverlay({ type: "resume" })}>View resume <ArrowUpRight aria-hidden="true" size={15} /></button></div></div>
             </div>
           </div>
           <div className="hero-rule" />
@@ -271,9 +271,9 @@ export default function App() {
               hardware, systems, infrastructure, software, and data.
             </p>
             <p>
-              I have worked on both hardware and software projects. On the hardware and infrastructure side, I have
-              worked with bare-metal servers, GPUs, networking, BIOS and firmware, and data-center equipment. On the
-              software side, I have built full-stack and AI applications.
+              I have worked on both full-stack software and hardware projects. On the software side, I have built
+              full-stack and AI applications. On the hardware and infrastructure side, I have worked with bare-metal
+              servers, GPUs, networking, BIOS and firmware, and data-center equipment.
             </p>
             <p>
               I like learning how different parts of technology fit together, from hardware and operating systems to
@@ -295,7 +295,7 @@ export default function App() {
 
         <section id="about" className="about-section" aria-labelledby="about-title">
           <div className="about-copy"><p className="section-index">About</p><h2 id="about-title">A practical technical perspective.</h2><p>I am a Computer Science student at the University of Florida. The work I return to most often sits between code and context: mapping platforms, analytics dashboards, internal workflows, and systems that need to work outside a classroom demo.</p><p>I am especially interested in software engineering, geospatial workflows, data quality, and the operational details behind a reliable product.</p></div>
-          <aside className="profile-panel"><dl><div><dt>Education</dt><dd>B.S. Computer Science, expected 2028<br />GIS Certificate / University of Florida</dd></div><div><dt>GPA</dt><dd>3.78 / 4.00</dd></div><div><dt>Focus</dt><dd>Server hardware, infrastructure, backend systems, GIS, and data quality</dd></div><div><dt>Outside work</dt><dd>OpenStreetMap volunteer since 2020; photography, badminton, and pickleball</dd></div></dl></aside>
+          <aside className="profile-panel"><dl><div><dt>Education</dt><dd>B.S. Computer Science, expected 2028<br />GIS Certificate / University of Florida</dd></div><div><dt>GPA</dt><dd>3.78 / 4.00</dd></div><div><dt>Focus</dt><dd>Full-stack engineering, server hardware, infrastructure, GIS, and data quality</dd></div><div><dt>Outside work</dt><dd>OpenStreetMap volunteer since 2020; photography, badminton, and pickleball</dd></div></dl></aside>
         </section>
 
         <section className="skills-section" aria-labelledby="skills-title"><div><p className="section-index">Skills</p><h2 id="skills-title">Tools I use</h2></div><div className="skills-list">{skillGroups.map(([title, ...skills]) => <div className="skill-row" key={title}><h3>{title}</h3><p>{skills.join(" / ")}</p></div>)}</div></section>
