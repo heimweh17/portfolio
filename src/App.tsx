@@ -43,10 +43,10 @@ const experience: Experience[] = [
     description:
       "Supported the physical server lifecycle in a production hosting environment, from bare-metal provisioning through data-center deployment and maintenance.",
     bullets: [
-      "Assembled, configured, and provisioned custom bare-metal servers for customer workloads, including GPU and storage-heavy systems.",
-      "Handled maintenance requests involving hardware swaps, boot and BIOS issues, thermal checks, and connectivity troubleshooting.",
-      "Supported rack deployment, cabling, IPMI/BMC configuration, and post-build validation before customer handoff.",
-      "Built a FreeDOS-based BIOS update workflow for Supermicro systems with hardware detection, firmware mapping, version checks, and safe-skip logic.",
+      "Assembled and provisioned 5-10 customer-specified bare-metal servers weekly, configuring GPU, memory, and storage hardware and performing validation and stress testing before deployment.",
+      "Handled 20-30 production server service and maintenance requests weekly, completing hardware upgrades and replacements while troubleshooting boot, BIOS, thermal, and connectivity issues.",
+      "Racked and deployed servers in the data center, configured host networking and IPMI/BMC management, and validated connectivity, hardware health, and system readiness.",
+      "Developed and deployed a FreeDOS-based BIOS update automation system supporting about 30 Supermicro motherboard models, automatically matching firmware so teammates could update outdated BIOS versions safely.",
     ],
     tags: ["Server Operations", "Hardware", "Data Center", "IPMI/BMC"],
   },
@@ -58,19 +58,19 @@ const experience: Experience[] = [
     description:
       "Hold an ongoing research appointment supporting transportation-safety data work involving crash-record review, geocoding, roadway classification, and quality control.",
     bullets: [
-      "Reviewed Florida traffic crash records by combining narrative, diagram, and map context to assign accurate location and roadway classifications.",
-      "Performed geocoding, roadway-system tagging, and QA/QC for structured datasets used in transportation analysis workflows.",
-      "Developed lightweight internal tooling and automation-assisted validation workflows to streamline repetitive review steps and improve consistency.",
+      "Reviewed and processed Florida traffic crash records in Signal Four Analytics, using police narratives, diagrams, and map context to geocode crashes and validate roadway and location classifications.",
+      "Performed structured data review and QA/QC for transportation-safety records used in downstream analysis workflows.",
+      "Developed internal automation-assisted processing and validation workflows to streamline crash-record review and improve classification consistency.",
     ],
     tags: ["GIS", "Data Quality", "Geocoding", "Transportation Safety"],
   },
   {
-    role: "SASE Intern",
+    role: "Event Committee Member",
     organization: "UF Society of Asian Scientists & Engineers",
     period: "Aug 2025 - Present",
     location: "Gainesville, Florida",
     description:
-      "Help organize professional programming and member-facing events for a growing technical student community.",
+      "Help organize professional programming and member-facing events for a growing technical student organization.",
     bullets: [
       "Supported event logistics and member communication for professional development events serving 100+ attendees.",
       "Worked with student leaders to improve the quality and consistency of chapter programming.",
@@ -86,9 +86,10 @@ const projects: Project[] = [
     summary:
       "A full-stack geospatial platform that combines interactive mapping, deterministic spatial processing, and AI-assisted interpretation.",
     highlights: [
-      "Separated core GIS computation from AI inference in a multi-service architecture.",
-      "Implemented DBSCAN-based spatial analysis and interactive visualization for city-scale datasets.",
-      "Added request tracing, containerized deployment, and CI/CD workflows for production-style iteration.",
+      "Built a full-stack geospatial analytics platform that ingests user-uploaded CSV and GeoJSON datasets and generates DBSCAN clusters and density grids for city-scale insight.",
+      "Designed a decoupled microservices architecture for hybrid-cloud deployment on AWS, separating FastAPI and PostgreSQL GIS processing from AI inference for scalability and fault isolation.",
+      "Implemented end-to-end distributed tracing by propagating X-Request-ID across services, with structured logging for cross-service observability and monitoring.",
+      "Automated containerized deployments with Docker and GitHub Actions, and implemented rate limiting to control GenAI usage and improve reliability under burst traffic.",
     ],
     stack: ["React", "TypeScript", "FastAPI", "PostGIS", "Docker", "AWS"],
     screenshots: ["/screenshots/gdb1.png", "/screenshots/geodashboard-2.png", "/screenshots/gdb2.png", "/screenshots/gdb3.png"],
@@ -100,9 +101,9 @@ const projects: Project[] = [
     summary:
       "An AI-assisted claims workflow that analyzes damage photos and uploaded documents to produce structured claim guidance and cost estimates.",
     highlights: [
-      "Built a multimodal pipeline for photo analysis, document extraction, and structured outputs.",
-      "Generated itemized estimates and explainable claim guidance with policy-aware calculations.",
-      "Focused on understandable results rather than treating model output as a black box.",
+      "Designed an end-to-end claim intelligence workflow that combines damage-photo analysis, uploaded policy data, and itemized estimation logic to produce structured severity outputs and policy-adjusted repair projections.",
+      "Engineered asynchronous FastAPI image-analysis endpoints and document extraction for receipts and insurance policies, using JSON prompting and Pydantic validation for consistent pipeline outputs.",
+      "Developed policy-aware claim calculations using Xactimate-style pricing, deductible and coverage logic tied to user policies, plus statute-grounded RAG Q&A for clearer estimate interpretation and claim readiness.",
     ],
     stack: ["React", "FastAPI", "Python", "Pydantic", "RAG"],
     screenshots: ["/screenshots/swampguard-1.jpg", "/screenshots/swampguard-2.jpg", "/screenshots/swampguard-3.jpg", "/screenshots/swampguard-4.jpg", "/screenshots/swampguard-5.jpg"],
@@ -114,8 +115,9 @@ const projects: Project[] = [
     summary:
       "Hackathon project for turning patient conversations into structured SOAP-style medical notes through a streaming pipeline.",
     highlights: [
-      "Connected live transcription, speaker separation, and structured note generation in one workflow.",
-      "Stored encounter data with a relational backend to support retrieval and iteration.",
+      "Built an AI medical scribe prototype in a 24-hour designathon that converts clinician-patient audio into SOAP notes.",
+      "Implemented a real-time streaming pipeline using browser audio capture and Deepgram diarization, followed by a Gemini prompt chain that extracts clinical facts and generates speaker-aware SOAP drafts in about five seconds.",
+      "Integrated Supabase authentication and PostgreSQL persistence for secure encounter storage and retrieval, with human-in-the-loop editing designed to reduce documentation time.",
     ],
     stack: ["Node.js", "Supabase", "Deepgram", "Gemini API"],
     screenshots: ["/screenshots/smartscribe-1.png", "/screenshots/smartscribe-2.png"],
@@ -126,8 +128,9 @@ const projects: Project[] = [
     subtitle: "Hands-Free Accessibility Interface",
     summary: "Computer-vision accessibility tool that uses facial movement and gesture signals as an input system.",
     highlights: [
-      "Translated head pose, blink behavior, and mouth movement into cursor and text-entry controls.",
-      "Applied smoothing and filtering to improve stability during real-time use.",
+      "Built a webcam-only assistive input system using MediaPipe FaceMesh with 468 landmarks per frame for hands-free cursor control and Morse-code typing.",
+      "Stabilized real-time control with solvePnP head-pose tracking, EMA smoothing, hysteresis thresholds, and debouncing to reduce jitter and false triggers.",
+      "Implemented eyebrow-click and long-blink commands through PyAutoGUI, connecting computer-vision signals to usable desktop controls.",
     ],
     stack: ["Python", "OpenCV", "MediaPipe"],
     links: { code: "https://github.com/heimweh17/Ability-Bridge" },
@@ -158,9 +161,11 @@ const projects: Project[] = [
 ];
 
 const skillGroups = [
-  ["Languages", "C++", "Python", "TypeScript", "SQL", "Java"],
-  ["Frameworks", "React", "FastAPI", "Flask", "Node.js", "Tailwind CSS"],
-  ["Data & Tools", "PostgreSQL", "Docker", "GitHub Actions", "AWS", "GIS / OpenStreetMap"],
+  ["Languages", "Python", "C++", "Java", "JavaScript / TypeScript", "SQL", "Bash"],
+  ["Software & Web", "React", "FastAPI", "Flask", "Node.js", "PostgreSQL", "REST APIs", "SQLAlchemy"],
+  ["Cloud & DevOps", "AWS", "Docker", "Git", "GitHub Actions", "Linux / Unix"],
+  ["Systems & Infrastructure", "Data Center Operations", "Server Hardware", "IPMI / BMC", "BIOS / UEFI", "FreeDOS", "TCP/IP"],
+  ["Data, CV & GIS", "Pandas", "NumPy", "OpenCV", "MediaPipe", "Leaflet", "GIS"],
 ];
 
 function External({ href, children }: { href: string; children: React.ReactNode }) {
@@ -255,6 +260,29 @@ export default function App() {
           <div className="hero-rule" />
         </section>
 
+        <section className="introduction-section" aria-labelledby="introduction-title">
+          <div>
+            <p className="section-index">Introduction</p>
+            <h2 id="introduction-title">Engineering across the stack.</h2>
+          </div>
+          <div className="introduction-copy">
+            <p>
+              Hi, I am Alex Liu, a junior studying Computer Science at the University of Florida. I am interested in
+              software, systems, infrastructure, and data.
+            </p>
+            <p>
+              I have worked on both software and hardware projects. On the software side, I have built full-stack
+              and AI applications. On the hardware and infrastructure side, I have worked with bare-metal servers,
+              GPUs, networking, BIOS and firmware, and data-center equipment.
+            </p>
+            <p>
+              I like learning how different parts of technology fit together, from hardware and operating systems to
+              backend services and user-facing applications. I am looking for opportunities to keep growing as an
+              engineer, work on real technical problems, and build systems that are reliable and useful.
+            </p>
+          </div>
+        </section>
+
         <section id="work" className="work-section" aria-labelledby="work-title">
           <div className="section-intro"><p className="section-index">Experience</p><div><h2 id="work-title">Professional work</h2><p>Technical experience across operations, public-safety data, and student engineering communities.</p></div></div>
           <div className="experience-list">{experience.map((item) => <article className="experience-row" key={`${item.organization}-${item.role}`}><div className="experience-dates"><span>{item.period}</span><span>{item.location}</span></div><div className="experience-body"><h3>{item.role}</h3><p className="organization">{item.organization}</p><p className="experience-summary">{item.description}</p><button type="button" className="detail-trigger" onClick={() => setOverlay({ type: "experience", item })}>Read experience <ArrowUpRight size={15} /></button></div><div className="tag-list" aria-label={`${item.organization} skills`}>{item.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></article>)}</div>
@@ -267,7 +295,7 @@ export default function App() {
 
         <section id="about" className="about-section" aria-labelledby="about-title">
           <div className="about-copy"><p className="section-index">About</p><h2 id="about-title">A practical technical perspective.</h2><p>I am a Computer Science student at the University of Florida. The work I return to most often sits between code and context: mapping platforms, analytics dashboards, internal workflows, and systems that need to work outside a classroom demo.</p><p>I am especially interested in software engineering, geospatial workflows, data quality, and the operational details behind a reliable product.</p></div>
-          <aside className="profile-panel"><dl><div><dt>Education</dt><dd>B.S. Computer Science, expected 2028<br />University of Florida</dd></div><div><dt>Focus</dt><dd>Systems, backend logic, GIS, and data quality</dd></div><div><dt>Outside work</dt><dd>OpenStreetMap volunteer since 2020; photography, badminton, and pickleball</dd></div></dl></aside>
+          <aside className="profile-panel"><dl><div><dt>Education</dt><dd>B.S. Computer Science, expected 2028<br />University of Florida</dd></div><div><dt>GPA</dt><dd>3.78 / 4.00</dd></div><div><dt>Focus</dt><dd>Systems, backend logic, GIS, and data quality</dd></div><div><dt>Outside work</dt><dd>OpenStreetMap volunteer since 2020; photography, badminton, and pickleball</dd></div></dl></aside>
         </section>
 
         <section className="skills-section" aria-labelledby="skills-title"><div><p className="section-index">Skills</p><h2 id="skills-title">Tools I use</h2></div><div className="skills-list">{skillGroups.map(([title, ...skills]) => <div className="skill-row" key={title}><h3>{title}</h3><p>{skills.join(" / ")}</p></div>)}</div></section>

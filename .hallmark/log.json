@@ -4,6 +4,13 @@
     "macrostructure": "Portfolio Grid",
     "theme": "Cobalt",
     "enrichment": "existing project screenshots",
+    "brief": "Expand professional portfolio copy with formal resume details, introduction, GPA, and complete technical skills"
+  },
+  {
+    "date": "2026-08-26",
+    "macrostructure": "Portfolio Grid",
+    "theme": "Cobalt",
+    "enrichment": "existing project screenshots",
     "brief": "Make the portfolio more personal and functional with an identity-led hero, in-page resume, and detail overlays"
   },
   { "date": "2026-08-26", "macrostructure": "Portfolio Grid", "theme": "Cobalt", "enrichment": "none", "brief": "English personal portfolio redesign with a restrained professional tone" }
