@@ -249,7 +249,7 @@ export default function App() {
 
       <main>
         <section className="hero" aria-labelledby="intro-title">
-          <div className="hero-meta"><span>Computer Science</span><span>University of Florida</span><span>Gainesville, FL</span></div>
+          <div className="hero-meta"><span>Computer Science</span><span>University of Florida</span><span>GIS Certificate</span><span>Gainesville, FL</span></div>
           <div className="hero-grid">
             <div><h1 id="intro-title">Alex Liu</h1><p className="hero-title">Full-stack software, hardware, and infrastructure</p></div>
             <div className="hero-profile">
