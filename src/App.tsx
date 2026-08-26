@@ -165,7 +165,7 @@ const skillGroups = [
   ["Software & Web", "React", "FastAPI", "Flask", "Node.js", "PostgreSQL", "REST APIs", "SQLAlchemy"],
   ["Systems & Infrastructure", "Data Center Operations", "Server Hardware", "IPMI / BMC", "BIOS / UEFI", "FreeDOS", "TCP/IP"],
   ["Cloud & DevOps", "AWS", "Docker", "Git", "GitHub Actions", "Linux / Unix"],
-  ["Data, CV & GIS", "Pandas", "NumPy", "OpenCV", "MediaPipe", "Leaflet", "GIS"],
+  ["Data, CV & GIS", "Pandas", "NumPy", "OpenCV", "MediaPipe", "Leaflet", "ArcGIS Pro", "GIS"],
 ];
 
 function External({ href, children }: { href: string; children: React.ReactNode }) {
@@ -279,6 +279,10 @@ export default function App() {
               I like learning how different parts of technology fit together, from hardware and operating systems to
               backend services and user-facing applications. I am looking for opportunities to keep growing as an
               engineer, work on real technical problems, and build systems that are reliable and useful.
+            </p>
+            <p>
+              My GIS background also informs how I approach spatial data, mapping workflows, and transportation-safety
+              data work alongside my broader software and systems interests.
             </p>
           </div>
         </section>
