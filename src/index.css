@@ -1,6 +1,18 @@
 @import "tailwindcss";
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
+    margin: 0;
     font-size: 17px !important;
+    background: #f8f5ed;
+    color: #1e293b;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
   }
 }
