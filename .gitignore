@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local agent skills are installed per machine, not shipped with the site.
+.agents/
+skills-lock.json
