@@ -84,12 +84,12 @@ const projects: Project[] = [
     name: "GeoDashboard",
     subtitle: "Distributed Geospatial Analytics Platform",
     summary:
-      "A full-stack geospatial platform that combines interactive mapping, deterministic spatial processing, and AI-assisted interpretation.",
+      "Built a full-stack geospatial analytics platform that ingests user-uploaded CSV and GeoJSON datasets, generates DBSCAN clusters and density grids, and supports interactive city-scale analysis with OpenStreetMap data.",
     highlights: [
-      "Built a full-stack geospatial analytics platform that ingests user-uploaded CSV and GeoJSON datasets and generates DBSCAN clusters and density grids for city-scale insight.",
-      "Designed a decoupled microservices architecture for hybrid-cloud deployment on AWS, separating FastAPI and PostgreSQL GIS processing from AI inference for scalability and fault isolation.",
-      "Implemented end-to-end distributed tracing by propagating X-Request-ID across services, with structured logging for cross-service observability and monitoring.",
-      "Automated containerized deployments with Docker and GitHub Actions, and implemented rate limiting to control GenAI usage and improve reliability under burst traffic.",
+      "Designed independently deployable GIS analytics and AI inference services: FastAPI and PostgreSQL handle authenticated spatial workflows, while a containerized Gemini insight service provides optional narrative interpretation (previously deployed on AWS; currently paused for cost control).",
+      "Implemented JWT-protected user workflows, persisted datasets and analysis results, per-user rolling GenAI rate limits, and cross-service request correlation through X-Request-ID propagation with structured logging.",
+      "Integrated Nominatim, Overpass, and OSRM for city search, amenity discovery, and routing; added bounded timeouts and retry handling for resilient third-party geospatial API usage.",
+      "Automated containerized deployments with Docker and GitHub Actions, supporting independent service releases and clearer operational boundaries.",
     ],
     stack: ["React", "TypeScript", "FastAPI", "PostGIS", "Docker", "AWS"],
     screenshots: ["/screenshots/gdb1.png", "/screenshots/geodashboard-2.png", "/screenshots/gdb2.png", "/screenshots/gdb3.png"],
