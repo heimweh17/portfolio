@@ -96,6 +96,21 @@ const projects: Project[] = [
     links: { demo: "https://thegeodashboard.vercel.app/", code: "https://github.com/heimweh17/Geo-Dashboard" },
   },
   {
+    name: "ScamShield Hub",
+    subtitle: "Interactive Cybersecurity Learning Platform",
+    summary:
+      "A full-stack cybersecurity learning platform where users practice recognizing phishing attempts, scam messages, and suspicious websites through interactive case studies and immediate feedback.",
+    highlights: [
+      "Built a searchable case feed with safe, scam, and unsure classification, reviewable completed cases, progress tracking, badges, leaderboards, and social features including profiles, friend requests, groups, and private messages.",
+      "Implemented role-based administration for case publishing, user and comment moderation, platform statistics, and protected destructive actions, with administrator privileges controlled through backend tooling.",
+      "Developed protected React routes and role-aware client state alongside Node.js and Express REST APIs for authentication, cases, profiles, friendships, messages, leaderboards, and health checks.",
+      "Designed MongoDB and Mongoose data models for users, cases, votes, comments, messages, groups, and pending signups; added JWT sessions, bcrypt password hashing, and a Resend email-verification flow that avoids reserving incomplete registrations.",
+      "Deployed the React frontend on Vercel with an Express backend on Render, MongoDB Atlas persistence, and Resend transactional email, with production checks, documentation, and safeguards for shared seed data.",
+    ],
+    stack: ["React", "Node.js", "Express", "MongoDB", "JWT", "Resend"],
+    links: {},
+  },
+  {
     name: "SwampGuard",
     subtitle: "Policy-Aware Claims Intelligence Prototype",
     summary:
