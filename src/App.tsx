@@ -253,6 +253,7 @@ function DetailOverlay({ overlay, onClose }: { overlay: Overlay; onClose: () => 
 
 export default function App() {
   const [overlay, setOverlay] = useState<Overlay>(null);
+  const [beyondWorkOpen, setBeyondWorkOpen] = useState(false);
 
   return (
     <div className="portfolio-shell">
@@ -318,6 +319,22 @@ export default function App() {
         </section>
 
         <section className="skills-section" aria-labelledby="skills-title"><div><p className="section-index">Skills</p><h2 id="skills-title">Tools I use</h2></div><div className="skills-list">{skillGroups.map(([title, ...skills]) => <div className="skill-row" key={title}><h3>{title}</h3><p>{skills.join(" / ")}</p></div>)}</div></section>
+        <section className="beyond-work-section" aria-labelledby="beyond-work-title">
+          <div className="beyond-work-heading"><p className="section-index">Beyond work</p><h2 id="beyond-work-title">The context behind the work.</h2></div>
+          <div className="beyond-work-content">
+            <p className="beyond-work-intro">Outside of coursework and engineering projects, I keep a few long-running interests that shape how I learn, contribute, and spend time in my community.</p>
+            <div className="beyond-work-glimpse" aria-label="Beyond work highlights"><span>OpenStreetMap contributor since 2020</span><span>Mentoring and student community</span><span>Photo walks and road trips</span><span>Badminton and pickleball</span></div>
+            <button type="button" className="beyond-work-toggle" aria-expanded={beyondWorkOpen} aria-controls="beyond-work-details" onClick={() => setBeyondWorkOpen((isOpen) => !isOpen)}>{beyondWorkOpen ? "Show less" : "Read beyond work"} <span aria-hidden="true">{beyondWorkOpen ? "−" : "+"}</span></button>
+            {beyondWorkOpen ? (
+              <div id="beyond-work-details" className="beyond-work-details">
+                <article><h3>OpenStreetMap</h3><p>I have contributed to OpenStreetMap since 2020, maintaining roads, places, and land-use data through imagery, local context, and careful tagging. It is where my interest in mapping became a sustained practice in open data and spatial quality.</p><External href="https://www.openstreetmap.org/">Explore OpenStreetMap</External></article>
+                <article><h3>Mentoring and community</h3><p>I have tutored students in competitive mathematics and logic, and I enjoy the work of making complex ideas easier to approach. At UF, I also contribute to student communities through event planning and professional programming.</p></article>
+                <article><h3>Photography and exploration</h3><p>Photo walks and road trips are a way to pay attention to places beyond a screen. They pair naturally with mapping: noticing how streets, signs, landmarks, and everyday public spaces fit together.</p></article>
+                <article><h3>Off the clock</h3><p>I play badminton and pickleball, usually for the combination of strategy, movement, and good company. I also make time for audiobooks when I am away from a keyboard.</p></article>
+              </div>
+            ) : null}
+          </div>
+        </section>
         <section className="contact-section" aria-labelledby="contact-title"><p className="section-index">Contact</p><h2 id="contact-title">Let's make something useful.</h2><p>I am open to internship, research, and engineering opportunities.</p><div className="contact-links"><a href={`mailto:${site.email}`}><Mail size={17} />Email</a><a href={site.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17} />LinkedIn</a><a href={site.github} target="_blank" rel="noreferrer"><Github size={17} />GitHub</a><a href="/zh"><MapPin size={17} />Chinese site</a></div></section>
       </main>
 
