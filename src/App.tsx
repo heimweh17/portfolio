@@ -9,6 +9,7 @@ type Experience = {
   description: string;
   bullets: string[];
   tags: string[];
+  logo?: string;
 };
 
 type ProjectLinks = { code?: string; demo?: string };
@@ -59,6 +60,7 @@ const experience: Experience[] = [
       "Developed and deployed a FreeDOS-based BIOS update automation system supporting about 30 Supermicro motherboard models, automatically matching firmware so teammates could update outdated BIOS versions safely.",
     ],
     tags: ["Server Operations", "Hardware", "Data Center", "IPMI/BMC"],
+    logo: "/logos/database-mart.png",
   },
   {
     role: "Research Assistant",
@@ -73,6 +75,7 @@ const experience: Experience[] = [
       "Developed internal automation-assisted processing and validation workflows to streamline crash-record review and improve classification consistency.",
     ],
     tags: ["GIS", "Data Quality", "Geocoding", "Transportation Safety"],
+    logo: "/logos/uf-geoplan-center.png",
   },
   {
     role: "Event Committee Member",
@@ -86,6 +89,7 @@ const experience: Experience[] = [
       "Worked with student leaders to improve the quality and consistency of chapter programming.",
     ],
     tags: ["Student Leadership", "Operations"],
+    logo: "/logos/sase_logo.jpg",
   },
 ];
 
@@ -253,9 +257,7 @@ function DetailOverlay({ overlay, onClose }: { overlay: Overlay; onClose: () => 
         ) : null}
         {overlay.type === "experience" ? (
           <div className="detail-content">
-            <p className="detail-kicker">{overlay.item.organization}</p>
-            <h2>{overlay.item.role}</h2>
-            <p className="detail-meta">{overlay.item.period} / {overlay.item.location}</p>
+            <div className="detail-heading">{overlay.item.logo ? <img className="detail-logo" src={overlay.item.logo} alt={`${overlay.item.organization} logo`} /> : null}<div><p className="detail-kicker">{overlay.item.organization}</p><h2>{overlay.item.role}</h2><p className="detail-meta">{overlay.item.period} / {overlay.item.location}</p></div></div>
             <p className="detail-intro">{overlay.item.description}</p>
             <h3>What I worked on</h3>
             <ul className="detail-list">{overlay.item.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
@@ -361,9 +363,9 @@ export default function App() {
             <button type="button" className="beyond-work-toggle" aria-expanded={beyondWorkOpen} aria-controls="beyond-work-details" onClick={() => setBeyondWorkOpen((isOpen) => !isOpen)}>{beyondWorkOpen ? "Show less" : "Read beyond work"} <span aria-hidden="true">{beyondWorkOpen ? "−" : "+"}</span></button>
             {beyondWorkOpen ? (
               <div id="beyond-work-details" className="beyond-work-details">
-                <article><h3>OpenStreetMap</h3><p>I have contributed to OpenStreetMap since 2020, maintaining roads, places, and land-use data through imagery, local context, and careful tagging. It is where my interest in mapping became a sustained practice in open data and spatial quality.</p><External href="https://www.openstreetmap.org/">Explore OpenStreetMap</External></article>
-                <article><h3>Mentoring and community</h3><p>I have tutored students in competitive mathematics and logic, and I enjoy the work of making complex ideas easier to approach. At UF, I also help create cultural and community spaces through the Chinese American Student Association.</p><External href="https://orgs.studentinvolvement.ufl.edu/Organization/Chinese-American-Student-Association">UF CASA</External></article>
-                <article><h3>Cultural performance</h3><p>With JiaTing Lion & Dragon, I performed traditional lion and dragon dance at university and community events. The work calls for rehearsal discipline, nonverbal coordination, and trust in a team moving as one.</p><External href="https://jiatingliondragon.com/">JiaTing Lion & Dragon</External></article>
+                <article><div className="beyond-work-item-heading"><img src="/logos/osm_logo.svg" alt="OpenStreetMap logo" /><h3>OpenStreetMap</h3></div><p>I have contributed to OpenStreetMap since 2020, maintaining roads, places, and land-use data through imagery, local context, and careful tagging. It is where my interest in mapping became a sustained practice in open data and spatial quality.</p><External href="https://www.openstreetmap.org/">Explore OpenStreetMap</External></article>
+                <article><div className="beyond-work-item-heading"><img src="/logos/casa_logo.jpg" alt="UF CASA logo" /><h3>Mentoring and community</h3></div><p>I have tutored students in competitive mathematics and logic, and I enjoy the work of making complex ideas easier to approach. At UF, I also help create cultural and community spaces through the Chinese American Student Association.</p><External href="https://orgs.studentinvolvement.ufl.edu/Organization/Chinese-American-Student-Association">UF CASA</External></article>
+                <article><div className="beyond-work-item-heading"><img src="/logos/jiating_logo.jpg" alt="JiaTing Lion and Dragon logo" /><h3>Cultural performance</h3></div><p>With JiaTing Lion & Dragon, I performed traditional lion and dragon dance at university and community events. The work calls for rehearsal discipline, nonverbal coordination, and trust in a team moving as one.</p><External href="https://jiatingliondragon.com/">JiaTing Lion & Dragon</External></article>
                 <article><h3>Photography and exploration</h3><p>Photo walks and road trips are a way to pay attention to places beyond a screen. They pair naturally with mapping: noticing how streets, signs, landmarks, and everyday public spaces fit together.</p></article>
                 <article><h3>Off the clock</h3><p>I play badminton and pickleball, usually for the combination of strategy, movement, and good company. I also make time for audiobooks when I am away from a keyboard.</p></article>
               </div>
