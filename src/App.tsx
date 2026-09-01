@@ -11,6 +11,15 @@ type Experience = {
   tags: string[];
 };
 
+type ProjectLinks = { code?: string; demo?: string };
+
+type SmallProject = {
+  name: string;
+  summary: string;
+  stack: string[];
+  links: ProjectLinks;
+};
+
 type Project = {
   name: string;
   subtitle: string;
@@ -18,7 +27,8 @@ type Project = {
   highlights: string[];
   stack: string[];
   screenshots?: string[];
-  links: { code?: string; demo?: string };
+  links: ProjectLinks;
+  smallProjects?: SmallProject[];
 };
 
 type Overlay =
@@ -108,7 +118,8 @@ const projects: Project[] = [
       "Deployed the React frontend on Vercel with an Express backend on Render, MongoDB Atlas persistence, and Resend transactional email, with production checks, documentation, and safeguards for shared seed data.",
     ],
     stack: ["React", "Node.js", "Express", "MongoDB", "JWT", "Resend"],
-    links: {},
+    screenshots: ["/screenshots/scamshield-home.png", "/screenshots/scamshield-admin.png", "/screenshots/scamshield-cases.png"],
+    links: { demo: "https://scamshieldhub.vercel.app/", code: "https://github.com/heimweh17/ScamShield-Hub" },
   },
   {
     name: "SwampGuard",
@@ -163,15 +174,38 @@ const projects: Project[] = [
     links: { code: "https://github.com/heimweh17/Grade-Track" },
   },
   {
-    name: "Selected C++ Coursework",
-    subtitle: "Algorithms and Data Structures",
-    summary: "A set of smaller systems and algorithm projects including AVL trees, bin-packing analysis, and an SFML-based Minesweeper implementation.",
-    highlights: [
-      "Built data structures from scratch and reasoned about runtime tradeoffs.",
-      "Used course projects to strengthen implementation discipline and testing habits.",
+    name: "Other Projects",
+    subtitle: "Algorithms, Games, and Small Builds",
+    summary: "A compact collection of standalone projects in data structures, algorithms, interactive software, and game logic.",
+    highlights: [],
+    stack: ["C++", "Python", "SFML", "Algorithms"],
+    links: {},
+    smallProjects: [
+      {
+        name: "Minesweeper (SFML)",
+        summary: "A C++ implementation of Minesweeper with recursive tile clearing, flags, pause and debug modes, a timer, and persistent leaderboard storage.",
+        stack: ["C++", "SFML", "File I/O"],
+        links: { code: "https://github.com/heimweh17/Minesweeper-game" },
+      },
+      {
+        name: "Bin Packing: Best-Fit vs First-Fit",
+        summary: "A C++ experiment comparing Best-Fit and First-Fit heuristics across large rectangle datasets, focusing on runtime and packing-efficiency tradeoffs.",
+        stack: ["C++", "Algorithms", "Analysis"],
+        links: { code: "https://github.com/heimweh17/best-fit-fitst-fit" },
+      },
+      {
+        name: "AVL Tree Data Structure",
+        summary: "A from-scratch AVL tree supporting insertion, deletion, search, and balancing rotations for ordered record management.",
+        stack: ["C++", "Data Structures", "Testing"],
+        links: { code: "https://github.com/heimweh17/AVL-TREE" },
+      },
+      {
+        name: "Sudoku Game",
+        summary: "A Python Sudoku game with multiple difficulty levels, input validation, error feedback, and resettable game state.",
+        stack: ["Python", "Game Logic", "UI State"],
+        links: { code: "https://github.com/heimweh17/suduku-project" },
+      },
     ],
-    stack: ["C++", "SFML", "Algorithms", "Data Structures"],
-    links: { code: "https://github.com/heimweh17" },
   },
 ];
 
@@ -240,8 +274,8 @@ function DetailOverlay({ overlay, onClose }: { overlay: Overlay; onClose: () => 
                 <figcaption>{activeImage + 1} / {images.length} project screenshots</figcaption>
               </figure>
             ) : null}
-            <h3>Project notes</h3>
-            <ul className="detail-list">{overlay.item.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>
+            {overlay.item.highlights.length ? <><h3>Project notes</h3><ul className="detail-list">{overlay.item.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul></> : null}
+            {overlay.item.smallProjects?.length ? <><h3>Projects in this collection</h3><div className="small-project-grid">{overlay.item.smallProjects.map((project) => <article className="small-project-card" key={project.name}><h4>{project.name}</h4><p>{project.summary}</p><div className="stack-list">{project.stack.map((tech) => <span key={tech}>{tech}</span>)}</div><div className="detail-links">{project.links.demo ? <External href={project.links.demo}>Live demo</External> : null}{project.links.code ? <External href={project.links.code}>Source code</External> : null}</div></article>)}</div></> : null}
             <div className="stack-list detail-tags">{overlay.item.stack.map((tech) => <span key={tech}>{tech}</span>)}</div>
             <div className="detail-links">{overlay.item.links.demo ? <External href={overlay.item.links.demo}>Live demo</External> : null}{overlay.item.links.code ? <External href={overlay.item.links.code}>Source code</External> : null}</div>
           </div>
@@ -323,12 +357,13 @@ export default function App() {
           <div className="beyond-work-heading"><p className="section-index">Beyond work</p><h2 id="beyond-work-title">The context behind the work.</h2></div>
           <div className="beyond-work-content">
             <p className="beyond-work-intro">Outside of coursework and engineering projects, I keep a few long-running interests that shape how I learn, contribute, and spend time in my community.</p>
-            <div className="beyond-work-glimpse" aria-label="Beyond work highlights"><span>OpenStreetMap contributor since 2020</span><span>Mentoring and student community</span><span>Photo walks and road trips</span><span>Badminton and pickleball</span></div>
+            <div className="beyond-work-glimpse" aria-label="Beyond work highlights"><span>OpenStreetMap contributor since 2020</span><span>Mentoring and campus community</span><span>Lion and dragon performance</span><span>Photo walks and racket sports</span></div>
             <button type="button" className="beyond-work-toggle" aria-expanded={beyondWorkOpen} aria-controls="beyond-work-details" onClick={() => setBeyondWorkOpen((isOpen) => !isOpen)}>{beyondWorkOpen ? "Show less" : "Read beyond work"} <span aria-hidden="true">{beyondWorkOpen ? "−" : "+"}</span></button>
             {beyondWorkOpen ? (
               <div id="beyond-work-details" className="beyond-work-details">
                 <article><h3>OpenStreetMap</h3><p>I have contributed to OpenStreetMap since 2020, maintaining roads, places, and land-use data through imagery, local context, and careful tagging. It is where my interest in mapping became a sustained practice in open data and spatial quality.</p><External href="https://www.openstreetmap.org/">Explore OpenStreetMap</External></article>
-                <article><h3>Mentoring and community</h3><p>I have tutored students in competitive mathematics and logic, and I enjoy the work of making complex ideas easier to approach. At UF, I also contribute to student communities through event planning and professional programming.</p></article>
+                <article><h3>Mentoring and community</h3><p>I have tutored students in competitive mathematics and logic, and I enjoy the work of making complex ideas easier to approach. At UF, I also help create cultural and community spaces through the Chinese American Student Association.</p><External href="https://orgs.studentinvolvement.ufl.edu/Organization/Chinese-American-Student-Association">UF CASA</External></article>
+                <article><h3>Cultural performance</h3><p>With JiaTing Lion & Dragon, I performed traditional lion and dragon dance at university and community events. The work calls for rehearsal discipline, nonverbal coordination, and trust in a team moving as one.</p><External href="https://jiatingliondragon.com/">JiaTing Lion & Dragon</External></article>
                 <article><h3>Photography and exploration</h3><p>Photo walks and road trips are a way to pay attention to places beyond a screen. They pair naturally with mapping: noticing how streets, signs, landmarks, and everyday public spaces fit together.</p></article>
                 <article><h3>Off the clock</h3><p>I play badminton and pickleball, usually for the combination of strategy, movement, and good company. I also make time for audiobooks when I am away from a keyboard.</p></article>
               </div>
