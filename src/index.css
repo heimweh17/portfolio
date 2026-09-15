@@ -58,3 +58,56 @@
 .project-card-4 { grid-column: span 6; }.detail-heading { display: flex; align-items: flex-start; gap: var(--space-md); }.detail-logo { flex: 0 0 auto; width: 5rem; height: 5rem; padding: var(--space-2xs); object-fit: contain; border: var(--rule-hair) solid var(--color-rule); background: var(--color-paper); }.beyond-work-item-heading { display: flex; align-items: center; gap: var(--space-sm); }.beyond-work-item-heading img { width: 2.25rem; height: 2.25rem; object-fit: contain; }.beyond-work-item-heading h3 { margin: 0; }
 @media (max-width: 40rem) { .detail-heading { gap: var(--space-sm); }.detail-logo { width: 4rem; height: 4rem; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 150ms !important; animation-duration: 150ms !important; } }
+
+/* Keep narrow layouts after the desktop card overrides. */
+@media (max-width: 60rem) {
+  .portfolio-shell *, .detail-dialog * { min-width: 0; }
+  .detail-dialog { min-width: 0; max-width: 100%; }
+  .detail-content { overflow-wrap: anywhere; }
+  .experience-dates { flex-wrap: wrap; }
+  .project-card h3, .beyond-work-item-heading h3 { overflow-wrap: anywhere; }
+  .beyond-work-item-heading img { flex-shrink: 0; }
+}
+
+@media (max-width: 40rem) {
+  .portfolio-shell {
+    --text-section: clamp(2rem, 8vw, 2.8rem);
+    --text-contact: clamp(2.5rem, 10vw, 3.5rem);
+    --space-3xl: 4rem;
+  }
+  .hero { padding-top: 2.5rem; padding-bottom: 1.5rem; }
+  .hero-grid { margin-top: 2rem; gap: 2rem; }
+  .hero-meta { column-gap: 1rem; row-gap: .5rem; }
+  .hero-title { margin-top: 1rem; }
+  .hero-profile { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .hero-profile img { width: 6.5rem; }
+  .hero-profile p { font-size: 1rem; line-height: 1.65; }
+  .hero-rule { margin-top: 2rem; }
+  .introduction-section { padding-top: 1.5rem; gap: 1.5rem; }
+  .introduction-section h2, .beyond-work-heading h2 { max-width: 100%; }
+  .introduction-copy p, .about-copy > p, .beyond-work-intro { font-size: 1rem; }
+  .project-grid { grid-template-columns: minmax(0, 1fr); }
+  .project-grid > .project-card { grid-column: 1 / -1; min-height: auto; padding: 1.25rem; }
+  .project-subtitle { margin-top: 1.5rem; }
+  .project-card h3 { font-size: 1.85rem; line-height: 1.1; }
+  .project-preview { height: auto; aspect-ratio: 16 / 9; }
+  .experience-row { grid-template-columns: minmax(0, 1fr); padding: 1.5rem 0; }
+  .experience-dates { flex-direction: column; gap: .25rem; }
+  .skills-section, .beyond-work-section, .projects-heading { gap: 1.5rem; }
+  .skill-row, .contact-links { grid-template-columns: minmax(0, 1fr); }
+  .skill-row p, .beyond-work-glimpse span, .stack-list span, .tag-list span { overflow-wrap: anywhere; max-width: 100%; }
+  .resume-link, .hero-actions .text-link, .detail-trigger, .detail-links .text-link, .beyond-work-details .text-link { min-height: 2.75rem; }
+  .detail-overlay { padding: .5rem; }
+  .detail-dialog { max-height: calc(100dvh - 1rem); overscroll-behavior: contain; }
+  .detail-content { padding: 1.25rem; }
+  .detail-content h2 { font-size: clamp(1.75rem, 8vw, 2.5rem); line-height: 1.1; }
+  .detail-heading { flex-direction: column; gap: 1rem; }
+  .detail-heading > div { width: 100%; }
+  .detail-intro { font-size: 1rem; }
+  .detail-dialog-resume { height: calc(100dvh - 1rem); }
+  .resume-frame { min-height: 0; }
+  .gallery-button { top: auto; bottom: 0; }
+  .gallery-previous { left: auto; right: 3rem; }
+  .gallery-next { right: 0; }
+  .project-gallery figcaption { min-height: 2.75rem; padding-right: 6rem; display: flex; align-items: center; }
+}
