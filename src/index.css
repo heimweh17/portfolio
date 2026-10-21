@@ -59,6 +59,8 @@
 @media (max-width: 40rem) { .detail-heading { gap: var(--space-sm); }.detail-logo { width: 4rem; height: 4rem; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 150ms !important; animation-duration: 150ms !important; } }
 
+.project-card-8 { grid-column: span 6; }
+
 /* Keep narrow layouts after the desktop card overrides. */
 @media (max-width: 60rem) {
   .portfolio-shell *, .detail-dialog * { min-width: 0; }

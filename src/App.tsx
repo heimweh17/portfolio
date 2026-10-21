@@ -126,6 +126,23 @@ const projects: Project[] = [
     links: { demo: "https://scamshieldhub.vercel.app/", code: "https://github.com/heimweh17/ScamShield-Hub" },
   },
   {
+    name: "Saturday Lab",
+    subtitle: "College Football Analytics & Automated Publishing",
+    summary:
+      "A college football analytics platform combining opponent-adjusted rankings, matchup forecasts, and historical game reports with automated data refreshes and validated weekly releases.",
+    highlights: [
+      "Built a Next.js and TypeScript application with searchable FBS rankings, permanent team and game reports, historical snapshots, interactive ranking charts, and matchup simulations backed by Python analytics.",
+      "Automated weekly publication with GitHub Actions: refresh source data, verify upstream completeness, generate model snapshots, run Python tests and model/data checks, lint, build, and publish the static site to GitHub Pages.",
+      "Added publication safeguards including serialized data-writing workflows, duplicate-release prevention, Eastern-time scheduling across daylight-saving changes, and fallback refresh opportunities when upstream results arrive late.",
+      "Separated frequently refreshed scores and game status from frozen weekly rankings, with bounded fetch retries, change-only data commits, and a browser fallback to bundled data when the remote feed is unavailable.",
+      "Implemented opponent-adjusted forecasting with time-ordered model selection and historical evaluation, preserving pregame predictions and exposing calibration, benchmark results, and downloadable research outputs for inspection.",
+      "Created an additional automation workflow that renders weekly preview and recap graphics from published data, checks image dimensions, and exports downloadable artifacts.",
+    ],
+    stack: ["Next.js", "TypeScript", "Python", "GitHub Actions", "Data Pipelines", "GitHub Pages"],
+    screenshots: ["/screenshots/saturday-lab-rankings.png", "/screenshots/saturday-lab-matchup.png"],
+    links: { demo: "https://heimweh17.github.io/saturday-lab/", code: "https://github.com/heimweh17/saturday-lab" },
+  },
+  {
     name: "SwampGuard",
     subtitle: "Policy-Aware Claims Intelligence Prototype",
     summary:
