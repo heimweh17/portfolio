@@ -61,7 +61,7 @@ type SkillGroup = {
 const SITE = {
   name: "刘昊洲",
   headline: "刘昊洲",
-  tagline: "佛罗里达大学计算机科学专业 · 地理学辅修",
+  tagline: "佛罗里达大学计算机科学专业 · 地理空间信息分析证书",
   location: "Gainesville, FL",
   latlong: "29.6516° N, 82.3248° W",
   links: {
@@ -226,8 +226,8 @@ const ABOUT = {
 const EDUCATION = [
   {
     school: "University of Florida",
-    degree: "计算机科学学士（地理学辅修）",
-    gpa: "GPA 3.80/4.00",
+    degree: "计算机科学学士（地理空间信息分析证书）",
+    gpa: "GPA 3.78/4.00",
     period: "2024 – 2028（预计）",
     honors: "Dean's List（院长名单）",
     activities: "UF SASE · UF CASA",
@@ -298,7 +298,7 @@ const VOLUNTEER = [
 
 const LEADERSHIPS = [
   {
-    role: "SASE 实习生（SASE Intern）",
+    role: "活动委员会成员（Event Committee Member）",
     org: "UF Society of Asian Scientists & Engineers",
     period: "Aug 2025 – Present",
     bullets: [
@@ -326,7 +326,7 @@ const PROJECTS = [
     blurb: "交互式地理看板，从 OpenStreetMap 拉取实时数据，用地图对比不同城市的设施与格局。",
     impact:
       "支持搜索全球城市、切换图层，并在流畅的平移与筛选中浏览 1 万+ OSM 要素。",
-    tech: ["React", "Leaflet", "Supabase(SQL)", "Vite", "TypeScript"],
+    tech: ["React", "Leaflet", "PostgreSQL", "FastAPI", "Vite", "TypeScript"],
     links: {
       demo: "https://thegeodashboard.vercel.app/",
       code: "https://github.com/heimweh17/Geo-Dashboard",
@@ -342,7 +342,7 @@ const PROJECTS = [
     flagship: true,
     blurb: "将医患对话自动转成结构化 SOAP 病程记录的 AI 辅助书写工具。",
     impact:
-      "支持实时转录与说话人分离，并生成可编辑的 SOAP 模板，在模拟流程中显著减少手动记录时间。",
+      "支持实时转录与说话人分离，生成供人工审核和编辑的 SOAP 草稿；这是黑客松原型，未经临床验证。",
     tech: [
       "JavaScript",
       "HTML/CSS",
@@ -374,7 +374,7 @@ const PROJECTS = [
     flagship: true,
     blurb: "通过头部姿态控制鼠标、嘴部莫尔斯码输入与面部表情点击的无障碍交互工具包。",
     impact:
-      "在约 30 FPS、<100 ms 延迟下实现全程免手操作，探索用计算机视觉支持无障碍场景的可能性。",
+      "通过头部姿态估计、平滑处理和手势防抖，探索用普通摄像头支持免手交互的原型方案。",
     tech: ["Python", "OpenCV", "MediaPipe", "PyAutoGUI"],
     links: { demo: "", code: "https://github.com/heimweh17/Ability-Bridge" },
     categories: ["健康与无障碍", "C++ / 算法"],
@@ -599,7 +599,7 @@ const SKILLS: SkillGroup[] = [
 ];
 
 const CONTACT = {
-  note: "开放 2026 年暑期实习机会，特别是与后端系统、数据、IT 或地理信息应用相关的岗位。也很乐意聊地图、基础设施、无障碍设计，或者你正在做的项目。",
+  note: "开放 2027 年暑期实习机会，特别是与后端系统、数据、IT 或地理信息应用相关的岗位。也很乐意聊地图、基础设施、无障碍设计，或者你正在做的项目。",
 };
 
 // --- 主要组件 ---
@@ -1100,7 +1100,7 @@ export default function PortfolioChinese() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  开放 2026 暑期实习申请
+                  开放 2027 暑期实习申请
                 </motion.div>
 
                 <motion.h1

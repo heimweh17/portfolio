@@ -52,14 +52,21 @@ const experience: Experience[] = [
     period: "May 2026 - Jul 2026",
     location: "Kansas City, Missouri",
     description:
-      "Supported the physical server lifecycle in a production hosting environment, from bare-metal provisioning through data-center deployment and maintenance.",
+      "Worked in a production hosting environment across the physical server lifecycle: provisioning customer-configured machines, preparing systems for deployment, troubleshooting failures, and automating repetitive firmware maintenance.",
     bullets: [
-      "Assembled and provisioned 5-10 customer-specified bare-metal servers weekly, configuring GPU, memory, and storage hardware and performing validation and stress testing before deployment.",
-      "Handled 20-30 production server service and maintenance requests weekly, completing hardware upgrades and replacements while troubleshooting boot, BIOS, thermal, and connectivity issues.",
-      "Racked and deployed servers in the data center, configured host networking and IPMI/BMC management, and validated connectivity, hardware health, and system readiness.",
-      "Developed and deployed a FreeDOS-based BIOS update automation system supporting about 30 Supermicro motherboard models, automatically matching firmware so teammates could update outdated BIOS versions safely.",
+      "Server provisioning: Provisioned and deployed approximately 60-70 bare-metal servers to customer specifications. Configured storage devices, network connectivity, and IPMI/BMC out-of-band management, then checked system health and readiness before handoff.",
+      "Operational troubleshooting: Completed more than 300 service and maintenance requests involving server boot issues, storage/RAID problems, connectivity failures, thermal alerts, component replacements, and hardware upgrades. Worked from reported symptoms through diagnosis, repair, and post-maintenance verification.",
+      "Firmware automation: Developed a FreeDOS-based BIOS update workflow for roughly 30 Supermicro motherboard models. Used DOS Batch, PowerShell, and DMI/SMBIOS information to detect the motherboard, identify installed firmware, and match it with a validated update package and target version.",
+      "Fail-safe design: Designed the automation to stop rather than guess when hardware identification or firmware mapping was uncertain, and to skip unnecessary updates when the installed version was already current. The workflow called the original vendor flashing utilities; it did not replace or rewrite the firmware-writing tools.",
+      "Testing and reliability: Performed hardware stress tests, BMC-based health checks, and post-repair diagnostics to detect instability and confirm that systems were ready to return to service. The experience reinforced the importance of repeatable operational procedures, evidence-based troubleshooting, and validation after a change.",
     ],
-    tags: ["Server Operations", "Hardware", "Data Center", "IPMI/BMC"],
+    tags: [
+      "Infrastructure Operations",
+      "Automation",
+      "Bare-Metal Servers",
+      "IPMI/BMC",
+      "Firmware",
+    ],
     logo: "/logos/database-mart.png",
   },
   {
@@ -68,13 +75,22 @@ const experience: Experience[] = [
     period: "Apr 2026 - Present",
     location: "Gainesville, Florida",
     description:
-      "Hold an ongoing research appointment supporting transportation-safety data work involving crash-record review, geocoding, roadway classification, and quality control.",
+      "Work with Florida traffic crash records and roadway data, combining geocoding and classification review with internally developed automation tools that make an evidence-heavy workflow faster and easier to verify.",
     bullets: [
-      "Reviewed and processed Florida traffic crash records in Signal Four Analytics, using police narratives, diagrams, and map context to geocode crashes and validate roadway and location classifications.",
-      "Performed structured data review and QA/QC for transportation-safety records used in downstream analysis workflows.",
-      "Developed internal automation-assisted processing and validation workflows to streamline crash-record review and improve classification consistency.",
+      "Transportation-data review: Review crash reports, police narratives, diagrams, and geographic context to validate crash locations, roadway classifications, and related records used in transportation-safety analysis. This work begins with imperfect real-world data, not pre-cleaned demonstration datasets.",
+      "Workflow automation: Built an internal Chrome extension and local Node.js backend that extract relevant text and images from crash-report PDFs, send appropriate inputs to AI services, and return structured classification recommendations within the review workflow.",
+      "Measured impact: Reduced average processing time in the assisted review workflow by approximately 75% while keeping the reviewer responsible for interpreting evidence, verifying recommendations, and entering final values. The tool assists human decisions; it does not automatically finalize or submit records.",
+      "Independent QA tooling: Built a separate diagram quality-assurance tool to compare crash diagrams with police narratives and vehicle information, highlighting potential contradictions for human review. Structured outputs and explicit checks make uncertain results easier to investigate.",
+      "Integration debugging: Diagnosed failures across PDF preprocessing, the Node.js service, and third-party vision-model APIs. When an upstream model stopped accepting the expected image inputs, isolated the API compatibility issue, selected a compatible approach, and adapted preprocessing to changed image-request limits.",
+      "Engineering approach: Prefer deterministic extraction when information can be read directly, and reserve AI interpretation for ambiguous content. Expose evidence and independent checks instead of treating model output as authoritative; this design choice improves both reviewer trust and operational reliability.",
     ],
-    tags: ["GIS", "Data Quality", "Geocoding", "Transportation Safety"],
+    tags: [
+      "Internal Tooling",
+      "Node.js",
+      "Data Quality",
+      "Applied AI",
+      "GIS",
+    ],
     logo: "/logos/uf-geoplan-center.png",
   },
   {
@@ -83,76 +99,112 @@ const experience: Experience[] = [
     period: "Aug 2025 - Present",
     location: "Gainesville, Florida",
     description:
-      "Help organize professional programming and member-facing events for a growing technical student organization.",
+      "Help organize technical community events, professional development programming, and member-facing activities at the University of Florida.",
     bullets: [
-      "Supported event logistics and member communication for professional development events serving 100+ attendees.",
-      "Worked with student leaders to improve the quality and consistency of chapter programming.",
+      "Coordinated event logistics and member communications for professional and community programs, including events attended by more than 100 participants.",
+      "Collaborated with fellow student organizers to prepare activities, support on-site execution, and make events welcoming and useful for attendees.",
     ],
-    tags: ["Student Leadership", "Operations"],
+    tags: [
+      "Student Leadership",
+      "Teamwork",
+      "Event Operations",
+    ],
     logo: "/logos/sase_logo.jpg",
   },
 ];
 
 const projects: Project[] = [
   {
-    name: "GeoDashboard",
-    subtitle: "Distributed Geospatial Analytics Platform",
+    name: "Saturday Lab",
+    subtitle: "College Football Analytics, Data Pipelines & CI/CD",
     summary:
-      "Built a full-stack geospatial analytics platform that ingests user-uploaded CSV and GeoJSON datasets, generates DBSCAN clusters and density grids, and supports interactive city-scale analysis with OpenStreetMap data.",
+      "A college-football analytics platform combining opponent-adjusted forecasts and interactive team/game reports with automated data ingestion, validation, and publishing. Frequent live-score updates run separately from formal weekly rankings.",
     highlights: [
-      "Designed independently deployable GIS analytics and AI inference services: FastAPI and PostgreSQL handle authenticated spatial workflows, while a containerized Gemini insight service provides optional narrative interpretation (previously deployed on AWS; currently paused for cost control).",
-      "Implemented JWT-protected user workflows, persisted datasets and analysis results, per-user rolling GenAI rate limits, and cross-service request correlation through X-Request-ID propagation with structured logging.",
-      "Integrated Nominatim, Overpass, and OSRM for city search, amenity discovery, and routing; added bounded timeouts and retry handling for resilient third-party geospatial API usage.",
-      "Automated containerized deployments with Docker and GitHub Actions, supporting independent service releases and clearer operational boundaries.",
+      "Application: Built a Next.js and TypeScript site with searchable FBS rankings, game centers, team-season reports, historical snapshots, matchup exploration, and model documentation. The static build generates more than 9,000 pages, preserving navigable game and ranking history.",
+      "Data and modeling: Developed Python analytics over nine seasons, more than 7,500 historical games, and 138 FBS teams. The opponent-adjusted model produces win probabilities and rankings, with time-ordered retrospective evaluation rather than training on information from future games.",
+      "Evaluation and transparency: Preserved historical pregame predictions and made model audits, calibration results, and research outputs available for inspection. Historical 2023-2025 evaluation is approximately 72% accurate in retrospective backtesting, not a guarantee of future accuracy or a pristine unseen holdout.",
+      "CI/CD: Built GitHub Actions workflows that acquire data, verify source completeness, run Python tests and TypeScript/Python consistency checks, lint, build the Next.js static export, and publish validated artifacts to GitHub Pages.",
+      "Scheduling: Integrated an independent QStash refresh clock with GitHub Actions, with slower native GitHub schedules as a fallback. Formal model and ranking snapshots follow a separate weekly publication cycle.",
+      "Reliability: Added retries for transient refresh failures, shared concurrency controls to prevent conflicting data writes, protection against duplicate weekly releases, and readiness checks that defer a publication when upstream game data is incomplete.",
+      "System boundaries: Kept frequently changing scores and game status in a lightweight feed that can update without rebuilding the complete static archive. Browser reads fall back to the data bundled with the last published site if the newer remote feed is unavailable.",
     ],
-    stack: ["React", "TypeScript", "FastAPI", "PostGIS", "Docker", "AWS"],
+    stack: [
+      "Next.js",
+      "TypeScript",
+      "Python",
+      "GitHub Actions",
+      "QStash",
+      "GitHub Pages",
+    ],
+    screenshots: ["/screenshots/saturday-lab-rankings.png", "/screenshots/saturday-lab-matchup.png"],
+    links: { demo: "https://heimweh17.github.io/saturday-lab/", code: "https://github.com/heimweh17/saturday-lab" },
+  },
+  {
+    name: "Geography Dashboard",
+    subtitle: "Geospatial Data Platform & Distributed Web Services",
+    summary:
+      "A full-stack geospatial application that explores OpenStreetMap data and analyzes user-uploaded CSV/GeoJSON datasets. It combines interactive maps, spatial statistics, authenticated workflows, a PostgreSQL database, and separately deployed services.",
+    highlights: [
+      "Geospatial application: Built a React/TypeScript interface with Leaflet for city search, amenity discovery, map filters, side-by-side city comparisons, and routing. Integrated OpenStreetMap-related services including Nominatim, Overpass, and OSRM.",
+      "Backend and data: Built a Python/FastAPI API that parses uploaded CSV and GeoJSON point datasets, validates coordinates, computes bounding boxes and density grids, applies scikit-learn DBSCAN clustering, and stores user data and analysis runs in PostgreSQL.",
+      "Microservices and distributed deployment: Separated the web frontend, the main GIS/backend API, the hosted database, and an optional Gemini-powered AI interpretation service. The frontend runs on Vercel, the API on Render, and PostgreSQL on Neon. A separate AI service was previously deployed on AWS and is currently paused to control costs.",
+      "Containerization and configuration: Containerized the main FastAPI backend with Docker, using environment variables for service endpoints, database connectivity, API credentials, and CORS origins. The optional AI service is decoupled so the core spatial-analysis workflow still functions without it.",
+      "Security and request debugging: Implemented JWT-protected application routes, user-scoped data access, per-user controls on AI requests, and request-ID propagation to correlate calls between services.",
+      "External-service resilience: Used bounded requests, retry/fallback behavior, and clear service boundaries when integrating public geospatial APIs and optional AI inference. Deterministic spatial analysis remains separate from AI-generated narrative interpretation.",
+    ],
+    stack: [
+      "React",
+      "TypeScript",
+      "FastAPI",
+      "PostgreSQL",
+      "Docker",
+      "AWS",
+      "Leaflet",
+    ],
     screenshots: ["/screenshots/gdb1.png", "/screenshots/geodashboard-2.png", "/screenshots/gdb2.png", "/screenshots/gdb3.png"],
     links: { demo: "https://thegeodashboard.vercel.app/", code: "https://github.com/heimweh17/Geo-Dashboard" },
   },
   {
     name: "ScamShield Hub",
-    subtitle: "Interactive Cybersecurity Learning Platform",
+    subtitle: "Full-Stack Cybersecurity Learning Platform",
     summary:
-      "A full-stack cybersecurity learning platform where users practice recognizing phishing attempts, scam messages, and suspicious websites through interactive case studies and immediate feedback.",
+      "A four-person software engineering team project that turns phishing and scam awareness into interactive practice. Learners classify realistic cases, receive feedback, track progress, and use optional social features in a deployed React/Express application.",
     highlights: [
-      "Built a searchable case feed with safe, scam, and unsure classification, reviewable completed cases, progress tracking, badges, leaderboards, and social features including profiles, friend requests, groups, and private messages.",
-      "Implemented role-based administration for case publishing, user and comment moderation, platform statistics, and protected destructive actions, with administrator privileges controlled through backend tooling.",
-      "Developed protected React routes and role-aware client state alongside Node.js and Express REST APIs for authentication, cases, profiles, friendships, messages, leaderboards, and health checks.",
-      "Designed MongoDB and Mongoose data models for users, cases, votes, comments, messages, groups, and pending signups; added JWT sessions, bcrypt password hashing, and a Resend email-verification flow that avoids reserving incomplete registrations.",
-      "Deployed the React frontend on Vercel with an Express backend on Render, MongoDB Atlas persistence, and Resend transactional email, with production checks, documentation, and safeguards for shared seed data.",
+      "Team and scope: Led a four-person development team building an end-to-end learning platform, helping coordinate frontend, backend, data models, and release work.",
+      "Learning experience: Implemented case browsing and filtering, classification of suspicious emails/messages/websites, feedback on decisions, completed-case review, learning progress, badges, and leaderboards.",
+      "Backend design: Built Express REST endpoints and MongoDB/Mongoose data models for users, cases, votes, comments, messages, groups, and user activity, with clear separation between route handlers, models, and authentication middleware.",
+      "Accounts and permissions: Added JWT-based sessions, bcrypt password hashing, role-based authorization, and Resend email verification. Temporary pending-signup records avoid permanently creating accounts before verification is completed.",
+      "Deployment: Deployed the React frontend on Vercel and the Node.js API on Render, with MongoDB Atlas for persistence and Resend for transactional verification email. Considered CORS, environment configuration, API availability, and end-to-end testing across services.",
+      "Data integrity lesson: Identified that an original database seed process could delete manually created cases and invalidate related votes. Guarded destructive seeding behind an explicit opt-in flag and disabled accidental invocation in normal development workflows.",
     ],
-    stack: ["React", "Node.js", "Express", "MongoDB", "JWT", "Resend"],
+    stack: [
+      "React",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Mongoose",
+      "JWT",
+      "Resend",
+    ],
     screenshots: ["/screenshots/scamshield-home.png", "/screenshots/scamshield-admin.png", "/screenshots/scamshield-cases.png"],
     links: { demo: "https://scamshieldhub.vercel.app/", code: "https://github.com/heimweh17/ScamShield-Hub" },
   },
   {
-    name: "Saturday Lab",
-    subtitle: "College Football Analytics & Automated Publishing",
-    summary:
-      "A college football analytics platform combining opponent-adjusted rankings, matchup forecasts, and historical game reports with automated data refreshes and validated weekly releases.",
-    highlights: [
-      "Built a Next.js and TypeScript application with searchable FBS rankings, permanent team and game reports, historical snapshots, interactive ranking charts, and matchup simulations backed by Python analytics.",
-      "Automated weekly publication with GitHub Actions: refresh source data, verify upstream completeness, generate model snapshots, run Python tests and model/data checks, lint, build, and publish the static site to GitHub Pages.",
-      "Added publication safeguards including serialized data-writing workflows, duplicate-release prevention, Eastern-time scheduling across daylight-saving changes, and fallback refresh opportunities when upstream results arrive late.",
-      "Separated frequently refreshed scores and game status from frozen weekly rankings, with bounded fetch retries, change-only data commits, and a browser fallback to bundled data when the remote feed is unavailable.",
-      "Implemented opponent-adjusted forecasting with time-ordered model selection and historical evaluation, preserving pregame predictions and exposing calibration, benchmark results, and downloadable research outputs for inspection.",
-      "Created an additional automation workflow that renders weekly preview and recap graphics from published data, checks image dimensions, and exports downloadable artifacts.",
-    ],
-    stack: ["Next.js", "TypeScript", "Python", "GitHub Actions", "Data Pipelines", "GitHub Pages"],
-    screenshots: ["/screenshots/saturday-lab-rankings.png", "/screenshots/saturday-lab-matchup.png"],
-    links: { demo: "https://heimweh17.github.io/saturday-lab/", code: "https://github.com/heimweh17/saturday-lab" },
-  },
-  {
     name: "SwampGuard",
-    subtitle: "Policy-Aware Claims Intelligence Prototype",
+    subtitle: "AI-Assisted Insurance Claims Prototype",
     summary:
-      "An AI-assisted claims workflow that analyzes damage photos and uploaded documents to produce structured claim guidance and cost estimates.",
+      "A prototype that combines photos, uploaded documents, and structured estimation logic to help users understand potential damage claims and policy considerations. It explores how AI interpretation can support human review of source material.",
     highlights: [
-      "Designed an end-to-end claim intelligence workflow that combines damage-photo analysis, uploaded policy data, and itemized estimation logic to produce structured severity outputs and policy-adjusted repair projections.",
-      "Engineered asynchronous FastAPI image-analysis endpoints and document extraction for receipts and insurance policies, using JSON prompting and Pydantic validation for consistent pipeline outputs.",
-      "Developed policy-aware claim calculations using Xactimate-style pricing, deductible and coverage logic tied to user policies, plus statute-grounded RAG Q&A for clearer estimate interpretation and claim readiness.",
+      "Built a prototype workflow for submitting damage images and supporting documents, producing structured summaries and preliminary itemized estimates rather than an official insurance adjustment.",
+      "Used FastAPI image-processing endpoints, document extraction, Pydantic request models, and JSON-formatted AI responses to organize inputs and outputs for review in the UI.",
+      "Explored policy-aware estimate logic and Gemini-based questions about insurance topics; treated model-generated explanations and calculations as reviewable guidance, not verified legal, financial, or insurance advice.",
     ],
-    stack: ["React", "FastAPI", "Python", "Pydantic", "RAG"],
+    stack: [
+      "React",
+      "FastAPI",
+      "Python",
+      "Pydantic",
+    ],
     screenshots: ["/screenshots/swampguard-1.jpg", "/screenshots/swampguard-2.jpg", "/screenshots/swampguard-3.jpg", "/screenshots/swampguard-4.jpg", "/screenshots/swampguard-5.jpg"],
     links: { code: "https://github.com/heimweh17/SwampGuard" },
   },
@@ -160,69 +212,86 @@ const projects: Project[] = [
     name: "UF Health SmartScribe",
     subtitle: "Real-Time Clinical Documentation Prototype",
     summary:
-      "Hackathon project for turning patient conversations into structured SOAP-style medical notes through a streaming pipeline.",
+      "A hackathon prototype that converts a clinician-patient conversation into an editable SOAP-style note using speech transcription and AI-assisted structuring.",
     highlights: [
-      "Built an AI medical scribe prototype in a 24-hour designathon that converts clinician-patient audio into SOAP notes.",
-      "Implemented a real-time streaming pipeline using browser audio capture and Deepgram diarization, followed by a Gemini prompt chain that extracts clinical facts and generates speaker-aware SOAP drafts in about five seconds.",
-      "Integrated Supabase authentication and PostgreSQL persistence for secure encounter storage and retrieval, with human-in-the-loop editing designed to reduce documentation time.",
+      "Built a browser audio workflow using streaming transcription and speaker diarization to distinguish conversational turns and prepare text for note generation.",
+      "Integrated Deepgram for transcription and a Gemini-based processing stage to extract key information and draft structured SOAP-style notes, with human review and editing before use.",
+      "Used Supabase authentication and persistent storage to demonstrate how generated notes could be organized and retrieved as part of a larger application workflow.",
     ],
-    stack: ["Node.js", "Supabase", "Deepgram", "Gemini API"],
+    stack: [
+      "Node.js",
+      "Supabase",
+      "Deepgram",
+      "Gemini API",
+    ],
     screenshots: ["/screenshots/smartscribe-1.png", "/screenshots/smartscribe-2.png"],
     links: { code: "https://github.com/heimweh17/SmartScribe" },
   },
   {
     name: "Ability Bridge",
-    subtitle: "Hands-Free Accessibility Interface",
-    summary: "Computer-vision accessibility tool that uses facial movement and gesture signals as an input system.",
+    subtitle: "Computer-Vision Accessibility Interface",
+    summary: "A hands-free desktop-control prototype that translates webcam-based facial movement into cursor actions and Morse-code-style input, exploring how computer vision can make interaction more accessible.",
     highlights: [
-      "Built a webcam-only assistive input system using MediaPipe FaceMesh with 468 landmarks per frame for hands-free cursor control and Morse-code typing.",
-      "Stabilized real-time control with solvePnP head-pose tracking, EMA smoothing, hysteresis thresholds, and debouncing to reduce jitter and false triggers.",
-      "Implemented eyebrow-click and long-blink commands through PyAutoGUI, connecting computer-vision signals to usable desktop controls.",
+      "Used Python, OpenCV, and MediaPipe face landmarks to interpret head movement and facial gestures as input signals without requiring specialized hardware.",
+      "Combined head-pose estimation with smoothing, hysteresis, and debouncing to reduce cursor jitter and accidental gestures in a real-time interaction loop.",
+      "Connected recognized signals to desktop actions through PyAutoGUI, including cursor control, gesture-based clicks, and Morse-code-style typing.",
     ],
-    stack: ["Python", "OpenCV", "MediaPipe"],
+    stack: [
+      "Python",
+      "OpenCV",
+      "MediaPipe",
+      "PyAutoGUI",
+    ],
     links: { code: "https://github.com/heimweh17/Ability-Bridge" },
   },
   {
     name: "Grade Track",
-    subtitle: "Academic Analytics Dashboard",
-    summary: "A full-stack dashboard for turning exported grade data into clear statistical views and class-level trends.",
+    subtitle: "Student Data Analytics Dashboard",
+    summary: "A full-stack dashboard that turns exported course-grade CSV files into interactive summaries, distributions, and trends, with a Flask API and a containerized local development setup.",
     highlights: [
-      "Built an ingestion flow for transforming raw CSV exports into structured analysis.",
-      "Created interactive charts for distribution and performance review.",
+      "Implemented CSV ingestion and data transformation for course, assignment, and student-level grade records, exposing analysis results through Flask REST endpoints.",
+      "Built a React-based interface with charts for grade distributions, class averages, medians, and trends, helping users explore patterns that are difficult to see in raw exports.",
+      "Used SQLAlchemy with PostgreSQL for the application and SQLite for test fixtures, plus Docker Compose for a repeatable local environment with separate frontend and backend services.",
     ],
-    stack: ["Flask", "React", "PostgreSQL", "Docker"],
+    stack: [
+      "Flask",
+      "React",
+      "SQLAlchemy",
+      "PostgreSQL",
+      "Docker Compose",
+    ],
     screenshots: ["/screenshots/gradetrack-1.png"],
     links: { code: "https://github.com/heimweh17/Grade-Track" },
   },
   {
     name: "Other Projects",
-    subtitle: "Algorithms, Games, and Small Builds",
-    summary: "A compact collection of standalone projects in data structures, algorithms, interactive software, and game logic.",
+    subtitle: "Algorithms, Systems Programming & Small Builds",
+    summary: "Smaller projects and coursework that strengthened my understanding of algorithms, low-level programming, data structures, testing, and interactive application logic.",
     highlights: [],
     stack: ["C++", "Python", "SFML", "Algorithms"],
     links: {},
     smallProjects: [
       {
         name: "Minesweeper (SFML)",
-        summary: "A C++ implementation of Minesweeper with recursive tile clearing, flags, pause and debug modes, a timer, and persistent leaderboard storage.",
+        summary: "A C++ desktop Minesweeper game with recursive tile clearing, flagging, pause/debug controls, a timer, and a persistent leaderboard. Focused on event handling, state transitions, and file I/O.",
         stack: ["C++", "SFML", "File I/O"],
         links: { code: "https://github.com/heimweh17/Minesweeper-game" },
       },
       {
         name: "Bin Packing: Best-Fit vs First-Fit",
-        summary: "A C++ experiment comparing Best-Fit and First-Fit heuristics across large rectangle datasets, focusing on runtime and packing-efficiency tradeoffs.",
+        summary: "A C++ experiment comparing heuristic packing strategies on large rectangle datasets, examining runtime and packing-quality tradeoffs rather than assuming one heuristic wins on every input.",
         stack: ["C++", "Algorithms", "Analysis"],
         links: { code: "https://github.com/heimweh17/best-fit-fitst-fit" },
       },
       {
         name: "AVL Tree Data Structure",
-        summary: "A from-scratch AVL tree supporting insertion, deletion, search, and balancing rotations for ordered record management.",
+        summary: "A C++ implementation of an AVL tree supporting insert, delete, search, and rebalancing rotations, with tests covering structural correctness and edge cases.",
         stack: ["C++", "Data Structures", "Testing"],
         links: { code: "https://github.com/heimweh17/AVL-TREE" },
       },
       {
         name: "Sudoku Game",
-        summary: "A Python Sudoku game with multiple difficulty levels, input validation, error feedback, and resettable game state.",
+        summary: "A Python Sudoku application with multiple difficulty levels, input validation, reset behavior, and clear game-state/error feedback.",
         stack: ["Python", "Game Logic", "UI State"],
         links: { code: "https://github.com/heimweh17/suduku-project" },
       },
@@ -231,11 +300,12 @@ const projects: Project[] = [
 ];
 
 const skillGroups = [
-  ["Languages", "Python", "C++", "Java", "JavaScript / TypeScript", "SQL", "Bash"],
-  ["Software & Web", "React", "FastAPI", "Flask", "Node.js", "PostgreSQL", "REST APIs", "SQLAlchemy"],
-  ["Systems & Infrastructure", "Data Center Operations", "Server Hardware", "IPMI / BMC", "BIOS / UEFI", "FreeDOS", "TCP/IP"],
-  ["Cloud & DevOps", "AWS", "Docker", "Git", "GitHub Actions", "Linux / Unix"],
-  ["Data, CV & GIS", "Pandas", "NumPy", "OpenCV", "MediaPipe", "Leaflet", "ArcGIS Pro", "GIS"],
+  ["Languages & Scripting","Python","C/C++","Java","JavaScript / TypeScript","SQL","Bash","PowerShell","DOS Batch"],
+  ["Software & Backend","React","Next.js","Node.js","Express","FastAPI","Flask","REST APIs","SQLAlchemy"],
+  ["Data, AI & GIS","Pandas","NumPy","SciPy","scikit-learn","OpenCV","MediaPipe","Leaflet","ArcGIS Pro","Google Earth Engine"],
+  ["Databases","PostgreSQL","MongoDB","MySQL / MariaDB","SQLite"],
+  ["Cloud & Automation","Docker","AWS","Vercel","Render","Git","GitHub Actions","QStash","Linux / Unix"],
+  ["Systems & Infrastructure","Bare-Metal Provisioning","IPMI / BMC","BIOS / UEFI","RAID","TCP/IP","POSIX / IPC","Make","Valgrind"],
 ];
 
 function External({ href, children }: { href: string; children: React.ReactNode }) {
@@ -320,10 +390,10 @@ export default function App() {
         <section className="hero" aria-labelledby="intro-title">
           <div className="hero-meta"><span>Computer Science</span><span>University of Florida</span><span>Gainesville, FL</span></div>
           <div className="hero-grid">
-            <div><h1 id="intro-title">Alex Liu</h1><p className="hero-title">Full-stack software, hardware, and infrastructure</p></div>
+            <div><h1 id="intro-title">Alex Liu</h1><p className="hero-title">Building software, data systems, and reliable infrastructure.</p></div>
             <div className="hero-profile">
               <img src="/me.jpg" alt="Alex Liu" />
-              <div><p>I am a Computer Science student with a GIS certificate, building full-stack software while working hands-on with server hardware, data-center infrastructure, backend services, and technical products.</p><div className="hero-actions"><a className="text-link" href="#work">Experience <ArrowUpRight aria-hidden="true" size={15} /></a><button type="button" className="text-link" onClick={() => setOverlay({ type: "resume" })}>View resume <ArrowUpRight aria-hidden="true" size={15} /></button></div></div>
+              <div><p>I'm a Computer Science student at the University of Florida with hands-on experience in full-stack development, data engineering, infrastructure operations, and automation. I enjoy building useful applications and understanding the systems that power them.</p><div className="hero-actions"><a className="text-link" href="#work">Experience <ArrowUpRight aria-hidden="true" size={15} /></a><button type="button" className="text-link" onClick={() => setOverlay({ type: "resume" })}>View resume <ArrowUpRight aria-hidden="true" size={15} /></button></div></div>
             </div>
           </div>
           <div className="hero-rule" />
@@ -335,61 +405,47 @@ export default function App() {
             <h2 id="introduction-title">Engineering across the stack.</h2>
           </div>
           <div className="introduction-copy">
-            <p>
-              Hi, I am Alex Liu, a junior studying Computer Science at the University of Florida. I am interested in
-              hardware, systems, infrastructure, software, and data.
-            </p>
-            <p>
-              I have worked on both full-stack software and hardware projects. On the software side, I have built
-              full-stack and AI applications. On the hardware and infrastructure side, I have worked with bare-metal
-              servers, GPUs, networking, BIOS and firmware, and data-center equipment.
-            </p>
-            <p>
-              I like learning how different parts of technology fit together, from hardware and operating systems to
-              backend services and user-facing applications. I am looking for opportunities to keep growing as an
-              engineer, work on real technical problems, and build systems that are reliable and useful.
-            </p>
-            <p>
-              My GIS background also informs how I approach spatial data, mapping workflows, and transportation-safety
-              data work alongside my broader software and systems interests.
-            </p>
+            <p>I'm a junior studying Computer Science at the University of Florida, pursuing a certificate in Geospatial Information Analysis. My interests span software engineering, data systems, and infrastructure, particularly where these areas come together to solve real-world problems.</p>
+            <p>My professional experience has given me the opportunity to work on both sides of engineering. At Database Mart, I worked directly with production bare-metal servers, handling hardware provisioning, networking, troubleshooting, and firmware automation. At UF's GeoPlan Center, I work with transportation-safety data and have developed internal software tools that automate repetitive review tasks, integrate AI services, and improve data validation.</p>
+            <p>Outside of work, I build software projects that connect these interests. Saturday Lab combines statistical modeling with a web application and automated publishing pipelines. Geography Dashboard brings together geospatial data processing, backend development, databases, and cloud deployment. Other projects have given me experience in cybersecurity, computer vision, and collaborative software development.</p>
+            <p>What I find most rewarding is understanding how different parts of a system fit together. I care about more than getting an application to run: I want to understand how it is built, how it handles failures, how it can be maintained, and whether it genuinely helps the people using it.</p>
           </div>
         </section>
 
         <section id="work" className="work-section" aria-labelledby="work-title">
-          <div className="section-intro"><p className="section-index">Experience</p><div><h2 id="work-title">Professional work</h2><p>Technical experience across operations, public-safety data, and student engineering communities.</p></div></div>
+          <div className="section-intro"><p className="section-index">Experience</p><div><h2 id="work-title">Professional work</h2><p>From production data-center operations to internal software tools and transportation-data quality, I've worked on both the infrastructure that runs systems and the workflows people depend on.</p></div></div>
           <div className="experience-list">{experience.map((item) => <article className="experience-row" key={`${item.organization}-${item.role}`}><div className="experience-dates"><span>{item.period}</span><span>{item.location}</span></div><div className="experience-body"><h3>{item.role}</h3><p className="organization">{item.organization}</p><p className="experience-summary">{item.description}</p><button type="button" className="detail-trigger" onClick={() => setOverlay({ type: "experience", item })}>Read experience <ArrowUpRight size={15} /></button></div><div className="tag-list" aria-label={`${item.organization} skills`}>{item.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></article>)}</div>
         </section>
 
         <section id="projects" className="projects-section" aria-labelledby="projects-title">
-          <div className="projects-heading"><div><p className="section-index">Projects</p><h2 id="projects-title">Selected projects</h2></div><p>Full-stack tools, technical prototypes, and course work that gave me room to build from first principles.</p></div>
+          <div className="projects-heading"><div><p className="section-index">Projects</p><h2 id="projects-title">Selected projects</h2></div><p>Selected work spanning full-stack applications, data and AI systems, infrastructure automation, and practical experiments. Open a project for the technical decisions and challenges behind it.</p></div>
           <div className="project-grid">{projects.map((project, index) => <article className={`project-card project-card-${index + 1}`} key={project.name}><div className="project-number">0{index + 1}</div><div><p className="project-subtitle">{project.subtitle}</p><h3>{project.name}</h3></div><p className="project-summary">{project.summary}</p>{project.screenshots?.[0] ? <img className="project-preview" src={project.screenshots[0]} alt="" /> : null}<div className="project-bottom"><div className="stack-list">{project.stack.map((tech) => <span key={tech}>{tech}</span>)}</div><button type="button" className="detail-trigger" onClick={() => setOverlay({ type: "project", item: project })}>View project <ArrowUpRight size={15} /></button></div></article>)}</div>
         </section>
 
         <section id="about" className="about-section" aria-labelledby="about-title">
-          <div className="about-copy"><p className="section-index">About</p><h2 id="about-title">A practical technical perspective.</h2><p>I am a Computer Science student at the University of Florida. The work I return to most often sits between code and context: mapping platforms, analytics dashboards, internal workflows, and systems that need to work outside a classroom demo.</p><p>I am especially interested in software engineering, geospatial workflows, data quality, and the operational details behind a reliable product.</p></div>
-          <aside className="profile-panel"><dl><div><dt>Education</dt><dd>B.S. Computer Science, expected 2028<br />GIS Certificate / University of Florida</dd></div><div><dt>GPA</dt><dd>3.78 / 4.00</dd></div><div><dt>Focus</dt><dd>Full-stack engineering, server hardware, infrastructure, GIS, and data quality</dd></div><div><dt>Outside work</dt><dd>OpenStreetMap volunteer since 2020; photography, badminton, and pickleball</dd></div></dl></aside>
+          <div className="about-copy"><p className="section-index">About</p><h2 id="about-title">A practical technical perspective.</h2><p>I study Computer Science at the University of Florida and am pursuing a certificate in Geospatial Information Analysis. My experiences have taken me from physical servers in a data center to backend APIs, geospatial analytics, internal automation tools, and independent software projects. I enjoy crossing those boundaries because it helps me understand how individual technical decisions affect the larger system.</p><p>I value careful troubleshooting, clear interfaces, verifiable results, and tools that are useful outside a demo. Whether I'm reviewing imperfect transportation data, improving a firmware workflow, or maintaining an automated publishing pipeline, I try to identify the real problem first and make the solution easier to understand, test, and maintain.</p></div>
+          <aside className="profile-panel"><dl><div><dt>Education</dt><dd>B.S. Computer Science, expected May 2028<br />Geospatial Information Analysis Certificate / University of Florida</dd></div><div><dt>GPA</dt><dd>3.78 / 4.00</dd></div><div><dt>Focus</dt><dd>Software Engineering / Data & Applied AI / DevOps & Infrastructure</dd></div><div><dt>Outside work</dt><dd>OpenStreetMap volunteer since 2020; photography, badminton, and pickleball</dd></div></dl></aside>
         </section>
 
         <section className="skills-section" aria-labelledby="skills-title"><div><p className="section-index">Skills</p><h2 id="skills-title">Tools I use</h2></div><div className="skills-list">{skillGroups.map(([title, ...skills]) => <div className="skill-row" key={title}><h3>{title}</h3><p>{skills.join(" / ")}</p></div>)}</div></section>
         <section className="beyond-work-section" aria-labelledby="beyond-work-title">
           <div className="beyond-work-heading"><p className="section-index">Beyond work</p><h2 id="beyond-work-title">The context behind the work.</h2></div>
           <div className="beyond-work-content">
-            <p className="beyond-work-intro">Outside of coursework and engineering projects, I keep a few long-running interests that shape how I learn, contribute, and spend time in my community.</p>
+            <p className="beyond-work-intro">Outside of engineering projects, I keep up with mapping, teaching, community events, photography, and racket sports. Those interests have taught me to pay attention to details, collaborate with different people, and stay curious about the places and systems around me.</p>
             <div className="beyond-work-glimpse" aria-label="Beyond work highlights"><span>OpenStreetMap contributor since 2020</span><span>Mentoring and campus community</span><span>Lion and dragon performance</span><span>Photo walks and racket sports</span></div>
             <button type="button" className="beyond-work-toggle" aria-expanded={beyondWorkOpen} aria-controls="beyond-work-details" onClick={() => setBeyondWorkOpen((isOpen) => !isOpen)}>{beyondWorkOpen ? "Show less" : "Read beyond work"} <span aria-hidden="true">{beyondWorkOpen ? "−" : "+"}</span></button>
             {beyondWorkOpen ? (
               <div id="beyond-work-details" className="beyond-work-details">
-                <article><div className="beyond-work-item-heading"><img src="/logos/osm_logo.svg" alt="OpenStreetMap logo" /><h3>OpenStreetMap</h3></div><p>I have contributed to OpenStreetMap since 2020, maintaining roads, places, and land-use data through imagery, local context, and careful tagging. It is where my interest in mapping became a sustained practice in open data and spatial quality.</p><External href="https://www.openstreetmap.org/">Explore OpenStreetMap</External></article>
-                <article><div className="beyond-work-item-heading"><img src="/logos/casa_logo.jpg" alt="UF CASA logo" /><h3>Mentoring and community</h3></div><p>I have tutored students in competitive mathematics and logic, and I enjoy the work of making complex ideas easier to approach. At UF, I also help create cultural and community spaces through the Chinese American Student Association.</p><External href="https://orgs.studentinvolvement.ufl.edu/Organization/Chinese-American-Student-Association">UF CASA</External></article>
-                <article><div className="beyond-work-item-heading"><img src="/logos/jiating_logo.jpg" alt="JiaTing Lion and Dragon logo" /><h3>Cultural performance</h3></div><p>With JiaTing Lion & Dragon, I performed traditional lion and dragon dance at university and community events. The work calls for rehearsal discipline, nonverbal coordination, and trust in a team moving as one.</p><External href="https://jiatingliondragon.com/">JiaTing Lion & Dragon</External></article>
-                <article><h3>Photography and exploration</h3><p>Photo walks and road trips are a way to pay attention to places beyond a screen. They pair naturally with mapping: noticing how streets, signs, landmarks, and everyday public spaces fit together.</p></article>
-                <article><h3>Off the clock</h3><p>I play badminton and pickleball, usually for the combination of strategy, movement, and good company. I also make time for audiobooks when I am away from a keyboard.</p></article>
+                <article><div className="beyond-work-item-heading"><img src="/logos/osm_logo.svg" alt="OpenStreetMap logo" /><h3>OpenStreetMap</h3></div><p>I've contributed to OpenStreetMap since 2020, editing roads, places, and land-use information using imagery, local context, and careful tagging. Long-term mapping has made me appreciate the importance of good source data: small corrections can improve navigation, analysis, and tools used by people I may never meet.</p><External href="https://www.openstreetmap.org/">Explore OpenStreetMap</External></article>
+                <article><div className="beyond-work-item-heading"><img src="/logos/casa_logo.jpg" alt="UF CASA logo" /><h3>Mentoring and community</h3></div><p>I've taught mathematics and logic to younger students and enjoy making unfamiliar ideas easier to approach. At UF, I also contribute to student organizations that create professional, cultural, and social spaces where people can learn and connect.</p><External href="https://orgs.studentinvolvement.ufl.edu/Organization/Chinese-American-Student-Association">UF CASA</External></article>
+                <article><div className="beyond-work-item-heading"><img src="/logos/jiating_logo.jpg" alt="JiaTing Lion and Dragon logo" /><h3>Cultural performance</h3></div><p>Performing lion and dragon dance taught me a different kind of teamwork: timing, nonverbal communication, preparation, and trusting other people to do their part. It was a welcome challenge outside a computer screen.</p><External href="https://jiatingliondragon.com/">JiaTing Lion & Dragon</External></article>
+                <article><h3>Photography and exploration</h3><p>Photography walks and road trips make me more observant about places, roads, signs, and everyday public spaces. That curiosity overlaps naturally with my interest in geography and OpenStreetMap.</p></article>
+                <article><h3>Off the clock</h3><p>I play badminton and pickleball, and I enjoy the balance of movement, strategy, and friendly competition. I also listen to audiobooks while traveling.</p></article>
               </div>
             ) : null}
           </div>
         </section>
-        <section className="contact-section" aria-labelledby="contact-title"><p className="section-index">Contact</p><h2 id="contact-title">Let's make something useful.</h2><p>I am open to internship, research, and engineering opportunities.</p><div className="contact-links"><a href={`mailto:${site.email}`}><Mail size={17} />Email</a><a href={site.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17} />LinkedIn</a><a href={site.github} target="_blank" rel="noreferrer"><Github size={17} />GitHub</a><a href="/zh"><MapPin size={17} />Chinese site</a></div></section>
+        <section className="contact-section" aria-labelledby="contact-title"><p className="section-index">Contact</p><h2 id="contact-title">Let's build something useful.</h2><p>I'm interested in 2027 internships and opportunities across software engineering, data and applied AI, and DevOps/infrastructure. If my work overlaps with something your team is building, I'd be glad to connect.</p><div className="contact-links"><a href={`mailto:${site.email}`}><Mail size={17} />Email</a><a href={site.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17} />LinkedIn</a><a href={site.github} target="_blank" rel="noreferrer"><Github size={17} />GitHub</a><a href="/zh"><MapPin size={17} />Chinese site</a></div></section>
       </main>
 
       <footer className="site-footer"><p>Thoughtful systems, built for the real world.</p><div><span>Alex Liu</span><span>2026</span></div></footer>
