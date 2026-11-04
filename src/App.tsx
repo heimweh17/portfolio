@@ -405,10 +405,8 @@ export default function App() {
             <h2 id="introduction-title">Engineering across the stack.</h2>
           </div>
           <div className="introduction-copy">
-            <p>I'm a junior studying Computer Science at the University of Florida, pursuing a certificate in Geospatial Information Analysis. My interests span software engineering, data systems, and infrastructure, particularly where these areas come together to solve real-world problems.</p>
-            <p>My professional experience has given me the opportunity to work on both sides of engineering. At Database Mart, I worked directly with production bare-metal servers, handling hardware provisioning, networking, troubleshooting, and firmware automation. At UF's GeoPlan Center, I work with transportation-safety data and have developed internal software tools that automate repetitive review tasks, integrate AI services, and improve data validation.</p>
-            <p>Outside of work, I build software projects that connect these interests. Saturday Lab combines statistical modeling with a web application and automated publishing pipelines. Geography Dashboard brings together geospatial data processing, backend development, databases, and cloud deployment. Other projects have given me experience in cybersecurity, computer vision, and collaborative software development.</p>
-            <p>What I find most rewarding is understanding how different parts of a system fit together. I care about more than getting an application to run: I want to understand how it is built, how it handles failures, how it can be maintained, and whether it genuinely helps the people using it.</p>
+            <p>Much of my work sits at the intersection of software and real-world operations. At Database Mart, I provisioned and troubleshot bare-metal servers and built a firmware-update automation workflow. At UF's GeoPlan Center, I developed internal tools for transportation-data review, reducing average processing time by approximately 75%.</p>
+            <p>My personal projects take these interests further. Saturday Lab combines predictive modeling with a Next.js application and automated CI/CD publishing, while Geography Dashboard brings together geospatial data processing, backend APIs, databases, and cloud deployment. I enjoy understanding systems end to end—and making them reliable, maintainable, and useful to the people who depend on them.</p>
           </div>
         </section>
 
