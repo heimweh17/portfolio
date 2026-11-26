@@ -7,7 +7,6 @@ import App from "./App";
 import { BeyondWorkPage, ExperienceDetailPage, HomePage, NotFound, ProjectPage, ResumePage } from "./portfolio/Pages";
 
 const collectAnalytics = import.meta.env.PROD && ["aliu.me", "www.aliu.me"].includes(window.location.hostname);
-const visitorMapImage = "https://mapmyvisitors.com/map.png?d=zNM4cOcd5qWFePeDgnSpq0u6Nmw2W5onrCMDSEIVdhE&cl=ffffff";
 
 if (collectAnalytics) {
   Object.assign(window, { sc_project: 13371545, sc_invisible: 1, sc_security: "f5ae3061" });
@@ -48,6 +47,5 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />
     {collectAnalytics && <Analytics />}
-    {collectAnalytics && <img src={visitorMapImage} alt="" width={1} height={1} hidden />}
   </StrictMode>,
 );
