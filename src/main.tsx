@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, Navigate, Outlet, RouterProvider, ScrollRestoration } from "react-router-dom";
 import "./index.css";
 import App from "./App";
-import { ExperienceDetailPage, HomePage, NotFound, ProjectPage, ResumePage } from "./portfolio/Pages";
+import { BeyondWorkPage, ExperienceDetailPage, HomePage, NotFound, ProjectPage, ResumePage } from "./portfolio/Pages";
 
 const router = createBrowserRouter([
   {
@@ -16,8 +16,10 @@ const router = createBrowserRouter([
           { path: "projects", element: <Navigate replace to="/#projects" /> },
           { path: "projects/:slug", element: <ProjectPage /> },
           { path: "experience", element: <Navigate replace to="/#experience" /> },
+          { path: "experience/uf-sase", element: <Navigate replace to="/beyond-work#uf-sase" /> },
           { path: "experience/:slug", element: <ExperienceDetailPage /> },
           { path: "about", element: <Navigate replace to="/#about" /> },
+          { path: "beyond-work", element: <BeyondWorkPage /> },
           { path: "resume", element: <ResumePage /> },
           { path: "*", element: <NotFound /> },
         ],

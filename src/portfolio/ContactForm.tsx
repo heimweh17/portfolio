@@ -43,10 +43,10 @@ export default function ContactForm() {
       <fieldset disabled={status === "sending"}>
         <legend>Leave a message</legend>
         <div className="folio-contact-fields">
-          <label>Name <span>(optional)</span><input name="name" autoComplete="name" maxLength={100} /></label>
-          <label>Email <span>(for a reply)</span><input name="email" type="email" autoComplete="email" maxLength={254} /></label>
+          <label><span>Name <small>(optional)</small></span><input name="name" autoComplete="name" maxLength={100} /></label>
+          <label><span>Email <small>(for a reply)</small></span><input name="email" type="email" autoComplete="email" maxLength={254} /></label>
         </div>
-        <label>Message<textarea name="message" rows={4} maxLength={4000} required onInput={(event) => event.currentTarget.setCustomValidity("")} /></label>
+        <label>Message<textarea name="message" rows={2} maxLength={4000} required onInput={(event) => event.currentTarget.setCustomValidity("")} /></label>
         <button className="folio-button" type="submit">{status === "sending" ? "Sending…" : "Send message"}</button>
       </fieldset>
       <p className="folio-form-status" role="status">

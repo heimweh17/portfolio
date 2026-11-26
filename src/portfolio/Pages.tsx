@@ -66,7 +66,7 @@ function Contact() {
           <h2 id="contact-title">Contact</h2>
           <p>I’m looking for a 2027 internship in software, data, infrastructure, or GIS.</p>
           <div className="folio-social">
-            <a href={`mailto:${site.email}`}><Mail size={18} aria-hidden="true" /> Email</a>
+            <a className="folio-email" href={`mailto:${site.email}`}><Mail size={18} aria-hidden="true" /> {site.email}</a>
             <a href={site.linkedin} target="_blank" rel="noreferrer"><Linkedin size={18} aria-hidden="true" /> LinkedIn</a>
             <a href={site.github} target="_blank" rel="noreferrer"><Github size={18} aria-hidden="true" /> GitHub</a>
           </div>
@@ -80,10 +80,11 @@ function Contact() {
 export function HomePage() {
   return (
     <>
-      <section className="folio-wrap folio-hero" aria-labelledby="hero-name">
+      <section id="overview" tabIndex={-1} className="folio-wrap folio-hero" aria-labelledby="hero-name">
         <div className="folio-hero-copy">
           <h1 id="hero-name" tabIndex={-1}>Alex Liu</h1>
-          <p className="folio-lead">I study computer science and GIS at the University of Florida. At work, I review traffic crash data and write tools to help with that review. On my own, I build things around maps and college football.</p>
+          <p className="folio-lead">I’m Alex, a computer science student at the University of Florida, where I also study GIS. I’ve been editing OpenStreetMap since high school, and I still catch myself looking up new places on a map after a trip. At UF’s GeoPlan Center, I review Florida crash records and write tools to help with that work.</p>
+          <p className="folio-lead">I spent a summer in Kansas City setting up and repairing servers. I follow college football closely enough that I ended up building my own rankings site. I also like getting away from my desk to take photos or play a few games of badminton or pickleball.</p>
         </div>
         <img className="folio-portrait" src="/me.jpg" alt="Alex Liu outdoors by the water" fetchPriority="high" />
       </section>
@@ -101,6 +102,8 @@ export function HomePage() {
       </section>
 
       <About />
+      <Education />
+      <Skills />
       <Contact />
     </>
   );
@@ -111,7 +114,9 @@ function Gallery({ title, images }: { title: string; images: string[] }) {
   const count = images.length;
   return (
     <figure className="folio-gallery">
-      <img key={images[index]} src={images[index]} alt={`${title} screenshot ${index + 1} of ${count}`} />
+      <a className="folio-gallery-image" href={images[index]} target="_blank" rel="noreferrer" aria-label={`Open ${title} screenshot ${index + 1} at full size`}>
+        <img key={images[index]} src={images[index]} alt={`${title} screenshot ${index + 1} of ${count}`} />
+      </a>
       <figcaption>
         <span aria-live="polite">Screenshot {index + 1} of {count}</span>
         {count > 1 && <div>
@@ -160,7 +165,7 @@ export function ExperienceDetailPage() {
 
   return (
     <article className="folio-wrap folio-page folio-detail">
-      <Back to={item === campusRole ? "/#about" : "/#experience"}>{item === campusRole ? "Beyond work" : "Experience"}</Back>
+      <Back to="/#experience">Experience</Back>
       <header className="folio-page-head">
         {item.logo && <img className="folio-detail-logo" src={item.logo} alt="" />}
         <p className="folio-project-type">{item.role}</p>
@@ -178,21 +183,86 @@ export function ExperienceDetailPage() {
 
 function About() {
   return (
-    <>
-      <section id="about" tabIndex={-1} className="folio-wrap folio-section folio-about" aria-labelledby="about-title">
-        <img src="/photos/photo2.jpg" alt="West Lake in Hangzhou" loading="lazy" />
-        <div>
-          <h2 id="about-title">Beyond work</h2>
-          <p>I’ve edited roads and places on OpenStreetMap since 2020. I also take photos on road trips, play badminton and pickleball, and have performed lion and dragon dance with JiaTing.</p>
-          <p>At UF, I’ve helped run campus events with SASE and taken part in UF CASA. I’ve also taught math and logic to younger students.</p>
-          {campusRole && <Link className="folio-more" to={`/experience/${campusRole.slug}`}>UF SASE <ArrowUpRight size={16} aria-hidden="true" /></Link>}
-        </div>
-      </section>
-      <section id="skills" tabIndex={-1} className="folio-wrap folio-section folio-tools" aria-labelledby="skills-title">
-        <div><h2 id="skills-title">Skills</h2><p>B.S. Computer Science and a Geospatial Information Analysis certificate at UF. Expected graduation May 2028. GPA 3.78.</p></div>
-        <dl className="folio-skills">{skillGroups.map(([title, ...skills]) => <div key={title}><dt>{title}</dt><dd>{skills.join(" · ")}</dd></div>)}</dl>
-      </section>
-    </>
+    <section id="about" tabIndex={-1} className="folio-wrap folio-section folio-about" aria-labelledby="about-title">
+      <img src="/photos/photo2.jpg" alt="West Lake in Hangzhou" loading="lazy" />
+      <div>
+        <h2 id="about-title">Beyond work</h2>
+        <p>In high school, I taught math at summer camp. At UF, I’ve helped put on campus events and performed lion and dragon dance. I still make time for maps, road trips, badminton, and pickleball.</p>
+        <Link className="folio-more" to="/beyond-work">More about my life outside work <ArrowUpRight size={16} aria-hidden="true" /></Link>
+      </div>
+    </section>
+  );
+}
+
+export function BeyondWorkPage() {
+  return (
+    <article className="folio-wrap folio-page folio-beyond">
+      <Back to="/#about">Home</Back>
+      <header className="folio-page-head"><Title>Beyond work</Title></header>
+      <div className="folio-activities">
+        <section>
+          <h2>OpenStreetMap</h2>
+          <p>I’ve been a volunteer mapper since 2020. Before adding a road or changing how a place is tagged, I compare satellite images and street-level photos with what I know about the area. Sometimes a road trip gives me a stretch of map to revisit when I get home.</p>
+        </section>
+        <section>
+          <h2>Buchholz Math Team</h2>
+          <p>I volunteered at the team’s summer camps in 2022 and 2023, teaching math to elementary and middle school students. If someone got stuck, I liked asking them to walk me through the step where they got lost.</p>
+        </section>
+        <section id="uf-sase" tabIndex={-1}>
+          <h2>Campus events</h2>
+          <p>With UF SASE, I help set up career and technical events and coordinate things on the day. I’ve also helped put on cultural events with the Chinese American Student Association.</p>
+        </section>
+        <section>
+          <h2>Lion and dragon dance</h2>
+          <p>I performed with JiaTing at campus and community events. Rehearsals taught me to pay attention to cues and keep time with the rest of the group.</p>
+        </section>
+        <section>
+          <h2>Badminton</h2>
+          <p>I usually play doubles. I like the quick rallies and how much good positioning depends on knowing where your partner is.</p>
+        </section>
+        <section>
+          <h2>Pickleball</h2>
+          <p>I play casual games and still get a little too interested in where a shot lands. It’s also a good way to meet people outside my classes.</p>
+        </section>
+        <section>
+          <h2>Family, photography, and road trips</h2>
+          <p>I like spending time with family. On road trips, I usually have an audiobook on and stop for photos when a place catches my eye.</p>
+        </section>
+      </div>
+    </article>
+  );
+}
+
+const coursework = [
+  "Operating Systems", "Data Structures & Algorithms", "Software Engineering",
+  "Information & Database Systems", "Engineering Statistics", "Foundations of GIS",
+  "Digital Image Processing & Remote Sensing", "Physical Geography",
+];
+
+function Education() {
+  return (
+    <section id="education" tabIndex={-1} className="folio-wrap folio-section folio-education" aria-labelledby="education-title">
+      <div>
+        <h2 id="education-title">Education</h2>
+        <h3>University of Florida</h3>
+        <p>B.S. in Computer Science<br />Certificate in Geospatial Information Analysis</p>
+        <p className="folio-education-meta">Expected May 2028 <span aria-hidden="true">·</span> GPA 3.78</p>
+      </div>
+      <div className="folio-coursework">
+        <h3>Relevant coursework</h3>
+        <ul>{coursework.map((course) => <li key={course}>{course}</li>)}</ul>
+      </div>
+      <img src="/logos/uf_logo.png" alt="Florida Gators" width={82} height={82} loading="lazy" />
+    </section>
+  );
+}
+
+function Skills() {
+  return (
+    <section id="skills" tabIndex={-1} className="folio-wrap folio-section folio-tools" aria-labelledby="skills-title">
+      <h2 id="skills-title">Skills</h2>
+      <dl className="folio-skills">{skillGroups.map(([title, ...skills]) => <div key={title}><dt>{title}</dt><dd>{skills.join(" · ")}</dd></div>)}</dl>
+    </section>
   );
 }
 

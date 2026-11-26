@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { ArrowUpRight } from "lucide-react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import SectionIndex from "./portfolio/SectionIndex";
 import "./portfolio/portfolio.css";
 
 export default function App() {
@@ -22,17 +22,7 @@ export default function App() {
   return (
     <div className="folio">
       <a className="folio-skip" href="#main-content">Skip to content</a>
-      <header className="folio-header">
-        <div className="folio-wrap folio-header-inner">
-          <Link className="folio-brand" to="/">Alex Liu</Link>
-          <nav aria-label="Main navigation">
-            <Link to="/#experience">Experience</Link>
-            <Link to="/#projects">Projects</Link>
-            <Link to="/#about">About</Link>
-          </nav>
-          <Link className="folio-resume-link" to="/resume">Résumé <ArrowUpRight aria-hidden="true" size={16} /></Link>
-        </div>
-      </header>
+      <SectionIndex />
       <main id="main-content" ref={main} tabIndex={-1}><div className="folio-route" key={pathname}><Outlet /></div></main>
       <footer className="folio-footer">
         <div className="folio-wrap">
