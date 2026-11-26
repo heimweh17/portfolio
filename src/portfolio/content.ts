@@ -46,13 +46,13 @@ export const experience: Experience[] = [
     period: "May 2026 - Jul 2026",
     location: "Kansas City, Missouri",
     description:
-      "Worked in a production hosting environment across the physical server lifecycle: provisioning customer-configured machines, preparing systems for deployment, troubleshooting failures, and automating repetitive firmware maintenance.",
+      "I set up bare-metal servers for hosting customers, handled hardware repairs, and built a tool that checks the motherboard before updating its BIOS.",
     bullets: [
-      "Server provisioning: Provisioned and deployed approximately 60-70 bare-metal servers to customer specifications. Configured storage devices, network connectivity, and IPMI/BMC out-of-band management, then checked system health and readiness before handoff.",
-      "Operational troubleshooting: Completed more than 300 service and maintenance requests involving server boot issues, storage/RAID problems, connectivity failures, thermal alerts, component replacements, and hardware upgrades. Worked from reported symptoms through diagnosis, repair, and post-maintenance verification.",
-      "Firmware automation: Developed a FreeDOS-based BIOS update workflow for roughly 30 Supermicro motherboard models. Used DOS Batch, PowerShell, and DMI/SMBIOS information to detect the motherboard, identify installed firmware, and match it with a validated update package and target version.",
-      "Fail-safe design: Designed the automation to stop rather than guess when hardware identification or firmware mapping was uncertain, and to skip unnecessary updates when the installed version was already current. The workflow called the original vendor flashing utilities; it did not replace or rewrite the firmware-writing tools.",
-      "Testing and reliability: Performed hardware stress tests, BMC-based health checks, and post-repair diagnostics to detect instability and confirm that systems were ready to return to service. The experience reinforced the importance of repeatable operational procedures, evidence-based troubleshooting, and validation after a change.",
+      "Provisioned and deployed approximately 60-70 bare-metal servers to customer specifications. Configured storage devices, network connectivity, and IPMI/BMC out-of-band management, then checked system health and readiness before handoff.",
+      "Completed more than 300 service and maintenance requests involving server boot issues, storage/RAID problems, connectivity failures, thermal alerts, component replacements, and hardware upgrades. Worked from reported symptoms through diagnosis, repair, and post-maintenance verification.",
+      "Developed a FreeDOS-based BIOS update workflow for roughly 30 Supermicro motherboard models. Used DOS Batch, PowerShell, and DMI/SMBIOS information to detect the motherboard, identify installed firmware, and match it with a validated update package and target version.",
+      "Designed the automation to stop rather than guess when hardware identification or firmware mapping was uncertain, and to skip unnecessary updates when the installed version was already current. The workflow calls the vendor’s flashing utilities.",
+      "Performed hardware stress tests, BMC-based health checks, and post-repair diagnostics to detect instability and confirm that systems were ready to return to service.",
     ],
     tags: [
       "Infrastructure Operations",
@@ -70,14 +70,14 @@ export const experience: Experience[] = [
     period: "Apr 2026 - Present",
     location: "Gainesville, Florida",
     description:
-      "Work with Florida traffic crash records and roadway data, combining geocoding and classification review with internally developed automation tools that make an evidence-heavy workflow faster and easier to verify.",
+      "I check where Florida crashes happened and how they’re classified. I also built review tools that cut average processing time by about 75% in the assisted workflow.",
     bullets: [
-      "Transportation-data review: Review crash reports, police narratives, diagrams, and geographic context to validate crash locations, roadway classifications, and related records used in transportation-safety analysis. This work begins with imperfect real-world data, not pre-cleaned demonstration datasets.",
-      "Workflow automation: Built an internal Chrome extension and local Node.js backend that extract relevant text and images from crash-report PDFs, send appropriate inputs to AI services, and return structured classification recommendations within the review workflow.",
-      "Measured impact: Reduced average processing time in the assisted review workflow by approximately 75% while keeping the reviewer responsible for interpreting evidence, verifying recommendations, and entering final values. The tool assists human decisions; it does not automatically finalize or submit records.",
-      "Independent QA tooling: Built a separate diagram quality-assurance tool to compare crash diagrams with police narratives and vehicle information, highlighting potential contradictions for human review. Structured outputs and explicit checks make uncertain results easier to investigate.",
-      "Integration debugging: Diagnosed failures across PDF preprocessing, the Node.js service, and third-party vision-model APIs. When an upstream model stopped accepting the expected image inputs, isolated the API compatibility issue, selected a compatible approach, and adapted preprocessing to changed image-request limits.",
-      "Engineering approach: Prefer deterministic extraction when information can be read directly, and reserve AI interpretation for ambiguous content. Expose evidence and independent checks instead of treating model output as authoritative; this design choice improves both reviewer trust and operational reliability.",
+      "Review crash reports, police narratives, diagrams, and geographic context to validate crash locations, roadway classifications, and related records used in transportation-safety analysis.",
+      "Built an internal Chrome extension and local Node.js backend that extract relevant text and images from crash-report PDFs, send appropriate inputs to AI services, and return structured classification recommendations within the review workflow.",
+      "Reduced average processing time in the assisted review workflow by approximately 75% while keeping the reviewer responsible for interpreting evidence, verifying recommendations, and entering final values.",
+      "Built a separate diagram quality-assurance tool to compare crash diagrams with police narratives and vehicle information, highlighting potential contradictions for human review. Structured outputs and explicit checks make uncertain results easier to investigate.",
+      "Diagnosed failures across PDF preprocessing, the Node.js service, and third-party vision-model APIs. When an upstream model stopped accepting the expected image inputs, isolated the API compatibility issue, selected a compatible approach, and adapted preprocessing to changed image-request limits.",
+      "Prefer deterministic extraction when information can be read directly, and reserve AI interpretation for ambiguous content. Expose evidence and independent checks instead of treating model output as authoritative; this design choice improves both reviewer trust and operational reliability.",
     ],
     tags: [
       "Internal Tooling",
@@ -95,7 +95,7 @@ export const experience: Experience[] = [
     period: "Aug 2025 - Present",
     location: "Gainesville, Florida",
     description:
-      "Help organize technical community events, professional development programming, and member-facing activities at the University of Florida.",
+      "I help organize professional and social events for UF SASE.",
     bullets: [
       "Coordinated event logistics and member communications for professional and community programs, including events attended by more than 100 participants.",
       "Collaborated with fellow student organizers to prepare activities, support on-site execution, and make events welcoming and useful for attendees.",
@@ -113,17 +113,17 @@ export const projects: Project[] = [
   {
     slug: "saturday-lab",
     name: "Saturday Lab",
-    subtitle: "College Football Analytics, Data Pipelines & CI/CD",
+    subtitle: "College football rankings & forecasts",
     summary:
-      "A college-football analytics platform combining opponent-adjusted forecasts and interactive team/game reports with automated data ingestion, validation, and publishing. Frequent live-score updates run separately from formal weekly rankings.",
+      "I built a site for comparing college football teams and following the season. Live scores update separately from the weekly rankings.",
     highlights: [
-      "Application: Built a Next.js and TypeScript site with searchable FBS rankings, game centers, team-season reports, historical snapshots, matchup exploration, and model documentation. The static build generates more than 9,000 pages, preserving navigable game and ranking history.",
-      "Data and modeling: Developed Python analytics over nine seasons, more than 7,500 historical games, and 138 FBS teams. The opponent-adjusted model produces win probabilities and rankings, with time-ordered retrospective evaluation rather than training on information from future games.",
-      "Evaluation and transparency: Preserved historical pregame predictions and made model audits, calibration results, and research outputs available for inspection. Historical 2023-2025 evaluation is approximately 72% accurate in retrospective backtesting, not a guarantee of future accuracy or a pristine unseen holdout.",
-      "CI/CD: Built GitHub Actions workflows that acquire data, verify source completeness, run Python tests and TypeScript/Python consistency checks, lint, build the Next.js static export, and publish validated artifacts to GitHub Pages.",
-      "Scheduling: Integrated an independent QStash refresh clock with GitHub Actions, with slower native GitHub schedules as a fallback. Formal model and ranking snapshots follow a separate weekly publication cycle.",
-      "Reliability: Added retries for transient refresh failures, shared concurrency controls to prevent conflicting data writes, protection against duplicate weekly releases, and readiness checks that defer a publication when upstream game data is incomplete.",
-      "System boundaries: Kept frequently changing scores and game status in a lightweight feed that can update without rebuilding the complete static archive. Browser reads fall back to the data bundled with the last published site if the newer remote feed is unavailable.",
+      "Built a Next.js and TypeScript site with searchable FBS rankings, game centers, team-season reports, historical snapshots, matchup exploration, and model documentation. The static build generates more than 9,000 pages, preserving navigable game and ranking history.",
+      "Developed Python analytics over nine seasons, more than 7,500 historical games, and 138 FBS teams. The opponent-adjusted model produces win probabilities and rankings, with time-ordered retrospective evaluation using only information available before each evaluated game.",
+      "Preserved historical pregame predictions and made model audits, calibration results, and research outputs available for inspection. The model picked the winner about 72% of the time in retrospective tests on 2023–2025 games. Those seasons were part of model development.",
+      "Built GitHub Actions workflows that acquire data, verify source completeness, run Python tests and TypeScript/Python consistency checks, lint, build the Next.js static export, and publish validated artifacts to GitHub Pages.",
+      "Integrated an independent QStash refresh clock with GitHub Actions, with slower native GitHub schedules as a fallback. Formal model and ranking snapshots follow a separate weekly publication cycle.",
+      "Added retries for transient refresh failures, shared concurrency controls to prevent conflicting data writes, protection against duplicate weekly releases, and readiness checks that defer a publication when upstream game data is incomplete.",
+      "Kept frequently changing scores and game status in a lightweight feed that can update without rebuilding the complete static archive. Browser reads fall back to the data bundled with the last published site if the newer remote feed is unavailable.",
     ],
     stack: [
       "Next.js",
@@ -133,23 +133,23 @@ export const projects: Project[] = [
       "QStash",
       "GitHub Pages",
     ],
-    screenshots: ["/screenshots/saturday-lab-rankings.png", "/screenshots/saturday-lab-matchup.png"],
+    screenshots: ["/screenshots/saturday-lab-desktop-rankings.jpg", "/screenshots/saturday-lab-desktop-matchup.jpg", "/screenshots/saturday-lab-desktop-trends.jpg", "/screenshots/saturday-lab-matchup.png"],
     links: { demo: "https://heimweh17.github.io/saturday-lab/", code: "https://github.com/heimweh17/saturday-lab" },
   },
   {
     slug: "geography-dashboard",
     name: "Geography Dashboard",
-    subtitle: "Geospatial Analytics & Platform Engineering",
+    subtitle: "Interactive mapping & spatial analysis",
     summary:
-      "A full-stack geospatial analytics platform combining interactive mapping, spatial data processing, and a distributed microservices architecture. Expanded with Kubernetes orchestration, automated CI/CD, Prometheus/Grafana monitoring, and Terraform infrastructure configurations.",
+      "Upload a CSV or GeoJSON file to see where points cluster, or explore a city using OpenStreetMap data. I also built a local Kubernetes setup for the app.",
     highlights: [
-      "Full-Stack & GIS: Built a React/TypeScript and FastAPI application integrating OpenStreetMap services, CSV/GeoJSON uploads, PostgreSQL, DBSCAN clustering, density analysis, and interactive Leaflet visualizations.",
-      "Microservices & Cloud Deployment: Independently deployed the frontend, GIS backend, and database across Vercel, Render, and Neon, separating deterministic spatial analysis from optional Gemini-powered AI inference. The AI service was previously deployed on AWS and is currently paused.",
-      "Kubernetes & Containerization: Deployed containerized React, FastAPI, and PostgreSQL services on a local Kubernetes (kind) cluster, configuring Deployments, StatefulSets, persistent storage, health probes, resource limits, and rolling updates.",
-      "Observability & Monitoring: Integrated Prometheus and Grafana to track API availability, request throughput, p95 latency, and error rates. Defined alert rules and implemented structured JSON logging and cross-service request correlation.",
-      "CI/CD & Automation: Built GitHub Actions pipelines for automated linting, tests, Docker builds, and infrastructure validation, including Kubernetes Kustomize manifests and backend health checks.",
-      "Infrastructure as Code: Developed and validated Terraform configurations for AWS ECR with immutable image tags, image scanning, lifecycle policies, and resource tagging. No AWS resources were provisioned through Terraform.",
-      "Reliability & Security: Implemented database-aware readiness checks, Alembic migration Jobs, JWT authentication, and an optional AI service overlay, keeping core GIS functionality available independently of AI inference.",
+      "Built a React/TypeScript and FastAPI application integrating OpenStreetMap services, CSV/GeoJSON uploads, PostgreSQL, DBSCAN clustering, density analysis, and interactive Leaflet visualizations.",
+      "Independently deployed the frontend, GIS backend, and database across Vercel, Render, and Neon, separating deterministic spatial analysis from optional Gemini-powered AI inference. The AI service was previously deployed on AWS and is currently paused.",
+      "Deployed containerized React, FastAPI, and PostgreSQL services on a local Kubernetes (kind) cluster, configuring Deployments, StatefulSets, persistent storage, health probes, resource limits, and rolling updates.",
+      "Integrated Prometheus and Grafana to track API availability, request throughput, p95 latency, and error rates. Defined alert rules and implemented structured JSON logging and cross-service request correlation.",
+      "Built GitHub Actions pipelines for automated linting, tests, Docker builds, and infrastructure validation, including Kubernetes Kustomize manifests and backend health checks.",
+      "Developed and validated Terraform configurations for AWS ECR with immutable image tags, image scanning, lifecycle policies, and resource tagging. I stopped at validation.",
+      "Implemented database-aware readiness checks, Alembic migration Jobs, JWT authentication, and an optional AI service overlay, keeping core GIS functionality available independently of AI inference.",
     ],
     stack: [
       "React",
@@ -174,14 +174,14 @@ export const projects: Project[] = [
     name: "ScamShield Hub",
     subtitle: "Full-Stack Cybersecurity Learning Platform",
     summary:
-      "A four-person software engineering team project that turns phishing and scam awareness into interactive practice. Learners classify realistic cases, receive feedback, track progress, and use optional social features in a deployed React/Express application.",
+      "Practice spotting phishing in sample emails, texts, and websites. Each answer comes with feedback, and the app saves your progress.",
     highlights: [
-      "Team and scope: Led a four-person development team building an end-to-end learning platform, helping coordinate frontend, backend, data models, and release work.",
-      "Learning experience: Implemented case browsing and filtering, classification of suspicious emails/messages/websites, feedback on decisions, completed-case review, learning progress, badges, and leaderboards.",
-      "Backend design: Built Express REST endpoints and MongoDB/Mongoose data models for users, cases, votes, comments, messages, groups, and user activity, with clear separation between route handlers, models, and authentication middleware.",
-      "Accounts and permissions: Added JWT-based sessions, bcrypt password hashing, role-based authorization, and Resend email verification. Temporary pending-signup records avoid permanently creating accounts before verification is completed.",
-      "Deployment: Deployed the React frontend on Vercel and the Node.js API on Render, with MongoDB Atlas for persistence and Resend for transactional verification email. Considered CORS, environment configuration, API availability, and end-to-end testing across services.",
-      "Data integrity lesson: Identified that an original database seed process could delete manually created cases and invalidate related votes. Guarded destructive seeding behind an explicit opt-in flag and disabled accidental invocation in normal development workflows.",
+      "Led a four-person development team building an end-to-end learning platform, helping coordinate frontend, backend, data models, and release work.",
+      "Implemented case browsing and filtering, classification of suspicious emails/messages/websites, feedback on decisions, completed-case review, learning progress, badges, and leaderboards.",
+      "Built Express REST endpoints and MongoDB/Mongoose data models for users, cases, votes, comments, messages, groups, and user activity, with clear separation between route handlers, models, and authentication middleware.",
+      "Added JWT-based sessions, bcrypt password hashing, role-based authorization, and Resend email verification. Temporary pending-signup records avoid permanently creating accounts before verification is completed.",
+      "Deployed the React frontend on Vercel and the Node.js API on Render, with MongoDB Atlas for persistence and Resend for transactional verification email. Considered CORS, environment configuration, API availability, and end-to-end testing across services.",
+      "Identified that an original database seed process could delete manually created cases and invalidate related votes. Guarded destructive seeding behind an explicit opt-in flag and disabled accidental invocation in normal development workflows.",
     ],
     stack: [
       "React",
@@ -200,7 +200,7 @@ export const projects: Project[] = [
     name: "SwampGuard",
     subtitle: "AI-Assisted Insurance Claims Prototype",
     summary:
-      "A prototype that combines photos, uploaded documents, and structured estimation logic to help users understand potential damage claims and policy considerations. It explores how AI interpretation can support human review of source material.",
+      "A prototype that drafts a repair estimate from damage photos and insurance documents for someone to review.",
     highlights: [
       "Built a prototype workflow for submitting damage images and supporting documents, producing structured summaries and preliminary itemized estimates rather than an official insurance adjustment.",
       "Used FastAPI image-processing endpoints, document extraction, Pydantic request models, and JSON-formatted AI responses to organize inputs and outputs for review in the UI.",
@@ -220,7 +220,7 @@ export const projects: Project[] = [
     name: "UF Health SmartScribe",
     subtitle: "Real-Time Clinical Documentation Prototype",
     summary:
-      "A hackathon prototype that converts a clinician-patient conversation into an editable SOAP-style note using speech transcription and AI-assisted structuring.",
+      "A hackathon prototype that transcribes a clinician-patient conversation and drafts an editable SOAP note.",
     highlights: [
       "Built a browser audio workflow using streaming transcription and speaker diarization to distinguish conversational turns and prepare text for note generation.",
       "Integrated Deepgram for transcription and a Gemini-based processing stage to extract key information and draft structured SOAP-style notes, with human review and editing before use.",
@@ -239,7 +239,7 @@ export const projects: Project[] = [
     slug: "ability-bridge",
     name: "Ability Bridge",
     subtitle: "Computer-Vision Accessibility Interface",
-    summary: "A hands-free desktop-control prototype that translates webcam-based facial movement into cursor actions and Morse-code-style input, exploring how computer vision can make interaction more accessible.",
+    summary: "Control a cursor and type in Morse code using facial movements tracked by a webcam.",
     highlights: [
       "Used Python, OpenCV, and MediaPipe face landmarks to interpret head movement and facial gestures as input signals without requiring specialized hardware.",
       "Combined head-pose estimation with smoothing, hysteresis, and debouncing to reduce cursor jitter and accidental gestures in a real-time interaction loop.",
@@ -257,7 +257,7 @@ export const projects: Project[] = [
     slug: "grade-track",
     name: "Grade Track",
     subtitle: "Student Data Analytics Dashboard",
-    summary: "A full-stack dashboard that turns exported course-grade CSV files into interactive summaries, distributions, and trends, with a Flask API and a containerized local development setup.",
+    summary: "A dashboard for exploring grade distributions, class averages, and trends from course CSV exports.",
     highlights: [
       "Implemented CSV ingestion and data transformation for course, assignment, and student-level grade records, exposing analysis results through Flask REST endpoints.",
       "Built a React-based interface with charts for grade distributions, class averages, medians, and trends, helping users explore patterns that are difficult to see in raw exports.",
@@ -277,7 +277,7 @@ export const projects: Project[] = [
     slug: "other-projects",
     name: "Other Projects",
     subtitle: "Algorithms, Systems Programming & Small Builds",
-    summary: "Smaller projects and coursework that strengthened my understanding of algorithms, low-level programming, data structures, testing, and interactive application logic.",
+    summary: "Coursework and small builds, including an AVL tree, a bin-packing comparison, Minesweeper, and Sudoku.",
     highlights: [],
     stack: ["C++", "Python", "SFML", "Algorithms"],
     links: {},

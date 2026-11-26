@@ -1,5 +1,15 @@
 # Portfolio redesign
 
+## Follow-up revision
+
+The overview now flows into Experience, Projects, Beyond Work, Skills, and Contact on one page. The old English list URLs redirect to their homepage anchors. Project and role detail URLs still open directly. Database Mart and UF GeoPlan Center have short summaries on the homepage. UF SASE lives under Beyond Work, and the photo gallery remains available at `/photos` and through the Chinese portfolio.
+
+Warm paper, olive accents, Newsreader headings, and smaller type replace the cool blue palette and large display scale. Featured project screenshots reveal as they enter the viewport, and the gallery fades between images. The site respects reduced motion. Saturday Lab now starts with three landscape captures from the desktop site: rankings, Matchup Lab, and Rank Trends. One portrait capture remains at the end.
+
+Used Humanizer to cut repeated explanations, generic claims, and labels from the English copy. The original redesign notes below describe the previous revision.
+
+## Original redesign
+
 The English homepage introduces Alex as one person working across software engineering, data, infrastructure, and geospatial analysis. It gives visitors a short path from the introduction to selected projects, work history, life beyond work, and contact. The four résumé variants and interview notes supplied context. The site uses the existing public résumé and portfolio copy as its publication baseline.
 
 ## Routes and navigation

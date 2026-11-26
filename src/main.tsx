@@ -1,9 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet, RouterProvider, ScrollRestoration } from "react-router-dom";
 import "./index.css";
 import App from "./App";
-import { AboutPage, ExperienceDetailPage, ExperiencePage, HomePage, NotFound, ProjectPage, ProjectsPage, ResumePage } from "./portfolio/Pages";
+import { ExperienceDetailPage, HomePage, NotFound, ProjectPage, ResumePage } from "./portfolio/Pages";
 
 const router = createBrowserRouter([
   {
@@ -13,11 +13,11 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
           { index: true, element: <HomePage /> },
-          { path: "projects", element: <ProjectsPage /> },
+          { path: "projects", element: <Navigate replace to="/#projects" /> },
           { path: "projects/:slug", element: <ProjectPage /> },
-          { path: "experience", element: <ExperiencePage /> },
+          { path: "experience", element: <Navigate replace to="/#experience" /> },
           { path: "experience/:slug", element: <ExperienceDetailPage /> },
-          { path: "about", element: <AboutPage /> },
+          { path: "about", element: <Navigate replace to="/#about" /> },
           { path: "resume", element: <ResumePage /> },
           { path: "*", element: <NotFound /> },
         ],
