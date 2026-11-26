@@ -69,8 +69,7 @@ export default function SectionIndex() {
     <header className="folio-header">
       <div className="folio-wrap folio-header-inner">
         <Link className="folio-header-brand" to="/" aria-current={isHome && visibleSection === "overview" ? "location" : undefined} onClick={closeMenu}>
-          <img src="/alex-liu-mark.png" width={34} height={34} alt="" />
-          <span>Alex Liu</span>
+          Alex Liu
         </Link>
         <div className="folio-index">{links(false)}</div>
         <details className="folio-index-mobile" ref={menu} onKeyDown={(event) => {
