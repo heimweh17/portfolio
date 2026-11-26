@@ -1,9 +1,12 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, Navigate, Outlet, RouterProvider, ScrollRestoration } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import "./index.css";
 import App from "./App";
 import { BeyondWorkPage, ExperienceDetailPage, HomePage, NotFound, ProjectPage, ResumePage } from "./portfolio/Pages";
+
+const collectAnalytics = import.meta.env.PROD && ["aliu.me", "www.aliu.me"].includes(window.location.hostname);
 
 const router = createBrowserRouter([
   {
@@ -33,5 +36,8 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode><RouterProvider router={router} /></StrictMode>,
+  <StrictMode>
+    <RouterProvider router={router} />
+    {collectAnalytics && <Analytics />}
+  </StrictMode>,
 );
