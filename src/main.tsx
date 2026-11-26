@@ -9,6 +9,14 @@ import { BeyondWorkPage, ExperienceDetailPage, HomePage, NotFound, ProjectPage, 
 const collectAnalytics = import.meta.env.PROD && ["aliu.me", "www.aliu.me"].includes(window.location.hostname);
 const visitorMapImage = "https://mapmyvisitors.com/map.png?d=zNM4cOcd5qWFePeDgnSpq0u6Nmw2W5onrCMDSEIVdhE&cl=ffffff";
 
+if (collectAnalytics) {
+  Object.assign(window, { sc_project: 13371545, sc_invisible: 1, sc_security: "f5ae3061" });
+  const statcounter = document.createElement("script");
+  statcounter.src = "https://www.statcounter.com/counter/counter.js";
+  statcounter.async = true;
+  document.body.append(statcounter);
+}
+
 const router = createBrowserRouter([
   {
     element: <><Outlet /><ScrollRestoration /></>,
