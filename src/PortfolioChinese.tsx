@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { contactEndpoint } from "./contactEndpoint";
 import {
   motion,
   AnimatePresence,
@@ -76,8 +77,6 @@ const SITE = {
     blog: "/blog",
   },
 };
-
-const FORM_ENDPOINT = "https://formspree.io/f/mkglvylk";
 
 // --- 辅助组件 ---
 
@@ -767,7 +766,7 @@ function MessageForm() {
       setStatus("submitting");
       setError("");
 
-      const res = await fetch(FORM_ENDPOINT, {
+      const res = await fetch(contactEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
