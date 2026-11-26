@@ -2,7 +2,7 @@
 
 ## Navigation and content refinements
 
-The desktop section index sits in the left margin and highlights the active homepage section as readers scroll. On smaller screens, a disclosure in the lower-right corner shows the current section and opens the same links, including Résumé. Project screenshots have a smaller frame and can be opened at full size.
+The section index sits in a floating header and highlights the active homepage section as readers scroll. On smaller screens, it shows the current section and opens a compact list of links, including Résumé. The header and favicon use the same custom Alex Liu initials mark. Project screenshots have a smaller frame and can be opened at full size.
 
 Beyond Work now links to a page about mapping, math volunteering, campus events, lion and dragon dance, badminton, pickleball, family, and photography. The old UF SASE detail link redirects to its entry on that page. Education sits above Skills and includes coursework from the résumé variants and the existing Florida Gators mark. Contact shows the email address and uses a shorter, resizable message field.
 

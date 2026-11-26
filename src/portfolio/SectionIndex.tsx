@@ -54,10 +54,10 @@ export default function SectionIndex() {
     if (menu.current) menu.current.open = false;
   }
 
-  function links() {
+  function links(includeOverview: boolean) {
     return (
       <nav aria-label="Portfolio sections">
-        {sections.map(({ id, label }) => (
+        {(includeOverview ? sections : sections.slice(1)).map(({ id, label }) => (
           <Link key={id} to={`/#${id}`} aria-current={isHome && visibleSection === id ? "location" : undefined} onClick={closeMenu}>{label}</Link>
         ))}
         <Link className="folio-index-resume" to="/resume" aria-current={pathname === "/resume" ? "page" : undefined} onClick={closeMenu}>Résumé <ArrowUpRight size={13} aria-hidden="true" /></Link>
@@ -66,17 +66,23 @@ export default function SectionIndex() {
   }
 
   return (
-    <>
-      <aside className="folio-index">{links()}</aside>
-      <details className="folio-index-mobile" ref={menu} onKeyDown={(event) => {
-        if (event.key === "Escape" && event.currentTarget.open) {
-          closeMenu();
-          event.currentTarget.querySelector("summary")?.focus();
-        }
-      }}>
-        <summary><List size={16} aria-hidden="true" /> {isHome ? currentLabel : "Sections"}</summary>
-        {links()}
-      </details>
-    </>
+    <header className="folio-header">
+      <div className="folio-wrap folio-header-inner">
+        <Link className="folio-header-brand" to="/" aria-current={isHome && visibleSection === "overview" ? "location" : undefined} onClick={closeMenu}>
+          <img src="/alex-liu-mark.png" width={34} height={34} alt="" />
+          <span>Alex Liu</span>
+        </Link>
+        <div className="folio-index">{links(false)}</div>
+        <details className="folio-index-mobile" ref={menu} onKeyDown={(event) => {
+          if (event.key === "Escape" && event.currentTarget.open) {
+            closeMenu();
+            event.currentTarget.querySelector("summary")?.focus();
+          }
+        }}>
+          <summary><List size={16} aria-hidden="true" /> {isHome ? currentLabel : "Sections"}</summary>
+          {links(true)}
+        </details>
+      </div>
+    </header>
   );
 }
